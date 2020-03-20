@@ -1,2 +1,2 @@
-# NIP
-Non-Invasive prenatal testing Pipeline
+# FluFFyPipe
+NIPT analysis pipeline
