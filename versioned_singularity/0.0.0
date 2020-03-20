@@ -41,10 +41,12 @@ LC_ALL=C.UTF-8
     
     cd /bin/ && wget https://github.com/CenterForMedicalGeneticsGhent/PREFACE/archive/v0.1.1.zip && unzip v0.1.1.zip
     cd /
-    
-    cd /bin/ && git clone https://github.com/J35P312/AMYCNE.git && cd AMYCNE && python setup.py build_ext --inplace
+
+    cd /bin/ && git clone https://github.com/J35P312/AMYCNE.git && cd AMYCNE && python setup.py build_ext --inplace    
     
     git clone https://github.com/SciLifeLab/TIDDIT.git
     mv TIDDIT/* /bin/
     cd /bin/ && ./INSTALL.sh
     chmod +x /bin/TIDDIT.py
+
+    cd /bin/ && git clone https://github.com/J35P312/FluFFyPipe.git
