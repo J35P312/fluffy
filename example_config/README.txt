@@ -43,5 +43,13 @@
 		"time":"5:00:00",
     #other flags to be written to the slurm header
 		"flags":""
-	}
+	},
+	#summary settings
+        "summary":{
+		#minimum segmental call size
+                "mincnv":10000000,
+		#minmum zscore of segmental calls
+                "zscore":3
+        }
+
 }

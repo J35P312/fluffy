@@ -19,10 +19,14 @@
 		"olm":1
 	},
 	"reference":"/proj/sens2019010/reference/human_g1k_v37.fasta",
-	"singularity":"/proj/sens2019010/nobackup/wharf/jesperei/jesperei-sens2019010/Clevervulture2.sif",
+	"singularity":"/proj/sens2019010/nobackup/wharf/jesperei/jesperei-sens2019010/FluFFyPipe/FluFFyPipe_0.0.sif",
 	"slurm": {
 		"account":"sens2019010",
 		"time":"5:00:00",
 		"flags":""
+	},
+	"summary":{
+		"mincnv":10000000,
+		"zscore":3
 	}
 }

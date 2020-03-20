@@ -93,7 +93,13 @@ def preface_model(config,args):
 	preface="singularity exec {} Rscript /bin/PREFACE-0.1.1/PREFACE.R train --config {}.PREFACE.config.tab --outdir {}".format(config["singularity"],args.out.rstrip("/"),config["preface"]["model_dir"])
 	return(preface)
 
-parser = argparse.ArgumentParser("""fluffypipe.py --sample <samplesheet>  --in <input_folder> --out <output_folder>  --config config.json""")
+#generate a csv summary
+def summarise(config,args):
+	summary="singularity exec {} python /bin/FluFFyPipe/scripts/generate_csv.py --folder {} --samplesheet {} --Zscore {} --minCNV {}".format(config["singularity"],args.out,args.sample,config["summary"]["zscore"],config["summary"]["mincnv"])
+	return(summary)	
+
+
+parser = argparse.ArgumentParser("""fluffypipe.py --sample <samplesheet>  --project <input_folder> --out <output_folder>  --config config.json""")
 parser.add_argument('--project'       ,type=str, help="input project folder", required=True)
 parser.add_argument('--out'       ,required=True,type=str, help="output folder")
 parser.add_argument('--config'       ,required=True,type=str, help="json config file")
@@ -176,3 +182,6 @@ else:
 			preface_predict = Slurm("preface_predict-{}".format(sample),{"account": config["slurm"]["account"], "partition": "core","time":config["slurm"]["time"] },log_dir="{}/logs".format(args.out),scripts_dir="{}/scripts".format(args.out))
 			jobids.append(preface_predict.run(run_preface,depends_on=[wcx_test_jobid]))
 
+	run_summarise=summarise(config,args)
+	summarise_batch = Slurm("summarise_batch-{}".format( args.project.strip("/").split("/")[-1] ),{"account": config["slurm"]["account"], "partition": "core","time":config["slurm"]["time"] },log_dir="{}/logs".format(args.out),scripts_dir="{}/scripts".format(args.out))
+	summarise_batch.run(run_summarise,depends_on=jobids)
