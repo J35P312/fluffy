@@ -41,4 +41,18 @@ Create a PREFACE reference:
 samplesheet should contain atleast a "sampleID" column. All samples in the samplesheet will be used to construct the reference, visit the PREFACE manual for more information. Note, you need to first run the FluFFYPipe with "--skip_preface" option, next you may run mkmodel - this is necessary as the AMYCNE FFY estimations are used for training the model.
 
 # Install FluFFyPipe
+FluFFyPipe requires python, samtools, slurm, slurmpy, and singularity.
 
+First clone fluffypipe:
+
+    https://github.com/J35P312/FluFFyPipe.git
+
+Next download the FluFFyPipe singularity container
+
+     singularity pull --name FluFFyPipe.sif shub://J35P312/FluFFyPipe
+     
+Install slurmpy:
+
+    https://github.com/brentp/slurmpy
+    
+copy the example config (found in example_config), and edit the variables
