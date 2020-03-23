@@ -3,13 +3,15 @@
 		"tmpdir":"$TMPDIR/"
 	},
 	"amycne":{
-		"minq":13,
-		"gc":"/proj/sens2019010/nobackup/wharf/jesperei/jesperei-sens2019010/AMYCNE/human_g1k_v37.50kbp.gc.bed"
+		"minq":10
 	},
 	"wisecondorx":{
-		"ref500kbp":"/proj/sens2019010/nobackup/wisecondor_X_bwa_ref.npz",
-		"ref100kbp":"/proj/sens2019010/nobackup/wisecondor_X_bwa_ref.100kbp.npz",
-		"blacklist":"/proj/sens2019010/nobackup/blacklist.bed"
+		"reftest":"/proj/sens2019010/nobackup/wisecondor_X_bwa_ref.npz",
+		"testbinsize":500000,
+		"refpreface":"/proj/sens2019010/nobackup/wisecondor_X_bwa_ref.100kbp.npz",
+		"prefacebinsize":100000,
+		"blacklist":"/proj/sens2019010/nobackup/blacklist.bed",
+		"zscore": 1.5
 	},
 	"tiddit":{
 		"binsize":50000

@@ -53,6 +53,20 @@ Next download the FluFFyPipe singularity container
      
 Install slurmpy:
 
-    https://github.com/brentp/slurmpy
+	git clone https://github.com/J35P312/slurmpy.git
+	cd slurmpy
+	pip install --no-index --user -e .
     
-copy the example config (found in example_config), and edit the variables
+copy the example config (found in example_config), and edit the variables.
+You will need to download/create the following files:
+
+	Reference fasta (indexed using bwa)
+
+	WisecondorX reference files (created using the --mkref mode)
+
+	PREFACE reference file (optional)(created using the --mkmodel mode)
+
+	blacklist bed file (used by wisecondorX)
+
+	FluFFyPipe singularity collection (singularity pull --name FluFFyPipe.sif shub://J35P312/FluFFyPipe)
+

@@ -66,7 +66,7 @@ ratio_Y=[]
 
 for sample in samples:
 	for file in files_in_folder:
-		if file.startswith(sample) and file.endswith("_chr_statistics.txt"):
+		if file.startswith(sample) and file.endswith("WCXpredict_chr_statistics.txt"):
 			for line in open(args.folder+ "/" + file):
 				if "ratio" in line:
 					continue
@@ -148,24 +148,33 @@ for sample in samples:
 
 for sample in samples:
 	for file in files_in_folder:
-		if file.startswith(sample) and file.endswith("_aberrations.bed"):
+		if file.startswith(sample) and file.endswith("WCXpredict_aberrations.bed"):
+			f=open( args.folder + "/" + file.replace(".bed",".filt.bed"),"w")
+			filtered_calls=[]
+
 			for line in open(args.folder+ "/" + file):
 				if "start" in line:
+					f.write(line)
 					continue
+
 				content=line.strip().split()
 				if "X" in content[0]:
 					continue
 
 				samples[sample]["UnfilteredCNVcalls"]+=1
-				if int(content[2]) - int(content[1]) > args.minCNV and abs(float(content[2])) > args.Zscore:
+				if int(content[2]) - int(content[1]) > args.minCNV and abs(float(content[-2])) > args.Zscore:
 					samples[sample]["CNVSegment"]="Found"
+					filtered_calls.append(line.strip())
+
+			f.write("\n".join(filtered_calls))
+			f.close()
 
 for sample in samples:
 	for file in files_in_folder:
 		if file.startswith(sample) and file.endswith(".bam.wcx.npz"):
 			a=numpy.load(args.folder + "/" + file,encoding='latin1', allow_pickle=True)
 			samples[sample]["IndexedReads"]=a["quality"].item()["mapped"]
-			samples[sample]["DuplicationRate"]=a["quality"].item()['filter_rmdup']/a["quality"].item()["mapped"]
+			samples[sample]["DuplicationRate"]=a["quality"].item()['filter_rmdup']/float(a["quality"].item()["mapped"])
 			all_chr=[]
 			samples[sample]["Chr1"]=sum(a["sample"].item()["1"])
 			samples[sample]["Chr2"]=sum(a["sample"].item()["2"])
@@ -191,7 +200,7 @@ for sample in samples:
 			samples[sample]["Chr22"]=sum(a["sample"].item()["22"])
 			samples[sample]["ChrX"]=sum(a["sample"].item()["23"])
 			samples[sample]["ChrY"]=sum(a["sample"].item()["24"])
-			samples[sample]["ChrY_Coverage"]=sum(a["sample"].item()["24"])/int(a["quality"].item()["mapped"])
+			samples[sample]["ChrY_Coverage"]=sum(a["sample"].item()["24"])/float(a["quality"].item()["mapped"])
 			samples[sample]["Ratio_Y"]=samples[sample]["ChrY_Coverage"]
 			ratio_Y.append(samples[sample]["Ratio_Y"])
 
