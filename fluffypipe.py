@@ -79,7 +79,7 @@ def check_config(config,args):
 
 	if not os.path.isfile(config["wisecondorx"]["reftest"]) and (not args.mkref):
 		print("error: cannot find the aneuploidy test wisecondorX reference file, check your config file")
-		print("remember to build the wisecondorX reference using the mkref option)
+		print("remember to build the wisecondorX reference using the mkref option")
 		print(config["wisecondorx"]["reftest"])
 		quit()
 
