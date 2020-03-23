@@ -3,6 +3,7 @@ import json
 from slurmpy import Slurm
 import os
 import glob
+import sys
 
 #read the samplesheet
 def read_samplesheet(samplesheet,project_dir):
@@ -88,16 +89,22 @@ def preface(config,args,sample):
 	preface="singularity exec {} Rscript /bin/PREFACE-0.1.1/PREFACE.R predict --infile {}/{}.WCXpredict.100kbp_bins.bed --model {}/model.RData > {}/{}_bins.bed.PREFACE.txt".format(config["singularity"],args.out,sample,config["preface"]["model_dir"],args.out,sample)
 	return(preface)
 
+#collect QC stats using picard tools
+def picard_qc(config,args,sample):
+	out_prefix="{}/{}".format(args.out,sample)
+	picard_gc="singularity exec {} picard CollectGcBiasMetrics I={}.bam O={}_gc_bias_metrics.txt CHART={}_gc_bias_metrics.pdf S={}.gc.summary.tab R={} {}".format(config["singularity"],out_prefix,out_prefix,out_prefix,out_prefix,config["reference"],config["picard"]["javasettings"])
+	picard_insert="singularity exec {} picard CollectInsertSizeMetrics I={}.bam O={}_insert_size_metrics.txt H={}_insert_size_histogram.pdf M=0.5 {}".format(config["singularity"],out_prefix,out_prefix,out_prefix,config["picard"]["javasettings"])
+	return("\n".join([picard_gc,picard_insert]))
+
 #construct Preface model
 def preface_model(config,args):
-	preface="singularity exec {} Rscript /bin/PREFACE-0.1.1/PREFACE.R train --config {}.PREFACE.config.tab --outdir {}".format(config["singularity"],args.out.rstrip("/"),config["preface"]["model_dir"])
+	preface="singularity exec {} Rscript /bin/PREFACE-0.1.1/PREFACE.R train --config {}.PREFACE.config.tab --outdir {} {}".format(config["singularity"],args.out.rstrip("/"),config["preface"]["model_dir"],config["preface"]["modelsettings"])
 	return(preface)
 
 #generate a csv summary
 def summarise(config,args):
-	summary="singularity exec {} python /bin/FluFFyPipe/scripts/generate_csv.py --folder {} --samplesheet {} --Zscore {} --minCNV {}".format(config["singularity"],args.out,args.sample,config["summary"]["zscore"],config["summary"]["mincnv"])
+	summary="singularity exec {} python /bin/FluFFyPipe/scripts/generate_csv.py --folder {} --samplesheet {} --Zscore {} --minCNV {} > {}/{}.summary.csv".format(config["singularity"],args.out,args.sample,config["summary"]["zscore"],config["summary"]["mincnv"],args.out,args.out.strip("/").split("/")[-1])
 	return(summary)	
-
 
 parser = argparse.ArgumentParser("""fluffypipe.py --sample <samplesheet>  --project <input_folder> --out <output_folder>  --config config.json""")
 parser.add_argument('--project'       ,type=str, help="input project folder", required=True)
@@ -117,6 +124,14 @@ if args.version:
 
 if not os.path.isdir(args.out):
 	os.system( "mkdir {}".format(args.out) )
+
+#copy config to output directory
+os.system("cp {} {}".format(args.config,args.out))
+#write version and command line to output directory
+f=open("{}/cmd.txt".format(args.out),"w")
+f.write("fluffypipe-{}\n".format(version))
+f.write(" ".join(sys.argv))
+f.close()
 
 with open(args.config) as f:
 	config = json.load(f)
@@ -147,7 +162,7 @@ elif args.mkmodel:
 				gender="F"
 			else:
 				gender="M"
-				ff=float(content[2])*100
+				ff=float(content[-2])*100
 
 			out.append("{}\t{}/{}.WCXpredict.100kbp_bins.bed\t{}\t".format(sample,args.out,sample,gender,ff))
 
@@ -171,6 +186,10 @@ else:
 		run_ffy=amycne_ffy(config,args,sample)
 		ffy = Slurm("amycne-{}".format(sample),{"account": config["slurm"]["account"], "partition": "core","time":config["slurm"]["time"] },log_dir="{}/logs".format(args.out),scripts_dir="{}/scripts".format(args.out))
 		jobids.append(ffy.run( run_ffy,depends_on=[align_jobid] ))
+
+		run_picard=picard_qc(config,args,sample)
+		picard = Slurm("picard_qc-{}".format(sample),{"account": config["slurm"]["account"], "partition": "core","time":config["slurm"]["time"] },log_dir="{}/logs".format(args.out),scripts_dir="{}/scripts".format(args.out))
+		jobids.append(picard.run( run_picard,depends_on=[align_jobid] ))
 
 		run_wcx=wisecondorx_test(config,args,sample)
 		wcx_test = Slurm("wcx-{}".format(sample),{"account": config["slurm"]["account"], "partition": "core","time":config["slurm"]["time"] },log_dir="{}/logs".format(args.out),scripts_dir="{}/scripts".format(args.out))

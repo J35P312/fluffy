@@ -16,7 +16,10 @@
 	},
 	"preface":{
 		"model_dir":"/proj/sens2019010/nobackup/PREFACE/AMYCNE_15g_2500_100kbp.conf.model.olm",
-		"olm":1
+		"modelsettings":"--olm"
+	},
+	"picard":{
+		"javasettings":"-Xms4G -Xmx4G"
 	},
 	"reference":"/proj/sens2019010/reference/human_g1k_v37.fasta",
 	"singularity":"/proj/sens2019010/nobackup/wharf/jesperei/jesperei-sens2019010/FluFFyPipe/FluFFyPipe_0.0.sif",
