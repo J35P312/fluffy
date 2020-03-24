@@ -86,42 +86,47 @@ def check_config(config,args):
 #create a command for running bwa and wisecondorX convert
 def align_and_convert(config,fastq,args,sample):
 
-	aln="singularity exec {} bwa aln -n 0 -k 0 {} {} > {}/{}.sai".format(config["singularity"],config["reference"],fastq,args.out,sample)
-	samse="singularity exec {} bwa samse -n -1 {} {}/{}.sai {} | singularity exec {} bamsormadup inputformat=sam threads=16 SO=coordinate outputformat=bam tmpfile={}/{} indexfilename={}/{}.bam.bai > {}/{}.bam".format(config["singularity"],config["reference"],args.out,sample,fastq,config["singularity"],config["align"]["tmpdir"],sample,args.out,sample,args.out,sample)
-	convert="singularity exec {} WisecondorX convert {}/{}.bam {}/{}.bam.wcx.npz".format(config["singularity"],args.out,sample,args.out,sample)
+	out_prefix="{}/{}/{}".format(args.out,sample,sample)
+	aln="singularity exec {} bwa aln -n 0 -k 0 {} {} > {}.sai".format(config["singularity"],config["reference"],fastq,out_prefix)
+	samse="singularity exec {} bwa samse -n -1 {} {}.sai {} | singularity exec {} bamsormadup inputformat=sam threads=16 SO=coordinate outputformat=bam tmpfile={}/{} indexfilename={}.bam.bai > {}.bam".format(config["singularity"],config["reference"],out_prefix,fastq,config["singularity"],config["align"]["tmpdir"],sample,out_prefix,out_prefix)
+	convert="singularity exec {} WisecondorX convert {}.bam {}.bam.wcx.npz".format(config["singularity"],out_prefix,out_prefix)
 	run_bwa="\n".join([aln,samse,convert])
 
 	return(run_bwa)
 
 #generate wisecondorX reference files
 def mkref(config,args):
-	wcx_mkref="singularity exec {} WisecondorX newref {}/*.npz {}.test.npz --nipt --binsize {}".format(config["singularity"],args.out,args.out.rstrip("/"),config["wisecondorx"]["testbinsize"] )
-	wcx_mkrefpreface="singularity exec {} WisecondorX newref {}/*.npz {}.preface.npz --nipt --binsize {}".format(config["singularity"],args.out,args.out.rstrip("/"),config["wisecondorx"]["prefacebinsize"])
+	wcx_mkref="singularity exec {} WisecondorX newref {}/**/*.wcx.npz {}.test.npz --nipt --binsize {}".format(config["singularity"],args.out,args.out.rstrip("/"),config["wisecondorx"]["testbinsize"] )
+	wcx_mkrefpreface="singularity exec {} WisecondorX newref {}/**/*.wcx.npz {}.preface.npz --nipt --binsize {}".format(config["singularity"],args.out,args.out.rstrip("/"),config["wisecondorx"]["prefacebinsize"])
 	return("\n".join([wcx_mkref,wcx_mkrefpreface]))
 
 #perform the wisecondorx test
 def wisecondorx_test(config,args,sample):
-	wcx_test="singularity exec {} WisecondorX --loglevel info predict {}/{}.bam.wcx.npz {} {}/{}.WCXpredict --plot --bed --blacklist {} --zscore {}".format(config["singularity"],args.out,sample,config["wisecondorx"]["reftest"],args.out,sample,config["wisecondorx"]["blacklist"],config["wisecondorx"]["zscore"])
-	wcx_preface="singularity exec {} WisecondorX --loglevel info predict {}/{}.bam.wcx.npz {} {}/{}.WCXpredict.preface --plot --bed --blacklist {}".format(config["singularity"],args.out,sample,config["wisecondorx"]["refpreface"],args.out,sample,config["wisecondorx"]["blacklist"])
-	gender="singularity exec {} WisecondorX gender {}/{}.bam.wcx.npz {} > {}/{}.wcx.npz.gender.txt".format(config["singularity"],args.out,sample,config["wisecondorx"]["reftest"],args.out,sample)
+
+	out_prefix="{}/{}/{}".format(args.out,sample,sample)
+	wcx_test="singularity exec {} WisecondorX --loglevel info predict {}.bam.wcx.npz {} {}.WCXpredict --plot --bed --blacklist {} --zscore {}".format(config["singularity"],out_prefix,config["wisecondorx"]["reftest"],out_prefix,config["wisecondorx"]["blacklist"],config["wisecondorx"]["zscore"])
+	wcx_preface="singularity exec {} WisecondorX --loglevel info predict {}.bam.wcx.npz {} {}.WCXpredict.preface --plot --bed --blacklist {}".format(config["singularity"],out_prefix,config["wisecondorx"]["refpreface"],out_prefix,config["wisecondorx"]["blacklist"])
+	gender="singularity exec {} WisecondorX gender {}.bam.wcx.npz {} > {}.wcx.npz.gender.txt".format(config["singularity"],out_prefix,config["wisecondorx"]["reftest"],out_prefix)
 	return("\n".join([wcx_test,gender,wcx_preface]))
 
 #fetal fraction estimation using tiddit and AMYCNE
 def amycne_ffy(config,args,sample):
-	path_gc_tab="{}/{}.gc.tab".format(args.out,sample)
-	tiddit="singularity exec {} python /bin/TIDDIT.py --cov --bam {}/{}.bam -z {} -o {}/{}.tiddit".format(config["singularity"],args.out,sample,config["tiddit"]["binsize"],args.out,sample)
+	out_prefix="{}/{}/{}".format(args.out,sample,sample)
+	path_gc_tab="{}/{}/{}.gc.tab".format(args.out,sample,sample)
+	tiddit="singularity exec {} python /bin/TIDDIT.py --cov --bam {}.bam -z {} -o {}.tiddit".format(config["singularity"],out_prefix,config["tiddit"]["binsize"],out_prefix)
 	gc_tab="singularity exec FluFFyPipe_0.0.sif python /bin/AMYCNE/Generate_GC_tab.py --fa {} --size {} --n_mask > {}".format(config["reference"],config["tiddit"]["binsize"],path_gc_tab)
-	amycne="singularity exec {} python /bin/AMYCNE/AMYCNE.py --ff --coverage {}/{}.tiddit.tab --gc {} --Q {} > {}/{}.tiddit.AMYCNE.tab".format(config["singularity"],args.out,sample,path_gc_tab,config["amycne"]["minq"],args.out,sample)
+	amycne="singularity exec {} python /bin/AMYCNE/AMYCNE.py --ff --coverage {}.tiddit.tab --gc {} --Q {} > {}.tiddit.AMYCNE.tab".format(config["singularity"],out_prefix,path_gc_tab,config["amycne"]["minq"],out_prefix)
 	return("\n".join([tiddit,gc_tab,amycne]))
 
 #fetal fraction estimation using Preface
 def preface(config,args,sample):
-	preface="singularity exec {} Rscript /bin/PREFACE-0.1.1/PREFACE.R predict --infile {}/{}.WCXpredict.preface_bins.bed --model {}/model.RData > {}/{}_bins.bed.PREFACE.txt".format(config["singularity"],args.out,sample,config["preface"]["model_dir"],args.out,sample)
+	out_prefix="{}/{}/{}".format(args.out,sample,sample)
+	preface="singularity exec {} Rscript /bin/PREFACE-0.1.1/PREFACE.R predict --infile {}.WCXpredict.preface_bins.bed --model {}/model.RData > {}_bins.bed.PREFACE.txt".format(config["singularity"],out_prefix,config["preface"]["model_dir"],out_prefix)
 	return(preface)
 
 #collect QC stats using picard tools
 def picard_qc(config,args,sample):
-	out_prefix="{}/{}".format(args.out,sample)
+	out_prefix="{}/{}/{}".format(args.out,sample,sample)
 	picard_gc="singularity exec {} picard CollectGcBiasMetrics I={}.bam O={}_gc_bias_metrics.txt CHART={}_gc_bias_metrics.pdf S={}.gc.summary.tab R={} {}".format(config["singularity"],out_prefix,out_prefix,out_prefix,out_prefix,config["reference"],config["picard"]["javasettings"])
 	picard_insert="singularity exec {} picard CollectInsertSizeMetrics I={}.bam O={}_insert_size_metrics.txt H={}_insert_size_histogram.pdf M=0.5 {}".format(config["singularity"],out_prefix,out_prefix,out_prefix,config["picard"]["javasettings"])
 	picard_complexity="singularity exec {} picard EstimateLibraryComplexity I={}.bam O={}_complex_metrics.txt {}".format(config["singularity"],out_prefix,out_prefix,config["picard"]["javasettings"])
@@ -187,7 +192,7 @@ elif args.mkmodel:
 	f=open("{}.PREFACE.config.tab".format(args.out.rstrip("/")), "w" )
 	f.write("ID\tfilepath\tgender\tFF\n")
 	for sample in samples:
-		for line in open("{}/{}.AMYCNE.tab".format(args.out,sample) ):
+		for line in open("{}/{}/{}.AMYCNE.tab".format(args.out,sample,sample) ):
 			if "medA" in line:
 				continue
 			content=line.strip().split()
@@ -198,7 +203,7 @@ elif args.mkmodel:
 				gender="M"
 				ff=float(content[-2])*100
 
-			out.append("{}\t{}/{}.WCXpredict.preface_bins.bed\t{}\t".format(sample,args.out,sample,gender,ff))
+			out.append("{}\t{}/{}/{}.WCXpredict.preface_bins.bed\t{}\t".format(sample,args.out,sample,sample,gender,ff))
 
 	f.write("\n".join(out))
 	f.close()
@@ -212,6 +217,7 @@ elif args.mkmodel:
 else:
 	jobids=[]
 	for sample in samples:
+		os.system( "mkdir {}/{}".format(args.out,sample) )
 		fastq=samples[sample]
 		run_bwa=align_and_convert(config,fastq,args,sample)
 		bwa = Slurm("bwaAln-{}".format(sample),{"account": config["slurm"]["account"], "partition": "node","time":config["slurm"]["time"] },log_dir="{}/logs".format(args.out),scripts_dir="{}/scripts".format(args.out))

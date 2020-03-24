@@ -12,7 +12,10 @@ parser.add_argument('--Zscore'       ,default=3,type=int, help="Zscore of CNV se
 parser.add_argument('--samplesheet', type=str,required=True, help="path to samplesheet")
 args= parser.parse_args()
 
-files_in_folder=[f for f in listdir(args.folder) if isfile(join(args.folder, f))]
+files_in_folder=[]
+for r, d, f in os.walk(args.folder):
+	for file in f:
+		files_in_folder.append(os.path.join(r, file))
 
 output_header=["SampleID","SampleType","Flowcell","Description","SampleProject","IndexID1","Index1","IndexID2","Index2","Well","Library_nM","QCFlag","QCFailure","QCWarning","Zscore_13","Zscore_18","Zscore_21","Zscore_X","Zscore_Y","Ratio_13","Ratio_18","Ratio_21","Ratio_X","Ratio_Y","Clusters","TotalReads2Clusters","MaxMisindexedReads2Clusters","IndexedReads","TotalIndexedReads2Clusters","Tags","NonExcludedSites","NonExcludedSites2Tags","Tags2IndexedReads","PerfectMatchTags2Tags","GCBias","GCR2","NCD_13","NCD_18","NCD_21","NCD_X","NCD_Y","Chr1_Coverage","Chr2_Coverage","Chr3_Coverage","Chr4_Coverage","Chr5_Coverage","Chr6_Coverage","Chr7_Coverage","Chr8_Coverage","Chr9_Coverage","Chr10_Coverage","Chr11_Coverage","Chr12_Coverage","Chr13_Coverage","Chr14_Coverage","Chr15_Coverage","Chr16_Coverage","Chr17_Coverage","Chr18_Coverage","Chr19_Coverage","Chr20_Coverage","Chr21_Coverage","Chr22_Coverage","ChrX_Coverage","ChrY_Coverage","Chr1","Chr2","Chr3","Chr4","Chr5","Chr6","Chr7","Chr8","Chr9","Chr10","Chr11","Chr12","Chr13","Chr14","Chr15","Chr16","Chr17","Chr18","Chr19","Chr20","Chr21","Chr22","ChrX","ChrY","Median_13","Median_18","Median_21","Median_X","Median_Y","Stdev_13","Stdev_18","Stdev_21","Stdev_X","Stdev_Y","FF_Formatted","FFY","FFX","DuplicationRate","Bin2BinVariance","UnfilteredCNVcalls","CNVSegment"]
 
@@ -23,7 +26,7 @@ samplesheet_info=[]
 samplesheet_dict={}
 
 samples={}
-sample_out={"Bin2BinVariance":"","UnfilteredCNVcalls":0,"SampleID":"","DuplicationRate":0,"SampleType":"Test","Flowcell":"","Description":"","CNVSegment":"","SampleProject":"","IndexID1":"","Index1":"","IndexID2":"","Index2":"","Well":"","Library_nM":"","QCFlag":"","QCFailure":"","QCWarning":"","Zscore_13":"","Zscore_18":"","Zscore_21":"","Zscore_X":"","Zscore_Y":"","Ratio_13":"","Ratio_18":"","Ratio_21":"","Ratio_X":"","Ratio_Y":"","Clusters":"","TotalReads2Clusters":"","MaxMisindexedReads2Clusters":"","IndexedReads":"","TotalIndexedReads2Clusters":"","Tags":"","NonExcludedSites":"","NonExcludedSites2Tags":"","Tags2IndexedReads":"","PerfectMatchTags2Tags":"","GCBias":"","GCR2":"","NCD_13":"","NCD_18":"","NCD_21":"","NCD_X":"","NCD_Y":"","Chr1_Coverage":"","Chr2_Coverage":"","Chr3_Coverage":"","Chr4_Coverage":"","Chr5_Coverage":"","Chr6_Coverage":"","Chr7_Coverage":"","Chr8_Coverage":"","Chr9_Coverage":"","Chr10_Coverage":"","Chr11_Coverage":"","Chr12_Coverage":"","Chr13_Coverage":"","Chr14_Coverage":"","Chr15_Coverage":"","Chr16_Coverage":"","Chr17_Coverage":"","Chr18_Coverage":"","Chr19_Coverage":"","Chr20_Coverage":"","Chr21_Coverage":"","Chr22_Coverage":"","ChrX_Coverage":"","ChrY_Coverage":"","Chr1":"","Chr2":"","Chr3":"","Chr4":"","Chr5":"","Chr6":"","Chr7":"","Chr8":"","Chr9":"","Chr10":"","Chr11":"","Chr12":"","Chr13":"","Chr14":"","Chr15":"","Chr16":"","Chr17":"","Chr18":"","Chr19":"","Chr20":"","Chr21":"","Chr22":"","ChrX":"","ChrY":"","Median_13":"","Median_18":"","Median_21":"","Median_X":"","Median_Y":"","Stdev_13":"","Stdev_18":"","Stdev_21":"","Stdev_X":"","Stdev_Y":"","FF_Formatted":"","FFY":"","FFX":""}
+sample_out={"Bin2BinVariance":"","UnfilteredCNVcalls":0,"SampleID":"","DuplicationRate":0,"SampleType":"","Flowcell":"","Description":"","CNVSegment":"","SampleProject":"","IndexID1":"","Index1":"","IndexID2":"","Index2":"","Well":"","Library_nM":"","QCFlag":"","QCFailure":"","QCWarning":"","Zscore_13":"","Zscore_18":"","Zscore_21":"","Zscore_X":"","Zscore_Y":"","Ratio_13":"","Ratio_18":"","Ratio_21":"","Ratio_X":"","Ratio_Y":"","Clusters":"","TotalReads2Clusters":"","MaxMisindexedReads2Clusters":"","IndexedReads":"","TotalIndexedReads2Clusters":"","Tags":"","NonExcludedSites":"","NonExcludedSites2Tags":"","Tags2IndexedReads":"","PerfectMatchTags2Tags":"","GCBias":"","GCR2":"","NCD_13":"","NCD_18":"","NCD_21":"","NCD_X":"","NCD_Y":"","Chr1_Coverage":"","Chr2_Coverage":"","Chr3_Coverage":"","Chr4_Coverage":"","Chr5_Coverage":"","Chr6_Coverage":"","Chr7_Coverage":"","Chr8_Coverage":"","Chr9_Coverage":"","Chr10_Coverage":"","Chr11_Coverage":"","Chr12_Coverage":"","Chr13_Coverage":"","Chr14_Coverage":"","Chr15_Coverage":"","Chr16_Coverage":"","Chr17_Coverage":"","Chr18_Coverage":"","Chr19_Coverage":"","Chr20_Coverage":"","Chr21_Coverage":"","Chr22_Coverage":"","ChrX_Coverage":"","ChrY_Coverage":"","Chr1":"","Chr2":"","Chr3":"","Chr4":"","Chr5":"","Chr6":"","Chr7":"","Chr8":"","Chr9":"","Chr10":"","Chr11":"","Chr12":"","Chr13":"","Chr14":"","Chr15":"","Chr16":"","Chr17":"","Chr18":"","Chr19":"","Chr20":"","Chr21":"","Chr22":"","ChrX":"","ChrY":"","Median_13":"","Median_18":"","Median_21":"","Median_X":"","Median_Y":"","Stdev_13":"","Stdev_18":"","Stdev_21":"","Stdev_X":"","Stdev_Y":"","FF_Formatted":"","FFY":"","FFX":""}
 
 for line in open(args.samplesheet):
 	if not " " in line:
@@ -66,8 +69,8 @@ ratio_Y=[]
 
 for sample in samples:
 	for file in files_in_folder:
-		if file.startswith(sample) and file.endswith("WCXpredict_chr_statistics.txt"):
-			for line in open(args.folder+ "/" + file):
+		if sample in file and file.endswith("WCXpredict_chr_statistics.txt"):
+			for line in open(file):
 				if "ratio" in line:
 					continue
 				content=line.strip().split("\t")
@@ -148,11 +151,11 @@ for sample in samples:
 
 for sample in samples:
 	for file in files_in_folder:
-		if file.startswith(sample) and file.endswith("WCXpredict_aberrations.bed"):
-			f=open( args.folder + "/" + file.replace(".bed",".filt.bed"),"w")
+		if sample in file and file.endswith("WCXpredict_aberrations.bed"):
+			f=open( file.replace(".bed",".filt.bed"),"w")
 			filtered_calls=[]
 
-			for line in open(args.folder+ "/" + file):
+			for line in open(file):
 				if "start" in line:
 					f.write(line)
 					continue
@@ -171,8 +174,8 @@ for sample in samples:
 
 for sample in samples:
 	for file in files_in_folder:
-		if file.startswith(sample) and file.endswith(".bam.wcx.npz"):
-			a=numpy.load(args.folder + "/" + file,encoding='latin1', allow_pickle=True)
+		if sample in file and file.endswith(".bam.wcx.npz"):
+			a=numpy.load(file,encoding='latin1', allow_pickle=True)
 			samples[sample]["IndexedReads"]=a["quality"].item()["mapped"]
 			samples[sample]["DuplicationRate"]=a["quality"].item()['filter_rmdup']/float(a["quality"].item()["mapped"])
 			all_chr=[]
@@ -206,8 +209,8 @@ for sample in samples:
 
 for sample in samples:
 	for file in files_in_folder:
-		if file.startswith(sample) and file.endswith("PREFACE.txt"):
-			for line in open(args.folder+ "/" + file):
+		if sample in file and file.endswith("PREFACE.txt"):
+			for line in open(file):
 				if "FFX" in line:
 					samples[sample]["FFX"]=line.strip().split()[-1]
 				if "PREFACE" in line:
@@ -215,8 +218,8 @@ for sample in samples:
 
 for sample in samples:
 	for file in files_in_folder:
-		if file.startswith(sample) and file.endswith("AMYCNE.tab"):
-			for line in open(args.folder+ "/" + file):
+		if sample in file and file.endswith("AMYCNE.tab"):
+			for line in open(file):
 				if "med" in line:
 					continue
 				content=line.strip().split()
@@ -229,10 +232,10 @@ for sample in samples:
 #read picard gc summary
 for sample in samples:
 	for file in files_in_folder:
-		if file.startswith(sample) and file.endswith(".gc.summary.tab"):
+		if sample in file and file.endswith(".gc.summary.tab"):
 			gc_data={}
 			gc_idx_to_header=[]
-			for line in open(args.folder+ "/" + file):
+			for line in open(file):
 				if line[0] == "#" or line.strip() == "":
 					continue
 				if "ACCUM" in line:

@@ -32,6 +32,6 @@
 	},
 	"summary":{
 		"mincnv":10000000,
-		"zscore":3
+		"zscore":4.5
 	}
 }
