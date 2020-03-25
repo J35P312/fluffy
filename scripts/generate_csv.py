@@ -8,7 +8,7 @@ import copy
 parser = argparse.ArgumentParser("""generate_csv.py --folder input_folder --sample samplesheet""")
 parser.add_argument('--folder'       ,type=str, help="folder containing wisecondorX output files", required=True)
 parser.add_argument('--minCNV'       ,default=10000000,type=int, help="Minimum size of CNV segment")
-parser.add_argument('--Zscore'       ,default=3,type=int, help="Zscore of CNV segment")
+parser.add_argument('--Zscore'       ,default=5,type=float, help="Zscore of CNV segment")
 parser.add_argument('--samplesheet', type=str,required=True, help="path to samplesheet")
 args= parser.parse_args()
 
