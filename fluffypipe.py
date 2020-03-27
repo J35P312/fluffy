@@ -31,27 +31,17 @@ def read_samplesheet(samplesheet,project_dir):
 		if sample_name in samples:
 			continue
 
-		fastq=[]
-		R1=[]
-		R2=[]
+		se=True
 		for file in glob.glob("{}/*{}*/*.fastq.gz".format(project_dir,sample_name)):
-			print(file)
-			if not "R1" in file and not "R2" in file:
-				continue
-			if "R1" in file:
-				R1.append(file)
-			elif "R2" in file:
-				R2.append(file)
-			fastq.append(file)
-		print(fastq)
-		if len(R1) < 2:
-			fastq=" ".join(fastq)
+			if "_R2" in file and "fastq" in file:
+				se=False
+
+		if se:
+			fastq=[ "<( zcat {}/*{}*/*_R1*fastq.gz )".format(project_dir,sample_name) ]
 		else:
-			if len(R2) == 0:
-				fastq="<( zcat {}/*{}*/*R1*fastq.gz )".format(project_dir,sample_name)
-			else:
-				fastq="<( zcat {}/*{}*/*R1*fastq.gz ) <( zcat {}/{}/*R2*fastq.gz )".format(project_dir,sample_name,project_dir,sample_name)
-		samples[sample_name]=fastq
+			fastq=[ "<( zcat {}/*{}*/*_R1*fastq.gz )".format(project_dir,sample_name), "<( zcat {}/{}/*_R2*fastq.gz )".format(project_dir,sample_name) ]
+
+		samples[sample_name]={"fastq":fastq,"se":se}
 
 	return(samples)
 
@@ -83,14 +73,26 @@ def check_config(config,args):
 		print(config["wisecondorx"]["reftest"])
 		quit()
 
-#create a command for running bwa and wisecondorX convert
-def align_and_convert(config,fastq,args,sample):
+#create a command for running bwa and wisecondorX convert (single end)
+def align_and_convert_single_end(config,fastq,args,sample):
 
 	out_prefix="{}/{}/{}".format(args.out,sample,sample)
 	aln="singularity exec {} bwa aln -n 0 -k 0 {} {} > {}.sai".format(config["singularity"],config["reference"],fastq,out_prefix)
 	samse="singularity exec {} bwa samse -n -1 {} {}.sai {} | singularity exec {} bamsormadup inputformat=sam threads=16 SO=coordinate outputformat=bam tmpfile={}/{} indexfilename={}.bam.bai > {}.bam".format(config["singularity"],config["reference"],out_prefix,fastq,config["singularity"],config["align"]["tmpdir"],sample,out_prefix,out_prefix)
 	convert="singularity exec {} WisecondorX convert {}.bam {}.bam.wcx.npz".format(config["singularity"],out_prefix,out_prefix)
 	run_bwa="\n".join([aln,samse,convert])
+
+	return(run_bwa)
+
+#create a command for running bwa and wisecondorX convert (paired end)
+def align_and_convert_paired_end(config,fastq,args,sample):
+
+	out_prefix="{}/{}/{}".format(args.out,sample,sample)
+	aln_R1="singularity exec {} bwa aln -n 0 -k 0 {} {} > {}_R1.sai".format(config["singularity"],config["reference"],fastq[0],out_prefix)
+	aln_R2="singularity exec {} bwa aln -n 0 -k 0 {} {} > {}_R2.sai".format(config["singularity"],config["reference"],fastq[1],out_prefix)
+	sampe="singularity exec {} bwa sampe -n -1 {} {}_R1.sai {}_R2.sai {} {} | singularity exec {} bamsormadup inputformat=sam threads=16 SO=coordinate outputformat=bam tmpfile={}/{} indexfilename={}.bam.bai > {}.bam".format(config["singularity"],config["reference"],out_prefix,out_prefix,fastq[0],fastq[1],config["singularity"],config["align"]["tmpdir"],sample,out_prefix,out_prefix)
+	convert="singularity exec {} WisecondorX convert {}.bam {}.bam.wcx.npz".format(config["singularity"],out_prefix,out_prefix)
+	run_bwa="\n".join([aln_R1,aln_R2,sampe,convert])
 
 	return(run_bwa)
 
@@ -218,8 +220,13 @@ else:
 	jobids=[]
 	for sample in samples:
 		os.system( "mkdir {}/{}".format(args.out,sample) )
+
 		fastq=samples[sample]
-		run_bwa=align_and_convert(config,fastq,args,sample)
+		if fastq["se"]:
+			run_bwa=align_and_convert_single_end(config,fastq["fastq"][0],args,sample)
+		else:
+			run_bwa=align_and_convert_paired_end(config,fastq["fastq"],args,sample)
+
 		bwa = Slurm("bwaAln-{}".format(sample),{"account": config["slurm"]["account"], "partition": "node","time":config["slurm"]["time"] },log_dir="{}/logs".format(args.out),scripts_dir="{}/scripts".format(args.out))
 		align_jobid=bwa.run(run_bwa)
 
