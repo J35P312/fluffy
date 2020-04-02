@@ -1,7 +1,7 @@
 """Workflow for making a reference based on samples"""
 
 import pathlib
-from typing import Generator
+from typing import Iterator
 
 from fluffy.commands.pipelines import (align_and_convert_paired_end,
                                        align_and_convert_single_end)
@@ -9,7 +9,7 @@ from slurmpy import Slurm
 
 
 def make_reference(
-    samples: Generator[dict], out_dir: pathlib.Path, configs: dict
+    samples: Iterator[dict], out_dir: pathlib.Path, configs: dict
 ) -> int:
     """docstring for make_reference"""
     jobids = []

@@ -18,7 +18,7 @@ def file_exists(file_path: pathlib.Path) -> bool:
     return True
 
 
-def check_config(config: dict, mkref: bool = False, skip_preface: bool = False):
+def check_configs(config: dict, mkref: bool = False, skip_preface: bool = False):
     """Check if all files specified in config exists"""
     file_exists(pathlib.Path(config["reference"]))
     file_exists(pathlib.Path(config["wisecondorx"]["blacklist"]))

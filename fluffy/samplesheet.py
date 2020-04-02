@@ -2,7 +2,7 @@
 
 import logging
 import pathlib
-from typing import Generator
+from typing import Iterator
 
 LOG = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ def get_sample_col(line_content: list) -> int:
 
 def read_samplesheet(
     samplesheet: pathlib.Path, project_dir: pathlib.Path
-) -> Generator[dict]:
+) -> Iterator[dict]:
     """Parse a sample sheet and return sample information
 
     Yields:
