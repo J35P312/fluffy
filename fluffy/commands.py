@@ -35,8 +35,8 @@ def amycne_ffy(config, args, sample):
     tiddit = "singularity exec {} python /bin/TIDDIT.py --cov --bam {}.bam -z {} -o {}.tiddit".format(
         config["singularity"], out_prefix, config["tiddit"]["binsize"], out_prefix
     )
-    gc_tab = "singularity exec FluFFyPipe_0.0.sif python /bin/AMYCNE/Generate_GC_tab.py --fa {} --size {} --n_mask > {}".format(
-        config["reference"], config["tiddit"]["binsize"], path_gc_tab
+    gc_tab = "singularity exec {} python /bin/AMYCNE/Generate_GC_tab.py --fa {} --size {} --n_mask > {}".format(
+        config["singularity"], config["reference"], config["tiddit"]["binsize"], path_gc_tab
     )
     amycne = "singularity exec {} python /bin/AMYCNE/AMYCNE.py --ff --coverage {}.tiddit.tab --gc {} --Q {} > {}.tiddit.AMYCNE.tab".format(
         config["singularity"],
@@ -51,7 +51,7 @@ def amycne_ffy(config, args, sample):
 # collect QC stats using picard tools
 def picard_qc(config, args, sample):
     out_prefix = "{}/{}/{}".format(args.out, sample, sample)
-    picard_gc = "singularity exec {} picard CollectGcBiasMetrics I={}.bam O={}_gc_bias_metrics.txt CHART={}_gc_bias_metrics.pdf S={}.gc.summary.tab R={} {}".format(
+    picard_gc = "singularity exec {} picard CollectGcBiasMetrics VALIDATIONSTRINGENCY=LENIENT I={}.bam O={}_gc_bias_metrics.txt CHART={}_gc_bias_metrics.pdf S={}.gc.summary.tab R={} {}".format(
         config["singularity"],
         out_prefix,
         out_prefix,
@@ -60,14 +60,14 @@ def picard_qc(config, args, sample):
         config["reference"],
         config["picard"]["javasettings"],
     )
-    picard_insert = "singularity exec {} picard CollectInsertSizeMetrics I={}.bam O={}_insert_size_metrics.txt H={}_insert_size_histogram.pdf M=0.5 {}".format(
+    picard_insert = "singularity exec {} picard CollectInsertSizeMetrics VALIDATIONSTRINGENCY=LENIENT I={}.bam O={}_insert_size_metrics.txt H={}_insert_size_histogram.pdf M=0.5 {}".format(
         config["singularity"],
         out_prefix,
         out_prefix,
         out_prefix,
         config["picard"]["javasettings"],
     )
-    picard_complexity = "singularity exec {} picard EstimateLibraryComplexity I={}.bam O={}_complex_metrics.txt {}".format(
+    picard_complexity = "singularity exec {} picard EstimateLibraryComplexity VALIDATIONSTRINGENCY=LENIENT I={}.bam O={}_complex_metrics.txt {}".format(
         config["singularity"], out_prefix, out_prefix, config["picard"]["javasettings"]
     )
     return "\n".join([picard_gc, picard_insert, picard_complexity])

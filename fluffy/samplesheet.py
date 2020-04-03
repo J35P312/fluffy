@@ -59,7 +59,7 @@ def read_samplesheet(
 
             fastq = [
                 "<( zcat {}/*{}*/*_R1*fastq.gz )".format(project_dir, sample_name),
-                "<( zcat {}/{}/*_R2*fastq.gz )".format(project_dir, sample_name),
+                "<( zcat {}/*{}/*_R2*fastq.gz )".format(project_dir, sample_name),
             ]
             if single_end:
                 LOG.info("Single end files!")

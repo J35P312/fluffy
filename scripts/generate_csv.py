@@ -36,7 +36,7 @@ for line in open(args.samplesheet):
  
 	if first:
 		i=0
-		for entry in line.strip().split(" "):
+		for entry in line.strip("\n").split(" "):
 			samplesheet_info.append(entry)
 			samplesheet_dict[entry]=i
 			i+=1
@@ -44,7 +44,7 @@ for line in open(args.samplesheet):
 		first=False
 		continue
 	i=0
-	content=line.strip().split(" ")
+	content=line.strip("\n").split(" ")
 	sample=content[samplesheet_dict["SampleID"]]
 	samples[ sample ]=copy.deepcopy(sample_out)
 
