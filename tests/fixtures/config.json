@@ -1,0 +1,37 @@
+{
+	"align":{
+		"tmpdir":"$TMPDIR/"
+	},
+	"amycne":{
+		"minq":10
+	},
+	"wisecondorx":{
+		"reftest":"/proj/sens2019010/nobackup/wisecondor_X_bwa_ref.npz",
+		"testbinsize":500000,
+		"refpreface":"/proj/sens2019010/nobackup/wisecondor_X_bwa_ref.100kbp.npz",
+		"prefacebinsize":100000,
+		"blacklist":"/proj/sens2019010/nobackup/blacklist.bed",
+		"zscore": 1.5
+	},
+	"tiddit":{
+		"binsize":50000
+	},
+	"preface":{
+		"model_dir":"/proj/sens2019010/nobackup/PREFACE/AMYCNE_15g_2500_100kbp.conf.model.olm",
+		"modelsettings":"--olm"
+	},
+	"picard":{
+		"javasettings":"-Xms4G -Xmx4G"
+	},
+	"reference":"/proj/sens2019010/reference/human_g1k_v37.fasta",
+	"singularity":"/proj/sens2019010/nobackup/wharf/jesperei/jesperei-sens2019010/FluFFyPipe/FluFFyPipe_0.0.sif",
+	"slurm": {
+		"account":"sens2019010",
+		"time":"5:00:00",
+		"flags":""
+	},
+	"summary":{
+		"mincnv":10000000,
+		"zscore":5
+	}
+}
