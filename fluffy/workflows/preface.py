@@ -103,8 +103,8 @@ def preface_predict_workflow(
             "partition": "core",
             "time": configs["slurm"]["time"],
         },
-        log_dir=log_dir,
-        scripts_dir=scripts_dir,
+        log_dir=str(log_dir),
+        scripts_dir=str(scripts_dir),
     )
 
     jobid = preface_predict.run(preface_predict_cmd, depends_on=[dependency])

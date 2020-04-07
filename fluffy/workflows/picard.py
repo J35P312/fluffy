@@ -21,8 +21,8 @@ def picard_qc_workflow(configs: dict, out_dir: Path, sample_id: str, align_jobid
             "partition": "core",
             "time": configs["slurm"]["time"],
         },
-        log_dir=log_dir,
-        scripts_dir=scripts_dir,
+        log_dir=str(log_dir),
+        scripts_dir=str(scripts_dir),
     )
     jobid = picard.run(picard_qc_pipe, depends_on=[align_jobid])
 

@@ -7,6 +7,7 @@ from fluffy.workflows.align import align_individual
 from fluffy.workflows.amycne import estimate_ffy
 from fluffy.workflows.picard import picard_qc_workflow
 from fluffy.workflows.preface import preface_predict_workflow
+from fluffy.workflows.summarize import summarize_workflow
 from fluffy.workflows.wisecondor import wisecondor_xtest_workflow
 
 
@@ -64,15 +65,4 @@ def analyse_workflow(
             )
             jobids.append(preface_predict_jobid)
 
-    run_summarise = summarise(config, args)
-    summarise_batch = Slurm(
-        "summarise_batch-{}".format(args.project.strip("/").split("/")[-1]),
-        {
-            "account": config["slurm"]["account"],
-            "partition": "core",
-            "time": config["slurm"]["time"],
-        },
-        log_dir="{}/logs".format(args.out),
-        scripts_dir="{}/scripts".format(args.out),
-    )
-    summarise_batch.run(run_summarise, depends_on=jobids)
+    summarize_workflow(configs=configs, out_dir=out_dir, jobids=jobids)

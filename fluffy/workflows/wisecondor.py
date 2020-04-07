@@ -63,8 +63,8 @@ def wisecondor_xtest_workflow(
             "partition": "core",
             "time": configs["slurm"]["time"],
         },
-        log_dir=log_dir,
-        scripts_dir=scripts_dir,
+        log_dir=str(log_dir),
+        scripts_dir=str(scripts_dir),
     )
     jobid = wcx_test.run(run_wcx, depends_on=[align_jobid])
 

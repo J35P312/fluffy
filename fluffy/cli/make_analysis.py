@@ -21,6 +21,7 @@ def analyse(ctx, skip_preface, dry_run):
     samples = ctx["samples"]
     out_dir = ctx["out"]
     configs = ctx.obj["configs"]
+    configs["sample_sheet"] = ctx.obj["sample_sheet"]
 
     try:
         check_configs(configs, skip_preface=skip_preface)

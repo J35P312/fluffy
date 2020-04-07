@@ -25,8 +25,8 @@ def estimate_ffy(
             "partition": "core",
             "time": configs["slurm"]["time"],
         },
-        log_dir=log_dir,
-        scripts_dir=scripts_dir,
+        log_dir=str(log_dir),
+        scripts_dir=str(scripts_dir),
     )
 
     job_id = fetal_fraction_batch.run(fetal_fraction_pipe, depends_on=[align_jobid])

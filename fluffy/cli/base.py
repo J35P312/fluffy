@@ -76,6 +76,8 @@ def base_command(ctx, log_level, config, out, sample, project):
     with open(sample, "r") as samplesheet:
         ctx["samples"] = read_samplesheet(samplesheet, project_dir)
 
+    ctx["sample_sheet"] = sample
+
 
 base_command.add_command(reference)
 base_command.add_command(model)

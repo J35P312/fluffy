@@ -35,8 +35,8 @@ def align_individual(configs: dict, sample: dict, out_dir: Path, dry_run: bool =
             "partition": "node",
             "time": configs["slurm"]["time"],
         },
-        log_dir=log_dir,
-        scripts_dir=scripts_dir,
+        log_dir=str(log_dir),
+        scripts_dir=str(scripts_dir),
     )
     align_jobid = None
     if not dry_run:
