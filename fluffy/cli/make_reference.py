@@ -11,8 +11,9 @@ LOG = logging.getLogger(__name__)
 
 
 @click.command()
+@click.option("--dry-run", is_flag=True, help="Do not create any files")
 @click.pass_context
-def reference(ctx):
+def reference(ctx, dry_run):
     """Create a reference for """
     LOG.info("Running fluffy reference")
     configs = ctx.obj["configs"]
@@ -21,8 +22,13 @@ def reference(ctx):
         check_configs(configs, mkref=True)
     except FileNotFoundError as err:
         raise click.Abort
+    configs = ctx.obj["configs"]
+    slurm_api = ctx.obj["slurm_api"]
 
     jobid = make_reference(
-        samples=ctx.obj["samples"], out_dir=ctx.obj["out"], configs=configs
+        samples=ctx.obj["samples"],
+        configs=configs,
+        slurm_api=slurm_api,
+        dry_run=dry_run,
     )
     LOG.info("Running make reference on slurm with jobid %s", jobid)

@@ -8,6 +8,7 @@ from slurmpy import Slurm
 
 from fluffy.commands.preface import (get_preface_model_cmd,
                                      get_preface_predict_cmd)
+from fluffy.slurm_api import SlurmAPI
 
 LOG = logging.getLogger(__name__)
 
@@ -82,10 +83,16 @@ def make_call_model(samples: Iterator[dict], out_dir: Path, configs: dict):
 
 
 def preface_predict_workflow(
-    configs: dict, out_dir: Path, sample_id: str, dependency: int
+    configs: dict,
+    sample_id: str,
+    dependency: int,
+    slurm_api: SlurmAPI,
+    dry_run: bool = False,
 ):
     """Run the preface predict workflow"""
     LOG.info("Running the preface predict workflow")
+    out_dir = configs["out"]
+
     preface_predict_cmd = get_preface_predict_cmd(
         singularity_exe=configs["singularity"],
         out_dir=out_dir,
@@ -93,20 +100,11 @@ def preface_predict_workflow(
         sample_id=sample_id,
     )
 
-    log_dir = out_dir / "logs"
-    scripts_dir = out_dir / "scripts"
-
-    preface_predict = Slurm(
-        "preface_predict-{}".format(sample_id),
-        {
-            "account": configs["slurm"]["account"],
-            "partition": "core",
-            "time": configs["slurm"]["time"],
-        },
-        log_dir=str(log_dir),
-        scripts_dir=str(scripts_dir),
+    jobid = slurm_api.run_job(
+        name=f"preface_predict-{sample_id}",
+        command=preface_predict_cmd,
+        dependencies=[dependency],
+        dry_run=dry_run,
     )
-
-    jobid = preface_predict.run(preface_predict_cmd, depends_on=[dependency])
 
     return jobid
