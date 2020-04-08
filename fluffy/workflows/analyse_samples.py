@@ -1,8 +1,8 @@
 """Workflow for analysing all samples in a batch"""
 
-from pathlib import Path
 from typing import Iterator
 
+from fluffy.slurm_api import SlurmAPI
 from fluffy.workflows.align import align_individual
 from fluffy.workflows.cleanup import cleanup_workflow
 from fluffy.workflows.amycne import estimate_ffy
@@ -13,30 +13,31 @@ from fluffy.workflows.wisecondor import wisecondor_xtest_workflow
 
 def analyse_workflow(
     samples: Iterator[dict],
-    out_dir: Path,
     configs: dict,
+    slurm_api: SlurmAPI,
     skip_preface: bool = False,
     dry_run: bool = False,
 ):
     """Run the wisecondor chromosome x analysis"""
     jobids = []
+    out_dir = configs["out"]
     for sample in samples:
         sample_jobids=[]
         sample_id = sample["sample_id"]
         sample_outdir = out_dir / sample_id
         # This will fail if dir already exists
         sample_outdir.mkdir(parents=True)
-        # Should aligned files go here?
 
         align_jobid = align_individual(
-            configs=configs, sample=sample, out_dir=out_dir, dry_run=dry_run
+            configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,
         )
 
         ffy_jobid = estimate_ffy(
             configs=configs,
-            out_dir=out_dir,
             sample_id=sample_id,
-            align_jobid=align_jobid,
+            dependency=align_jobid,
+            slurm_api=slurm_api,
+            dry_run=dry_run,
         )
         jobids.append(ffy_jobid)
         sample_jobids.append(ffy_jobid)

@@ -6,11 +6,14 @@ import sys
 from pathlib import Path
 
 import pytest
+from slurmpy import Slurm
 
 from fluffy.config import get_configs
 from fluffy.slurm_api import SlurmAPI
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
+LOG = logging.getLogger(__name__)
 
 
 @pytest.fixture(name="fixtures_dir")
@@ -31,6 +34,14 @@ def fixture_project_dir(tmpdir_factory) -> Path:
     shutil.rmtree(str(my_tmpdir))
 
 
+@pytest.fixture(scope="function", name="out_dir")
+def fixture_out_dir(tmpdir_factory) -> Path:
+    """Path to a temporary output directory"""
+    my_tmpdir = Path(tmpdir_factory.mktemp("out"))
+    yield my_tmpdir
+    shutil.rmtree(str(my_tmpdir))
+
+
 # file paths fixtures
 
 
@@ -42,9 +53,11 @@ def config_path_fixture(fixtures_dir: Path) -> Path:
 
 
 @pytest.fixture(name="configs")
-def configs_fixture(config_path: Path) -> dict:
+def configs_fixture(config_path: Path, out_dir: Path) -> dict:
     """Return test configs"""
-    return get_configs(config_path)
+    _configs = get_configs(config_path)
+    _configs["out"] = out_dir
+    return _configs
 
 
 @pytest.fixture(name="account")
@@ -53,12 +66,78 @@ def account_fixture(configs: dict) -> str:
     return configs["slurm"]["account"]
 
 
+@pytest.fixture(name="jobid")
+def jobid_fixture() -> int:
+    """Return a jobid"""
+    return 44444
+
+
 @pytest.fixture(name="real_slurm_api")
-def real_slurm_api_fixture(configs, project_dir):
+def real_slurm_api_fixture(configs, out_dir):
     """Return a real slurm API"""
     _api = SlurmAPI(
         account=configs["slurm"]["account"],
         time=configs["slurm"]["time"],
-        out_dir=project_dir,
+        out_dir=out_dir,
     )
     return _api
+
+
+@pytest.fixture(name="slurm_api")
+def slurm_api_fixture(configs, out_dir, jobid):
+    """Return a real slurm API"""
+    _api = MockSlurmAPI(
+        account=configs["slurm"]["account"],
+        time=configs["slurm"]["time"],
+        out_dir=out_dir,
+        _jobid=jobid,
+    )
+
+    return _api
+
+
+class MockSlurmAPI:
+    """Mock the slurm api"""
+
+    def __init__(
+        self, account: str, time: str, out_dir: Path, _jobid: int, partition: str = None
+    ):
+        LOG.info("Initializing a slurm API")
+        self.account = account
+        self.time = time
+        self.log_dir = out_dir / "logs"
+        self.scripts_dir = out_dir / "scripts"
+        self.partition = partition or "node"
+        self.job = None
+        self._jobid = _jobid
+
+    def create_job(self, name: str) -> Slurm:
+        """Create a job for submitting to SLURM"""
+        LOG.info("Create a slurm job with name %s", name)
+        job = Slurm(
+            name,
+            {"account": self.account, "partition": self.partition, "time": self.time,},
+            scripts_dir=str(self.scripts_dir),
+            log_dir=str(self.log_dir),
+        )
+        return job
+
+    def run_job(
+        self, name: str, command: str, dependencies: list = None, dry_run: bool = False,
+    ) -> int:
+        """Create and submit a job to slurm"""
+        LOG.info("Submitting commands %s", command)
+        if dependencies:
+            LOG.info("Adding dependencies: %s", ",".join(dependencies))
+        jobid = 1
+        if not dry_run:
+            jobid = self._jobid
+        LOG.info("Submitted job %s with job id: %s", name, jobid)
+        return jobid
+
+    def __repr__(self):
+        return (
+            f"{self.__class__.__name__}(account={self.account!r}, time={self.time!r}, "
+            f"log_dir={self.log_dir!r}, scripts_dir={self.scripts_dir!r}, partition"
+            f"={self.partition!r})"
+        )

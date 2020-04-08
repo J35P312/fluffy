@@ -48,10 +48,12 @@ class SlurmAPI:
         """Create and submit a job to slurm"""
         job = self.create_job(name=name)
         LOG.info("Submitting commands %s", command)
-        cmd = "sbatch"
-        if dry_run:
-            cmd = "ls"
-        jobid = job.run(command, _cmd=cmd, depends_on=dependencies)
+        if dependencies:
+            LOG.info("Adding dependencies: %s", ",".join(dependencies))
+        jobid = 1
+        if not dry_run:
+            jobid = job.run(command, depends_on=dependencies)
+        LOG.info("Submitted job %s with job id: %s", name, jobid)
         return jobid
 
     def __repr__(self):

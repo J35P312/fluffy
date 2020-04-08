@@ -39,5 +39,5 @@ def test_submit_job(real_slurm_api):
     command = "tests/"
     # WHEN submitting a slurm job
     jobid = real_slurm_api.run_job(name=job_name, command=command, dry_run=True)
-    # THEN assert a jobid is None since dry_run
-    assert jobid is None
+    # THEN assert a jobid is 1 since dry_run
+    assert jobid == 1
