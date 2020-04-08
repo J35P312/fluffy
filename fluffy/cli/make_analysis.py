@@ -18,8 +18,8 @@ LOG = logging.getLogger(__name__)
 def analyse(ctx, skip_preface, dry_run):
     """Run the pipeline to call NIPT"""
     LOG.info("Running fluffy analyse")
-    samples = ctx["samples"]
-    out_dir = ctx["out"]
+    samples = ctx.obj["samples"]
+    out_dir = ctx.obj["out"]
     configs = ctx.obj["configs"]
     configs["sample_sheet"] = ctx.obj["sample_sheet"]
 

@@ -10,11 +10,11 @@ FluFFyPipe is still in early development, use at your own risk!
 # Run FluFFyPipe
 Run NIPT analysis:
 
-    fluffypipe.py --sample <samplesheet>  --project <input_folder> --out <output_folder>
+    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> analyse
   
 optionally, skip preface:
 
-    fluffypipe.py --sample <samplesheet>  --project <input_folder> --out <output_folder> --skip_preface
+    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> --skip_preface analyse
 
 All output will be written to the output folder, this output includes:
 
@@ -30,27 +30,34 @@ The samplesheet contains at least a "sampleID" column, the sampleID should match
 
 Create a WisecondorX reference 
 
-    fluffypipe.py --sample <samplesheet>  --project <input_folder> --out <output_folder> --mkref
+    fluffypipe.py --sample <samplesheet>  --project <input_folder> --out <output_folder> reference
   
 samplesheet should contain atleast a "sampleID" column. All samples in the samplesheet will be used to construct the reference, visit the WisecondorX manual for more information.
 
 Create a PREFACE reference:
 
-    fluffypipe.py --sample <samplesheet>  --project <input_folder> --out <output_folder> --mkmodel
+    fluffypipe.py --sample <samplesheet>  --project <input_folder> --out <output_folder> model
   
 samplesheet should contain atleast a "sampleID" column. All samples in the samplesheet will be used to construct the reference, visit the PREFACE manual for more information. Note, you need to first run the FluFFYPipe with "--skip_preface" option, next you may run mkmodel - this is necessary as the AMYCNE FFY estimations are used for training the model.
 
 # Install FluFFyPipe
-FluFFyPipe requires python, slurm, slurmpy, and singularity.
+FluFFyPipe requires python 3, slurm, slurmpy, and singularity, python-coloredlogs.
 
 First clone fluffypipe:
 
     https://github.com/J35P312/FluFFyPipe.git
 
+Install fluffy using pip
+
+cd fluffy
+	
+	pip install -e .
+
 Next download the FluFFyPipe singularity container
 
      singularity pull --name FluFFyPipe.sif shub://J35P312/FluFFyPipe
      
+
 Install slurmpy:
 
 	git clone https://github.com/J35P312/slurmpy.git

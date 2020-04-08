@@ -1,7 +1,7 @@
 """Summarize the analysis"""
 
 from pathlib import Path
-
+from slurmpy import Slurm
 
 def get_summarise_cmd(
     singularity_exe: str, out_dir: Path, sample_sheet: str, zscore: str, mincnv: str

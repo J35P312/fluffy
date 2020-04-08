@@ -53,7 +53,7 @@ def read_samplesheet(samplesheet: Iterator[str], project_dir: Path) -> Iterator[
         single_end = True
         LOG.debug("Check if files are single end or not")
         for file_name in project_dir.glob(f"*{sample_name}*/*.fastq.gz"):
-            if "_R2" in file_name in file_name:
+            if "_R2" in str(file_name):
                 single_end = False
                 break
 
