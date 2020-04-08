@@ -128,7 +128,9 @@ class MockSlurmAPI:
         """Create and submit a job to slurm"""
         LOG.info("Submitting commands %s", command)
         if dependencies:
-            LOG.info("Adding dependencies: %s", ",".join(dependencies))
+            LOG.info(
+                "Adding dependencies: %s", ",".join([str(dep) for dep in dependencies])
+            )
         jobid = 1
         if not dry_run:
             jobid = self._jobid
