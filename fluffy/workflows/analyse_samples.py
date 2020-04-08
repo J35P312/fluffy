@@ -55,9 +55,10 @@ def analyse_workflow(
 
         wcx_test_jobid = wisecondor_xtest_workflow(
             configs=configs,
-            out_dir=out_dir,
             sample_id=sample_id,
-            align_jobid=align_jobid,
+            dependency=align_jobid,
+            slurm_api=slurm_api,
+            dry_run=dry_run,
         )
 
         jobids.append(wcx_test_jobid)
