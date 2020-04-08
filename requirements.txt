@@ -1,3 +1,3 @@
 click
 coloredlogs
-slurmpy
+git+git://github.com/brentp/slurmpy@master # necessary to get the release 0.8
