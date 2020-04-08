@@ -33,41 +33,7 @@ def read_samplesheet(samplesheet: Iterator[str], project_dir: Path) -> Iterator[
 
     samples = set()
     sample_col = 0
-<<<<<<< HEAD
-    with open(samplesheet, "r") as infile:
-        for line_nr, line in enumerate(infile):
-            if line_nr == 0:
-                separator = get_separator(line)
-                LOG.debug("Use separator %s", separator)
-                content = line.rstrip().split(separator)
-                sample_col = get_sample_col(content)
-                continue
 
-            content = line.rstrip().split(separator)
-            sample_name = content[sample_col]
-
-            if sample_name in samples:
-                continue
-
-            single_end = True
-            LOG.debug("Check if files are single end or not")
-            for file_name in project_dir.glob(f"*{sample_name}*/*.fastq.gz"):
-                if "_R2" in file_name in file_name:
-                    single_end = False
-                    break
-
-            fastq = [
-                "<( zcat {}/*{}*/*_R1*fastq.gz )".format(project_dir, sample_name),
-                "<( zcat {}/*{}/*_R2*fastq.gz )".format(project_dir, sample_name),
-            ]
-            if single_end:
-                LOG.info("Single end files!")
-                fastq = [
-                    "<( zcat {}/*{}*/*_R1*fastq.gz )".format(project_dir, sample_name)
-                ]
-
-            yield {"fastq": fastq, "single_end": single_end, "sample_id": sample_name}
-=======
     for line_nr, line in enumerate(samplesheet):
         if line_nr == 0:
             separator = get_separator(line)
@@ -100,4 +66,3 @@ def read_samplesheet(samplesheet: Iterator[str], project_dir: Path) -> Iterator[
             fastq = ["<( zcat {}/*{}*/*_R1*fastq.gz )".format(project_dir, sample_name)]
 
         yield {"fastq": fastq, "single_end": single_end, "sample_id": sample_name}
->>>>>>> a9e5cffe19f6f7772d9411b859db3b754d3a8fea
