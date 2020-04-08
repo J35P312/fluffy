@@ -44,9 +44,10 @@ def analyse_workflow(
 
         picard_jobid = picard_qc_workflow(
             configs=configs,
-            out_dir=out_dir,
             sample_id=sample_id,
-            align_jobid=align_jobid,
+            dependency=align_jobid,
+            slurm_api=slurm_api,
+            dry_run=dry_run,
         )
         jobids.append(picard_jobid)
         sample_jobids.append(picard_jobid)
