@@ -30,13 +30,13 @@ The samplesheet contains at least a "sampleID" column, the sampleID should match
 
 Create a WisecondorX reference 
 
-    fluffypipe.py --sample <samplesheet>  --project <input_folder> --out <output_folder> reference
+    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> reference
   
 samplesheet should contain atleast a "sampleID" column. All samples in the samplesheet will be used to construct the reference, visit the WisecondorX manual for more information.
 
 Create a PREFACE reference:
 
-    fluffypipe.py --sample <samplesheet>  --project <input_folder> --out <output_folder> model
+    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> model
   
 samplesheet should contain atleast a "sampleID" column. All samples in the samplesheet will be used to construct the reference, visit the PREFACE manual for more information. Note, you need to first run the FluFFYPipe with "--skip_preface" option, next you may run mkmodel - this is necessary as the AMYCNE FFY estimations are used for training the model.
 
