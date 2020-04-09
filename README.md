@@ -1,4 +1,5 @@
 ![Build](https://github.com/Clinical-Genomics/fluffy/workflows/Build/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/Clinical-Genomics/fluffy/badge.svg?branch=master)](https://coveralls.io/github/Clinical-Genomics/fluffy?branch=master)
 # FluFFyPipe
 NIPT analysis pipeline, using WisecondorX for detecting aneuplodies and large CNVs, AMYCNE for FFY and PREFACE for FF prediction (optional). FluFFYPipe produces a variety of output files, as well as a per batch csv summary.
 
