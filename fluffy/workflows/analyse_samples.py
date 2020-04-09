@@ -17,14 +17,13 @@ def analyse_workflow(
     slurm_api: SlurmAPI,
     skip_preface: bool = False,
     dry_run: bool = False,
-):
+) -> int:
     """Run the wisecondor chromosome x analysis"""
     jobids = []
-    out_dir = configs["out"]
     for sample in samples:
         sample_jobids=[]
         sample_id = sample["sample_id"]
-        sample_outdir = out_dir / sample_id
+        sample_outdir = configs["out"] / sample_id
         # This will fail if dir already exists
         sample_outdir.mkdir(parents=True)
 
@@ -84,6 +83,7 @@ def analyse_workflow(
                 sample_jobids=sample_jobids,
         ) 
 
-    summarize_workflow(
+    summarize_jobid = summarize_workflow(
         configs=configs, dependencies=jobids, slurm_api=slurm_api, dry_run=dry_run
     )
+    return summarize_jobid
