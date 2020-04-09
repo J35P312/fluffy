@@ -4,12 +4,12 @@ from pathlib import Path
 from typing import Iterator
 
 from fluffy.workflows.align import align_individual
+from fluffy.workflows.cleanup import cleanup_workflow
 from fluffy.workflows.amycne import estimate_ffy
 from fluffy.workflows.picard import picard_qc_workflow
 from fluffy.workflows.preface import preface_predict_workflow
 from fluffy.workflows.summarize import summarize_workflow
 from fluffy.workflows.wisecondor import wisecondor_xtest_workflow
-
 
 def analyse_workflow(
     samples: Iterator[dict],
@@ -21,6 +21,7 @@ def analyse_workflow(
     """Run the wisecondor chromosome x analysis"""
     jobids = []
     for sample in samples:
+        sample_jobids=[]
         sample_id = sample["sample_id"]
         sample_outdir = out_dir / sample_id
         # This will fail if dir already exists
@@ -38,6 +39,7 @@ def analyse_workflow(
             align_jobid=align_jobid,
         )
         jobids.append(ffy_jobid)
+        sample_jobids.append(ffy_jobid)
 
         picard_jobid = picard_qc_workflow(
             configs=configs,
@@ -46,6 +48,8 @@ def analyse_workflow(
             align_jobid=align_jobid,
         )
         jobids.append(picard_jobid)
+        sample_jobids.append(picard_jobid)
+
 
         wcx_test_jobid = wisecondor_xtest_workflow(
             configs=configs,
@@ -55,6 +59,7 @@ def analyse_workflow(
         )
 
         jobids.append(wcx_test_jobid)
+        sample_jobids.append(wcx_test_jobid)
 
         if not skip_preface:
             preface_predict_jobid = preface_predict_workflow(
@@ -64,5 +69,15 @@ def analyse_workflow(
                 dependency=wcx_test_jobid,
             )
             jobids.append(preface_predict_jobid)
+            sample_jobids.append(preface_predict_jobid)
+
+ 
+        cleanup_jobid=cleanup_workflow(
+                configs=configs,
+                out_dir=out_dir,
+                sample_outdir=sample_outdir,
+                sample_id=sample_id,
+                sample_jobids=sample_jobids,
+        ) 
 
     summarize_workflow(configs=configs, out_dir=out_dir, jobids=jobids)
