@@ -67,9 +67,10 @@ def analyse_workflow(
         if not skip_preface:
             preface_predict_jobid = preface_predict_workflow(
                 configs=configs,
-                out_dir=out_dir,
                 sample_id=sample_id,
                 dependency=wcx_test_jobid,
+                slurm_api=slurm_api,
+                dry_run=dry_run,
             )
             jobids.append(preface_predict_jobid)
             sample_jobids.append(preface_predict_jobid)
@@ -83,4 +84,6 @@ def analyse_workflow(
                 sample_jobids=sample_jobids,
         ) 
 
-    summarize_workflow(configs=configs, out_dir=out_dir, jobids=jobids)
+    summarize_workflow(
+        configs=configs, dependencies=jobids, slurm_api=slurm_api, dry_run=dry_run
+    )

@@ -1,9 +1,14 @@
 """Summarize the analysis"""
 
+import logging
 from pathlib import Path
-from slurmpy import Slurm
 
-def get_summarise_cmd(
+from fluffy.slurm_api import SlurmAPI
+
+LOG = logging.getLogger(__name__)
+
+
+def get_summarize_cmd(
     singularity_exe: str, out_dir: Path, sample_sheet: str, zscore: str, mincnv: str
 ) -> str:
     """Return a string with the command to summarize a run"""
@@ -16,10 +21,14 @@ def get_summarise_cmd(
     return summary_cmd
 
 
-def summarize_workflow(configs: dict, out_dir: Path, jobids: list) -> int:
+def summarize_workflow(
+    configs: dict, dependencies: list, slurm_api: SlurmAPI, dry_run: bool = False,
+) -> int:
     """Run the workflow to summarize an analysis"""
+    LOG.info("Run the summarize workflow")
+    out_dir = configs["out"]
 
-    summarise_cmd = get_summarise_cmd(
+    summarize_cmd = get_summarize_cmd(
         singularity_exe=configs["singularity"],
         out_dir=out_dir,
         sample_sheet=configs["sample_sheet"],
@@ -27,19 +36,11 @@ def summarize_workflow(configs: dict, out_dir: Path, jobids: list) -> int:
         mincnv=configs["summary"]["mincnv"],
     )
 
-    log_dir = out_dir / "logs"
-    scripts_dir = out_dir / "scripts"
-
-    summarise_batch = Slurm(
-        "summarise_batch",
-        {
-            "account": configs["slurm"]["account"],
-            "partition": "core",
-            "time": configs["slurm"]["time"],
-        },
-        log_dir=str(log_dir),
-        scripts_dir=str(scripts_dir),
+    jobid = slurm_api.run_job(
+        name=f"summarize_batch",
+        command=summarize_cmd,
+        dependencies=dependencies,
+        dry_run=dry_run,
     )
-    jobid = summarise_batch.run(summarise_cmd, depends_on=jobids)
 
     return jobid

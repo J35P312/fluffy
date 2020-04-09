@@ -52,11 +52,19 @@ def config_path_fixture(fixtures_dir: Path) -> Path:
     return _file_path
 
 
+@pytest.fixture(name="samplesheet_path")
+def samplesheet_path_fixture(fixtures_dir: Path) -> Path:
+    """Return the path to a config file"""
+    _file_path = fixtures_dir / "samplesheet.csv"
+    return _file_path
+
+
 @pytest.fixture(name="configs")
-def configs_fixture(config_path: Path, out_dir: Path) -> dict:
+def configs_fixture(config_path: Path, out_dir: Path, samplesheet_path: Path) -> dict:
     """Return test configs"""
     _configs = get_configs(config_path)
     _configs["out"] = out_dir
+    _configs["sample_sheet"] = samplesheet_path
     return _configs
 
 
