@@ -4,12 +4,13 @@ from typing import Iterator
 
 from fluffy.slurm_api import SlurmAPI
 from fluffy.workflows.align import align_individual
-from fluffy.workflows.cleanup import cleanup_workflow
 from fluffy.workflows.amycne import estimate_ffy
+from fluffy.workflows.cleanup import cleanup_workflow
 from fluffy.workflows.picard import picard_qc_workflow
 from fluffy.workflows.preface import preface_predict_workflow
 from fluffy.workflows.summarize import summarize_workflow
 from fluffy.workflows.wisecondor import wisecondor_xtest_workflow
+
 
 def analyse_workflow(
     samples: Iterator[dict],
@@ -21,7 +22,7 @@ def analyse_workflow(
     """Run the wisecondor chromosome x analysis"""
     jobids = []
     for sample in samples:
-        sample_jobids=[]
+        sample_jobids = []
         sample_id = sample["sample_id"]
         sample_outdir = configs["out"] / sample_id
         # This will fail if dir already exists
@@ -51,7 +52,6 @@ def analyse_workflow(
         jobids.append(picard_jobid)
         sample_jobids.append(picard_jobid)
 
-
         wcx_test_jobid = wisecondor_xtest_workflow(
             configs=configs,
             sample_id=sample_id,
@@ -74,14 +74,14 @@ def analyse_workflow(
             jobids.append(preface_predict_jobid)
             sample_jobids.append(preface_predict_jobid)
 
- 
-        cleanup_jobid=cleanup_workflow(
-                configs=configs,
-                out_dir=out_dir,
-                sample_outdir=sample_outdir,
-                sample_id=sample_id,
-                sample_jobids=sample_jobids,
-        ) 
+        cleanup_workflow(
+            configs=configs,
+            sample_outdir=sample_outdir,
+            sample_id=sample_id,
+            dependencies=sample_jobids,
+            slurm_api=slurm_api,
+            dry_run=dry_run,
+        )
 
     summarize_jobid = summarize_workflow(
         configs=configs, dependencies=jobids, slurm_api=slurm_api, dry_run=dry_run

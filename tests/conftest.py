@@ -15,7 +15,7 @@ from fluffy.slurm_api import SlurmAPI
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("testing")
 
 
 @pytest.fixture(name="fixtures_dir")
