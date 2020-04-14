@@ -16,11 +16,7 @@ def picard_qc_workflow(configs: dict, out_dir: Path, sample_id: str, align_jobid
 
     picard = Slurm(
         "picard_qc-{}".format(sample_id),
-        {
-            "account": configs["slurm"]["account"],
-            "partition": "core",
-            "time": configs["slurm"]["time"],
-        },
+        configs["slurm"],
         log_dir=str(log_dir),
         scripts_dir=str(scripts_dir),
     )

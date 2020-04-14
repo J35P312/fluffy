@@ -33,11 +33,7 @@ def make_reference(
 
     make_reference_batch = Slurm(
         "wcxmkref",
-        {
-            "account": configs["slurm"]["account"],
-            "partition": "node",
-            "time": configs["slurm"]["time"],
-        },
+        configs["slurm"],
         log_dir=str(log_dir),
         scripts_dir=str(scripts_dir),
     )
@@ -58,11 +54,7 @@ def wisecondor_xtest_workflow(
 
     wcx_test = Slurm(
         "wcx-{}".format(sample_id),
-        {
-            "account": configs["slurm"]["account"],
-            "partition": "core",
-            "time": configs["slurm"]["time"],
-        },
+        configs["slurm"],
         log_dir=str(log_dir),
         scripts_dir=str(scripts_dir),
     )

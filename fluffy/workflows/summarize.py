@@ -32,11 +32,7 @@ def summarize_workflow(configs: dict, out_dir: Path, jobids: list) -> int:
 
     summarise_batch = Slurm(
         "summarise_batch",
-        {
-            "account": configs["slurm"]["account"],
-            "partition": "core",
-            "time": configs["slurm"]["time"],
-        },
+        configs["slurm"],
         log_dir=str(log_dir),
         scripts_dir=str(scripts_dir),
     )

@@ -67,11 +67,7 @@ def make_call_model(samples: Iterator[dict], out_dir: Path, configs: dict):
 
     preface_model = Slurm(
         "preface_model",
-        {
-            "account": configs["slurm"]["account"],
-            "partition": "core",
-            "time": configs["slurm"]["time"],
-        },
+        configs["slurm"],
         log_dir=str(log_dir),
         scripts_dir=str(scripts_dir),
     )
@@ -98,11 +94,7 @@ def preface_predict_workflow(
 
     preface_predict = Slurm(
         "preface_predict-{}".format(sample_id),
-        {
-            "account": configs["slurm"]["account"],
-            "partition": "core",
-            "time": configs["slurm"]["time"],
-        },
+        configs["slurm"],
         log_dir=str(log_dir),
         scripts_dir=str(scripts_dir),
     )

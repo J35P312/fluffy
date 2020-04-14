@@ -34,11 +34,7 @@ def cleanup_workflow(configs: dict, out_dir: Path, sample_outdir: Path, sample_i
 
     cleanup_batch = Slurm(
         f"cleanup-{sample_id}",
-        {
-            "account": configs["slurm"]["account"],
-            "partition": "core",
-            "time": configs["slurm"]["time"],
-        },
+        configs["slurm"],
 	log_dir=str(log_dir),
         scripts_dir=str(scripts_dir),
     )

@@ -1,6 +1,7 @@
 """Code to align reads of a sample on SLURM"""
 
 import logging
+import copy
 from pathlib import Path
 
 from slurmpy import Slurm
@@ -28,13 +29,11 @@ def align_individual(configs: dict, sample: dict, out_dir: Path, dry_run: bool =
     log_dir = out_dir / "logs"
     scripts_dir = out_dir / "scripts"
 
+    slurm_params=copy.deepcopy(configs["slurm"])
+    slurm_params["ntasks"]=configs["align"]["ntasks"]
     bwa = Slurm(
         f"bwaAln-{sample_id}",
-        {
-            "account": configs["slurm"]["account"],
-            "partition": "node",
-            "time": configs["slurm"]["time"],
-        },
+        slurm_params,
         log_dir=str(log_dir),
         scripts_dir=str(scripts_dir),
     )
