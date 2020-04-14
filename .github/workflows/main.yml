@@ -27,4 +27,4 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest -rxs tests/
+        pipenv run pytest -rxs tests/
