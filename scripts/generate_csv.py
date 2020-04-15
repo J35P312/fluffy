@@ -255,24 +255,25 @@ sample_out = {
 }
 
 for line in open(args.samplesheet):
-	if not " " in line:
-		line=line.replace(","," ")
-		line=line.replace("\t"," ")
-		line=line.replace(";"," ")
+    if not " " in line:
+        line=line.replace(","," ")
+        line=line.replace("\t"," ")
+        line=line.replace(";"," ")
  
-	if first:
-		i=0
-		for entry in line.strip("\n").split(" "):
-			samplesheet_info.append(entry)
-			samplesheet_dict[entry]=i
-			i+=1
+    if first:
+        i=0
+        for entry in line.strip("\n").split(" "):
+            samplesheet_info.append(entry)
+            samplesheet_dict[entry]=i
+            i+=1
 
-		first=False
-		continue
-	i=0
-	content=line.strip("\n").split(" ")
-	sample=content[samplesheet_dict["SampleID"]]
-	samples[ sample ]=copy.deepcopy(sample_out)
+        first=False
+        continue
+
+    i=0
+    content=line.strip("\n").split(" ")
+    sample=content[samplesheet_dict["SampleID"]]
+    samples[ sample ]=copy.deepcopy(sample_out)
 
     for entry in content:
         if samplesheet_info[i] in sample_out:

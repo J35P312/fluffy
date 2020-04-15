@@ -27,7 +27,7 @@ def cleanup_workflow(
     slurm_api: SlurmAPI,
     dry_run: bool = False,
 ) -> int:
-    """Run the workflow to summarize an analysis"""
+    """Run the workflow to compress  an analysis folder"""
 
     out_dir = configs["out"]
     cleanup_cmd = get_cleanup_cmd(

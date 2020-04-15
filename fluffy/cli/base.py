@@ -81,7 +81,7 @@ def base_command(ctx, log_level, config, out, sample, project):
     ctx.obj["sample_sheet"] = sample
 
     ctx.obj["slurm_api"] = SlurmAPI(
-        account=configs["slurm"]["account"], time=configs["slurm"]["time"], out_dir=out,
+        slurm_settings=configs["slurm"], out_dir=out,
     )
 
 

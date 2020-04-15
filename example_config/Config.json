@@ -1,9 +1,12 @@
 {
 	"align":{
-		"tmpdir":"$TMPDIR/"
+		"tmpdir":"$TMPDIR/",
+		"ntasks":16
+
 	},
 	"amycne":{
 		"minq":10
+
 	},
 	"wisecondorx":{
 		"reftest":"/proj/sens2019010/nobackup/wisecondor_X_bwa_ref.npz",
@@ -19,6 +22,7 @@
 	"preface":{
 		"model_dir":"/proj/sens2019010/nobackup/PREFACE/AMYCNE_15g_2500_100kbp.conf.model.olm",
 		"modelsettings":"--olm"
+
 	},
 	"picard":{
 		"javasettings":"-Xms4G -Xmx4G"
@@ -28,7 +32,8 @@
 	"slurm": {
 		"account":"sens2019010",
 		"time":"5:00:00",
-		"flags":""
+		"ntasks":1
+
 	},
 	"summary":{
 		"mincnv":10000000,

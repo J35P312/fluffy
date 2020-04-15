@@ -115,8 +115,7 @@ def fixture_samples(sample_single) -> Iterator[dict]:
 def real_slurm_api_fixture(configs, out_dir):
     """Return a real slurm API"""
     _api = SlurmAPI(
-        account=configs["slurm"]["account"],
-        time=configs["slurm"]["time"],
+        slurm_settings=configs["slurm"],
         out_dir=out_dir,
     )
     return _api
@@ -126,8 +125,7 @@ def real_slurm_api_fixture(configs, out_dir):
 def slurm_api_fixture(configs, out_dir, jobid):
     """Return a real slurm API"""
     _api = MockSlurmAPI(
-        account=configs["slurm"]["account"],
-        time=configs["slurm"]["time"],
+        slurm_settings=configs["slurm"],
         out_dir=out_dir,
         _jobid=jobid,
     )
@@ -139,14 +137,13 @@ class MockSlurmAPI:
     """Mock the slurm api"""
 
     def __init__(
-        self, account: str, time: str, out_dir: Path, _jobid: int, partition: str = None
+        self, slurm_settings: dict, out_dir: Path, _jobid: int
     ):
         LOG.info("Initializing a slurm API")
-        self.account = account
-        self.time = time
+        self.account = slurm_settings["account"]
+        self.time = slurm_settings["time"]
         self.log_dir = out_dir / "logs"
         self.scripts_dir = out_dir / "scripts"
-        self.partition = partition or "node"
         self.job = None
         self._jobid = _jobid
 

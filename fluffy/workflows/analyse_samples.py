@@ -1,4 +1,5 @@
 """Workflow for analysing all samples in a batch"""
+import copy
 
 from typing import Iterator
 
@@ -19,7 +20,7 @@ def analyse_workflow(
     skip_preface: bool = False,
     dry_run: bool = False,
 ) -> int:
-    """Run the wisecondor chromosome x analysis"""
+    """Run the wisecondor analysis"""
     jobids = []
     for sample in samples:
         sample_jobids = []
@@ -28,8 +29,14 @@ def analyse_workflow(
         # This will fail if dir already exists
         sample_outdir.mkdir(parents=True)
 
+        align_slurm_settings=copy.copy(configs["slurm"])
+        align_slurm_settings["ntasks"]=configs["align"]["ntasks"]
+
+        align_slurm_api=SlurmAPI(
+        slurm_settings=align_slurm_settings, out_dir=configs["out"])
+
         align_jobid = align_individual(
-            configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,
+            configs=configs, sample=sample, slurm_api=align_slurm_api, dry_run=dry_run,
         )
 
         ffy_jobid = estimate_ffy(
