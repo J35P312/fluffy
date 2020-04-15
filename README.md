@@ -20,10 +20,12 @@ optionally, skip preface:
 
 All output will be written to the output folder, this output includes:
 
-    bam files
-    wisecondorX output
-    tiddit coverage summary
-    Fetal fraction estimation
+```
+bam files
+wisecondorX output
+tiddit coverage summary
+Fetal fraction estimation
+```
 
 as well as a summary csv (per batch)
 
@@ -47,23 +49,17 @@ FluFFyPipe requires python 3, slurm, slurmpy, and singularity, python-coloredlog
 
 First clone fluffypipe:
 
-    https://github.com/J35P312/FluFFyPipe.git
+`git clone https://github.com/Clinical-Genomics/fluffy`
 
 Install fluffy using pip
 
 cd fluffy
 
-	pip install -e .
+`pip install -e .`
 
 Next download the FluFFyPipe singularity container
 
      singularity pull --name FluFFyPipe.sif shub://J35P312/FluFFyPipe
-
-Install slurmpy:
-
-	git clone https://github.com/J35P312/slurmpy.git
-	cd slurmpy
-	pip install --no-index --user -e .
 
 copy the example config (found in example_config), and edit the variables.
 You will need to download/create the following files:
