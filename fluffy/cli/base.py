@@ -76,7 +76,7 @@ def base_command(ctx, log_level, config, out, sample, project):
     ctx.obj["project"] = project_dir
 
     with open(sample, "r") as samplesheet:
-        ctx.obj["samples"] = read_samplesheet(samplesheet, project_dir)
+        ctx.obj["samples"] = list(read_samplesheet(samplesheet, project_dir))
 
     ctx.obj["sample_sheet"] = sample
 

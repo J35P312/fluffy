@@ -4,7 +4,9 @@ import logging
 import click
 
 from fluffy.config import check_configs
+from fluffy.deliverables import print_deliverables
 from fluffy.workflows.analyse_samples import analyse_workflow
+
 
 LOG = logging.getLogger(__name__)
 
@@ -21,12 +23,19 @@ def analyse(ctx, skip_preface, dry_run):
     samples = ctx.obj["samples"]
     configs = ctx.obj["configs"]
     configs["sample_sheet"] = ctx.obj["sample_sheet"]
+    project_dir=ctx.obj["project"]
     slurm_api = ctx.obj["slurm_api"]
 
     try:
         check_configs(configs, skip_preface=skip_preface)
     except FileNotFoundError as err:
         raise click.Abort
+
+    print_deliverables(
+        output_dir=configs["out"],
+        project_dir=project_dir,
+        samples=samples,
+    )
 
     analyse_workflow(
         samples=list(samples),
