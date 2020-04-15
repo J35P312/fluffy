@@ -12,6 +12,7 @@ from fluffy.cli.make_model import model
 from fluffy.cli.make_reference import reference
 from fluffy.config import get_configs
 from fluffy.samplesheet import read_samplesheet
+from fluffy.slurm_api import SlurmAPI
 from fluffy.version import __version__
 
 LOG = logging.getLogger(__name__)
@@ -55,12 +56,13 @@ def base_command(ctx, log_level, config, out, sample, project):
     ctx.obj = {}
 
     out = pathlib.Path(out)
-    ctx.obj["out"] = out
     LOG.info("Create outdir %s (if not exist)", out)
     out.mkdir(parents=True, exist_ok=True)
 
     config = pathlib.Path(config)
-    ctx.obj["configs"] = get_configs(config)
+    configs = get_configs(config)
+    configs["out"] = out
+    ctx.obj["configs"] = configs
 
     new_config = out / config.name
     if new_config.exists():
@@ -75,9 +77,12 @@ def base_command(ctx, log_level, config, out, sample, project):
 
     with open(sample, "r") as samplesheet:
         ctx.obj["samples"] = read_samplesheet(samplesheet, project_dir)
-        ctx.obj["samples"] = list(ctx.obj["samples"])
 
     ctx.obj["sample_sheet"] = sample
+
+    ctx.obj["slurm_api"] = SlurmAPI(
+        account=configs["slurm"]["account"], time=configs["slurm"]["time"], out_dir=out,
+    )
 
 
 base_command.add_command(reference)

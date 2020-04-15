@@ -1,29 +1,32 @@
 """Workflows to run AMYCNE"""
 
-import pathlib
-
-from slurmpy import Slurm
+import logging
 
 from fluffy.commands.pipelines import amycne_ffy
+from fluffy.slurm_api import SlurmAPI
+
+LOG = logging.getLogger(__name__)
 
 
 def estimate_ffy(
-    configs: dict, out_dir: pathlib.Path, sample_id: str, align_jobid: int
+    configs: dict,
+    sample_id: str,
+    dependency: int,
+    slurm_api: SlurmAPI,
+    dry_run: bool = False,
 ) -> int:
     """Run the estimate fetal fraction with AMYCNE"""
+    LOG.info("Running the estimate fetal fraction with AMYCNE workflow")
+    out_dir = configs["out"]
     fetal_fraction_pipe = amycne_ffy(
         configs=configs, out_dir=out_dir, sample_id=sample_id
     )
 
-    log_dir = out_dir / "logs"
-    scripts_dir = out_dir / "scripts"
-
-    fetal_fraction_batch = Slurm(
-        f"amycne-{sample_id}",
-        configs["slurm"],
-        log_dir=str(log_dir),
-        scripts_dir=str(scripts_dir),
+    jobid = slurm_api.run_job(
+        name=f"amycne-{sample_id}",
+        command=fetal_fraction_pipe,
+        dependencies=[dependency],
+        dry_run=dry_run,
     )
 
-    job_id = fetal_fraction_batch.run(fetal_fraction_pipe, depends_on=[align_jobid])
-    return job_id
+    return jobid
