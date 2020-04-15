@@ -126,8 +126,7 @@ def real_slurm_api_fixture(configs, out_dir):
 def slurm_api_fixture(configs, out_dir, jobid):
     """Return a real slurm API"""
     _api = MockSlurmAPI(
-        account=configs["slurm"]["account"],
-        time=configs["slurm"]["time"],
+        slurm_settings=configs["slurm"],
         out_dir=out_dir,
         _jobid=jobid,
     )
@@ -146,7 +145,6 @@ class MockSlurmAPI:
         self.time = time
         self.log_dir = out_dir / "logs"
         self.scripts_dir = out_dir / "scripts"
-        self.partition = partition or "node"
         self.job = None
         self._jobid = _jobid
 
