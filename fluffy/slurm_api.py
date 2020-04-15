@@ -9,14 +9,22 @@ LOG = logging.getLogger(__name__)
 
 
 class SlurmAPI:
-    """A API to SLURM"""
+    """An API to SLURM"""
 
-    def __init__(self, account: str, time: str, out_dir: Path, partition: str = None):
+    def __init__(self,slurm_settings: dict, out_dir: Path):
         super(SlurmAPI, self).__init__()
         LOG.info("Initializing a slurm API")
+        account=None
+        if account in slurm_settings:
+            account=slurm_settings["account"]
         if not isinstance(account, str):
             raise SyntaxError("Invalid account {}".format(account))
         self.account = account
+
+        time=None
+        if "time" in slurm_settings:
+            time=slurm_settings["time"]
+
         if not isinstance(time, str):
             raise SyntaxError("Invalid time {}".format(time))
         if not len(time.split(":")) == 3:
@@ -28,7 +36,7 @@ class SlurmAPI:
 
         self.log_dir = out_dir / "logs"
         self.scripts_dir = out_dir / "scripts"
-        self.partition = partition or "node"
+        self.slurm_settings=slurm_settings
         self.job = None
 
     def create_job(self, name: str) -> Slurm:
@@ -36,7 +44,7 @@ class SlurmAPI:
         LOG.info("Create a slurm job with name %s", name)
         job = Slurm(
             name,
-            {"account": self.account, "partition": self.partition, "time": self.time,},
+            self.slurm_settings,
             scripts_dir=str(self.scripts_dir),
             log_dir=str(self.log_dir),
         )

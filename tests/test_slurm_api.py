@@ -14,9 +14,8 @@ def test_init():
     time = "5:00:00"
     out_dir = Path("tests/fixtures")
     # WHEN instantiating a slurm api
-    api = SlurmAPI(account=account, time=time, out_dir=out_dir)
+    api = SlurmAPI(slurm_settings={"account":account, "time":time}, out_dir=out_dir)
     # THEN assert it is setup correct
-    assert api.partition == "node"
     assert api.account == account
     assert api.log_dir
     assert api.scripts_dir
