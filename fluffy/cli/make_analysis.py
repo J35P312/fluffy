@@ -19,9 +19,9 @@ def analyse(ctx, skip_preface, dry_run):
     """Run the pipeline to call NIPT"""
     LOG.info("Running fluffy analyse")
     samples = ctx.obj["samples"]
-    out_dir = ctx.obj["out"]
     configs = ctx.obj["configs"]
     configs["sample_sheet"] = ctx.obj["sample_sheet"]
+    slurm_api = ctx.obj["slurm_api"]
 
     try:
         check_configs(configs, skip_preface=skip_preface)
@@ -30,8 +30,8 @@ def analyse(ctx, skip_preface, dry_run):
 
     analyse_workflow(
         samples=list(samples),
-        out_dir=out_dir,
         configs=configs,
         skip_preface=skip_preface,
+        slurm_api=slurm_api,
         dry_run=dry_run,
     )

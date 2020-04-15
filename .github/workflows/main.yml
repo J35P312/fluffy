@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.7]
 
     steps:
 
@@ -17,14 +17,15 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
+    
+    - name: Install pipenv
+      uses: dschep/install-pipenv-action@v1
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install --editable .
-        pip install -r requirements.txt
+        pipenv install --dev
+        pipenv run pip install -e .
 
     - name: Test with pytest
       run: |
-        pip install pytest
-        pytest -rxs tests/
+        pipenv run pytest
