@@ -2,6 +2,7 @@
 
 from fluffy.workflows.analyse_samples import analyse_workflow
 
+import pathlib
 
 def test_analyse_samples_workflow(configs, slurm_api, samples, jobid):
     """Test to run analyse samples workflow"""

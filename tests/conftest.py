@@ -137,11 +137,11 @@ class MockSlurmAPI:
     """Mock the slurm api"""
 
     def __init__(
-        self, account: str, time: str, out_dir: Path, _jobid: int, partition: str = None
+        self, slurm_settings: dict, out_dir: Path, _jobid: int
     ):
         LOG.info("Initializing a slurm API")
-        self.account = account
-        self.time = time
+        self.account = slurm_settings["account"]
+        self.time = slurm_settings["time"]
         self.log_dir = out_dir / "logs"
         self.scripts_dir = out_dir / "scripts"
         self.job = None

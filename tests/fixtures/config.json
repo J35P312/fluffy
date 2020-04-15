@@ -1,6 +1,7 @@
 {
 	"align":{
-		"tmpdir":"$TMPDIR/"
+		"tmpdir":"$TMPDIR/",
+		"ntasks":16
 	},
 	"amycne":{
 		"minq":10
@@ -28,7 +29,8 @@
 	"slurm": {
 		"account":"A_project",
 		"time":"5:00:00",
-		"flags":""
+		"flags":"",
+		"ntasks":1
 	},
 	"summary":{
 		"mincnv":10000000,

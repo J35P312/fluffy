@@ -15,7 +15,7 @@ class SlurmAPI:
         super(SlurmAPI, self).__init__()
         LOG.info("Initializing a slurm API")
         account=None
-        if account in slurm_settings:
+        if "account" in slurm_settings:
             account=slurm_settings["account"]
         if not isinstance(account, str):
             raise SyntaxError("Invalid account {}".format(account))
@@ -45,8 +45,8 @@ class SlurmAPI:
         job = Slurm(
             name,
             self.slurm_settings,
-            scripts_dir=str(self.scripts_dir),
             log_dir=str(self.log_dir),
+            scripts_dir=str(self.scripts_dir),
         )
         return job
 

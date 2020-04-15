@@ -33,7 +33,7 @@ def analyse_workflow(
         align_slurm_settings["ntasks"]=configs["align"]["ntasks"]
 
         align_slurm_api=SlurmAPI(
-        slurm_settings=align_slurm_settings, out_dir=out)
+        slurm_settings=align_slurm_settings, out_dir=configs["out"])
 
         align_jobid = align_individual(
             configs=configs, sample=sample, slurm_api=align_slurm_api, dry_run=dry_run,
