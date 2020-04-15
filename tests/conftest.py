@@ -115,8 +115,7 @@ def fixture_samples(sample_single) -> Iterator[dict]:
 def real_slurm_api_fixture(configs, out_dir):
     """Return a real slurm API"""
     _api = SlurmAPI(
-        account=configs["slurm"]["account"],
-        time=configs["slurm"]["time"],
+        slurm_settings=configs["slurm"],
         out_dir=out_dir,
     )
     return _api
