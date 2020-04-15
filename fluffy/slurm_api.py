@@ -57,7 +57,7 @@ class SlurmAPI:
         job = self.create_job(name=name)
         LOG.info("Submitting commands %s", command)
         if dependencies:
-            LOG.info("Adding dependencies: %s", ",".join(dependencies))
+            LOG.info("Adding dependencies: %s", ",".join( str(dependency) for dependency in dependencies))
         jobid = 1
         if not dry_run:
             jobid = job.run(command, depends_on=dependencies)
