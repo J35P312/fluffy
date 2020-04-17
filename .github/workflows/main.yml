@@ -28,4 +28,9 @@ jobs:
 
     - name: Test with pytest
       run: |
+
+        export PATH=$PATH:$(pwd)
+        echo "echo #! /bin/bash\nSubmitted batch job 1234" > sbatch
+        chmod +x sbatch
+         
         pipenv run pytest
