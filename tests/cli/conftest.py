@@ -4,11 +4,12 @@ import pytest
 
 
 @pytest.fixture(name="base_context")
-def base_context_fixture(configs, samples, slurm_api, samplesheet_path):
+def base_context_fixture(configs, samples, slurm_api, samplesheet_path,project_dir):
     """Create a base context"""
     return {
         "samples": samples,
         "configs": configs,
         "sample_sheet": samplesheet_path,
         "slurm_api": slurm_api,
+        "project": project_dir,
     }

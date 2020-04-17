@@ -8,7 +8,7 @@ def get_collect_gc_bias_cmd(
     picard_gc_cmd = (
         f"singularity exec {singularity_exe} picard CollectGcBiasMetrics I={out_prefix}.bam "
         f"O={out_prefix}_gc_bias_metrics.txt CHART={out_prefix}_gc_bias_metrics.pdf "
-        f"S={out_prefix}.gc.summary.tab R={reference} {javasettings}"
+        f"S={out_prefix}.gc.summary.tab R={reference} VALIDATION_STRINGENCY=LENIENT {javasettings}"
     )
 
     return picard_gc_cmd
@@ -21,7 +21,7 @@ def get_collect_insert_size_cmd(
     picard_insert_cmd = (
         f"singularity exec {singularity_exe} picard CollectInsertSizeMetrics I={out_prefix}.bam "
         f"O={out_prefix}_insert_size_metrics.txt H={out_prefix}_insert_size_histogram.pdf "
-        f"M=0.5 {javasettings}"
+        f"VALIDATION_STRINGENCY=LENIENT M=0.5 {javasettings}"
     )
 
     return picard_insert_cmd
@@ -33,7 +33,7 @@ def get_estimate_complexity_cmd(
     """Get a string with command to estimate library complexity with picard tools"""
     picard_complexity_cmd = (
         f"singularity exec {singularity_exe} picard EstimateLibraryComplexity I={out_prefix}.bam "
-        f"O={out_prefix}_complex_metrics.txt {javasettings}"
+        f"O={out_prefix}_complex_metrics.txt VALIDATION_STRINGENCY=LENIENT {javasettings}"
     )
 
     return picard_complexity_cmd

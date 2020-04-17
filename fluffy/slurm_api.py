@@ -67,6 +67,5 @@ class SlurmAPI:
     def __repr__(self):
         return (
             f"{self.__class__.__name__}(account={self.account!r}, time={self.time!r}, "
-            f"log_dir={self.log_dir!r}, scripts_dir={self.scripts_dir!r}, partition"
-            f"={self.partition!r})"
+            f"log_dir={self.log_dir!r}, scripts_dir={self.scripts_dir!r})"
         )
