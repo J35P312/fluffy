@@ -11,6 +11,7 @@ pyyaml = "*"
 
 [dev-packages]
 pytest = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.7"
