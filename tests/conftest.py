@@ -152,7 +152,7 @@ class MockSlurmAPI:
         LOG.info("Create a slurm job with name %s", name)
         job = Slurm(
             name,
-            {"account": self.account, "partition": self.partition, "time": self.time,},
+            {"account": self.account, "time": self.time,},
             scripts_dir=str(self.scripts_dir),
             log_dir=str(self.log_dir),
         )
@@ -176,6 +176,5 @@ class MockSlurmAPI:
     def __repr__(self):
         return (
             f"{self.__class__.__name__}(account={self.account!r}, time={self.time!r}, "
-            f"log_dir={self.log_dir!r}, scripts_dir={self.scripts_dir!r}, partition"
-            f"={self.partition!r})"
+            f"log_dir={self.log_dir!r}, scripts_dir={self.scripts_dir!r}"
         )

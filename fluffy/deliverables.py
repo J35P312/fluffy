@@ -14,14 +14,14 @@ def print_deliverables(output_dir: Path,project_dir: Path, samples: list) -> Non
     """Create a deliverables YAML file"""
 
     deliverables={"files":[]}
-    project_name=str(project_dir).strip("/").split("/")[-1]
-    summary_path=f"{str(output_dir.absolute())}/summary.csv"
-    deliverables["files"].append({"format":"csv", "id":project_name,"path":summary_path,"step":"summarise_batch","tag":"NIPT_csv"})
+    project_name=project_dir.parent.name
+    summary_path=output_dir.absolute() / "summary.csv"
+    deliverables["files"].append({"format":"csv", "id":project_name,"path":str(summary_path),"step":"summarise_batch","tag":"NIPT_csv"})
 
     for sample in samples:
         sample_id=sample["sample_id"]
-        zip_path=f"{str(output_dir.absolute())}/{sample_id}.fluffy-{__version__}.zip"
-        deliverables["files"].append({"format":"zip", "id":sample_id,"path":zip_path,"step":"cleanup","tag":"fluffy_zip"})
+        zip_path=output_dir.absolute() / f"{sample_id}.fluffy-{__version__}.zip"
+        deliverables["files"].append({"format":"zip", "id":sample_id,"path":str(zip_path),"step":"cleanup","tag":"fluffy_zip"})
 
     f=open(f"{str(output_dir)}/deliverables.yaml","w")
     f.write(yaml.dump(deliverables))
