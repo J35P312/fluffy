@@ -27,74 +27,47 @@ args = parser.parse_args()
 files_in_folder = []
 for r, d, f in os.walk(args.folder):
     for file in f:
-        files_in_folder.append(os.path.join(r, file))
+         files_in_folder.append(os.path.join(r, file))
 
 output_header = [
     "SampleID",
     "SampleType",
+    "SequencingDate",
     "Flowcell",
-    "Description",
     "SampleProject",
-    "IndexID1",
     "Index1",
-    "IndexID2",
     "Index2",
-    "Well",
     "Library_nM",
     "QCFlag",
-    "QCFailure",
-    "QCWarning",
     "Zscore_13",
     "Zscore_18",
     "Zscore_21",
     "Zscore_X",
-    "Zscore_Y",
-    "Ratio_13",
-    "Ratio_18",
-    "Ratio_21",
-    "Ratio_X",
-    "Ratio_Y",
-    "Clusters",
-    "TotalReads2Clusters",
-    "MaxMisindexedReads2Clusters",
-    "IndexedReads",
-    "TotalIndexedReads2Clusters",
-    "Tags",
-    "NonExcludedSites",
-    "NonExcludedSites2Tags",
-    "Tags2IndexedReads",
-    "PerfectMatchTags2Tags",
-    "GCBias",
-    "GCR2",
-    "NCD_13",
-    "NCD_18",
-    "NCD_21",
-    "NCD_X",
-    "NCD_Y",
-    "Chr1_Coverage",
-    "Chr2_Coverage",
-    "Chr3_Coverage",
-    "Chr4_Coverage",
-    "Chr5_Coverage",
-    "Chr6_Coverage",
-    "Chr7_Coverage",
-    "Chr8_Coverage",
-    "Chr9_Coverage",
-    "Chr10_Coverage",
-    "Chr11_Coverage",
-    "Chr12_Coverage",
-    "Chr13_Coverage",
-    "Chr14_Coverage",
-    "Chr15_Coverage",
-    "Chr16_Coverage",
-    "Chr17_Coverage",
-    "Chr18_Coverage",
-    "Chr19_Coverage",
-    "Chr20_Coverage",
-    "Chr21_Coverage",
-    "Chr22_Coverage",
-    "ChrX_Coverage",
-    "ChrY_Coverage",
+    "chr13_ratio",
+    "chr18_Ratio",
+    "chr21_Ratio",
+    "chrX_Ratio",
+    "Chr1_Ratio",
+    "Chr2_Ratio",
+    "Chr3_Ratio",
+    "Chr4_Ratio",
+    "Chr5_Ratio",
+    "Chr6_Ratio",
+    "Chr7_Ratio",
+    "Chr8_Ratio",
+    "Chr9_Ratio",
+    "Chr10_Ratio",
+    "Chr11_Ratio",
+    "Chr12_Ratio",
+    "Chr14_Ratio",
+    "Chr15_Ratio",
+    "Chr16_Ratio",
+    "Chr17_Ratio",
+    "Chr19_Ratio",
+    "Chr20_Ratio",
+    "Chr22_Ratio",
+    "chrY_Ratio",
+    "MappedReads",
     "Chr1",
     "Chr2",
     "Chr3",
@@ -133,6 +106,8 @@ output_header = [
     "FFY",
     "FFX",
     "DuplicationRate",
+    "GC_Dropout",
+    "AT_Dropout",
     "Bin2BinVariance",
     "UnfilteredCNVcalls",
     "CNVSegment",
@@ -149,72 +124,47 @@ sample_out = {
     "Bin2BinVariance": "",
     "UnfilteredCNVcalls": 0,
     "SampleID": "",
+    "SequencingDate":"",
     "DuplicationRate": 0,
     "SampleType": "",
     "Flowcell": "",
-    "Description": "",
     "CNVSegment": "",
     "SampleProject": "",
-    "IndexID1": "",
     "Index1": "",
-    "IndexID2": "",
     "Index2": "",
-    "Well": "",
     "Library_nM": "",
     "QCFlag": "",
-    "QCFailure": "",
-    "QCWarning": "",
     "Zscore_13": "",
     "Zscore_18": "",
     "Zscore_21": "",
     "Zscore_X": "",
-    "Zscore_Y": "",
-    "Ratio_13": "",
-    "Ratio_18": "",
-    "Ratio_21": "",
-    "Ratio_X": "",
-    "Ratio_Y": "",
-    "Clusters": "",
-    "TotalReads2Clusters": "",
-    "MaxMisindexedReads2Clusters": "",
-    "IndexedReads": "",
-    "TotalIndexedReads2Clusters": "",
-    "Tags": "",
-    "NonExcludedSites": "",
-    "NonExcludedSites2Tags": "",
-    "Tags2IndexedReads": "",
-    "PerfectMatchTags2Tags": "",
-    "GCBias": "",
-    "GCR2": "",
-    "NCD_13": "",
-    "NCD_18": "",
-    "NCD_21": "",
-    "NCD_X": "",
-    "NCD_Y": "",
-    "Chr1_Coverage": "",
-    "Chr2_Coverage": "",
-    "Chr3_Coverage": "",
-    "Chr4_Coverage": "",
-    "Chr5_Coverage": "",
-    "Chr6_Coverage": "",
-    "Chr7_Coverage": "",
-    "Chr8_Coverage": "",
-    "Chr9_Coverage": "",
-    "Chr10_Coverage": "",
-    "Chr11_Coverage": "",
-    "Chr12_Coverage": "",
-    "Chr13_Coverage": "",
-    "Chr14_Coverage": "",
-    "Chr15_Coverage": "",
-    "Chr16_Coverage": "",
-    "Chr17_Coverage": "",
-    "Chr18_Coverage": "",
-    "Chr19_Coverage": "",
-    "Chr20_Coverage": "",
-    "Chr21_Coverage": "",
-    "Chr22_Coverage": "",
-    "ChrX_Coverage": "",
-    "ChrY_Coverage": "",
+    "chr13_Ratio": "",
+    "chr18_Ratio": "",
+    "chr21_Ratio": "",
+    "chrX_Ratio": "",
+    "chrY_Ratio": "",
+    "MappedReads": "",
+    "GC_Dropout": "",
+    "AT_Dropout": "",
+    "Chr1_Ratio": "",
+    "Chr2_Ratio": "",
+    "Chr3_Ratio": "",
+    "Chr4_Ratio": "",
+    "Chr5_Ratio": "",
+    "Chr6_Ratio": "",
+    "Chr7_Ratio": "",
+    "Chr8_Ratio": "",
+    "Chr9_Ratio": "",
+    "Chr10_Ratio": "",
+    "Chr11_Ratio": "",
+    "Chr12_Ratio": "",
+    "Chr14_Ratio": "",
+    "Chr15_Ratio": "",
+    "Chr16_Ratio": "",
+    "Chr17_Ratio": "",
+    "Chr19_Ratio": "",
+    "Chr20_Ratio": "",
+    "Chr22_Ratio": "",
     "Chr1": "",
     "Chr2": "",
     "Chr3": "",
@@ -282,10 +232,11 @@ for line in open(args.samplesheet):
             samples[sample]["Flowcell"] = entry
         elif samplesheet_info[i] == "Project":
             samples[sample]["SampleProject"] = entry
-        elif samplesheet_info[i] == "index":
+        elif samplesheet_info[i] == "index" or samplesheet_info[i] == "index1":
             samples[sample]["Index1"] = entry
         elif samplesheet_info[i] == "index2":
             samples[sample]["Index2"] = entry
+
         i += 1
 
 ratio_21 = []
@@ -302,64 +253,60 @@ for sample in samples:
                     continue
                 content = line.strip().split("\t")
                 if content[0] == "1":
-                    samples[sample]["Chr1_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr1_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "2":
-                    samples[sample]["Chr2_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr2_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "3":
-                    samples[sample]["Chr3_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr3_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "4":
-                    samples[sample]["Chr4_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr4_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "5":
-                    samples[sample]["Chr5_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr5_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "6":
-                    samples[sample]["Chr6_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr6_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "7":
-                    samples[sample]["Chr7_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr7_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "8":
-                    samples[sample]["Chr8_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr8_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "9":
-                    samples[sample]["Chr9_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr9_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "10":
-                    samples[sample]["Chr10_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr10_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "11":
-                    samples[sample]["Chr11_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr11_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "12":
-                    samples[sample]["Chr12_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr12_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "13":
-                    samples[sample]["Chr13_Coverage"] = str(float(content[1]) + 1)
                     samples[sample]["Zscore_13"] = content[-1]
-                    samples[sample]["Ratio_13"] = str(float(content[1]) + 1)
+                    samples[sample]["chr13_Ratio"] = str(float(content[1]) + 1)
                     ratio_13.append(float(content[1]) + 1)
 
                 if content[0] == "14":
-                    samples[sample]["Chr14_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr14_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "15":
-                    samples[sample]["Chr15_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr15_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "16":
-                    samples[sample]["Chr16_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr16_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "17":
-                    samples[sample]["Chr17_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr17_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "18":
                     samples[sample]["Zscore_18"] = content[-1]
-                    samples[sample]["Chr18_Coverage"] = str(float(content[1]) + 1)
-                    samples[sample]["Ratio_18"] = str(float(content[1]) + 1)
+                    samples[sample]["chr18_Ratio"] = str(float(content[1]) + 1)
                     ratio_18.append(float(content[1]) + 1)
 
                 if content[0] == "19":
-                    samples[sample]["Chr19_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr19_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "20":
-                    samples[sample]["Chr20_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr20_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "21":
-                    samples[sample]["Chr21_Coverage"] = str(float(content[1]) + 1)
                     samples[sample]["Zscore_21"] = content[-1]
-                    samples[sample]["Ratio_21"] = str(float(content[1]) + 1)
+                    samples[sample]["chr21_Ratio"] = str(float(content[1]) + 1)
                     ratio_21.append(float(content[1]) + 1)
 
                 if content[0] == "22":
-                    samples[sample]["Chr22_Coverage"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr22_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "X":
-                    samples[sample]["ChrX_Coverage"] = str(float(content[1]) + 1)
-                    samples[sample]["Ratio_X"] = str(float(content[1]) + 1)
+                    samples[sample]["chrX_Ratio"] = str(float(content[1]) + 1)
                     ratio_X.append(float(content[1]) + 1)
                     samples[sample]["Zscore_X"] = content[-1]
 
@@ -410,7 +357,7 @@ for sample in samples:
     for file in files_in_folder:
         if sample in file and file.endswith(".bam.wcx.npz"):
             a = numpy.load(file, encoding="latin1", allow_pickle=True)
-            samples[sample]["IndexedReads"] = a["quality"].item()["mapped"]
+            samples[sample]["MappedReads"] = a["quality"].item()["mapped"]
             samples[sample]["DuplicationRate"] = a["quality"].item()[
                 "filter_rmdup"
             ] / float(a["quality"].item()["mapped"])
@@ -439,20 +386,19 @@ for sample in samples:
             samples[sample]["Chr22"] = sum(a["sample"].item()["22"])
             samples[sample]["ChrX"] = sum(a["sample"].item()["23"])
             samples[sample]["ChrY"] = sum(a["sample"].item()["24"])
-            samples[sample]["ChrY_Coverage"] = sum(a["sample"].item()["24"]) / float(
+            samples[sample]["chrY_Ratio"] = sum(a["sample"].item()["24"]) / float(
                 a["quality"].item()["mapped"]
             )
-            samples[sample]["Ratio_Y"] = samples[sample]["ChrY_Coverage"]
-            ratio_Y.append(samples[sample]["Ratio_Y"])
+            ratio_Y.append(samples[sample]["chrY_Ratio"])
 
 for sample in samples:
     for file in files_in_folder:
         if sample in file and file.endswith("PREFACE.txt"):
             for line in open(file):
                 if "FFX" in line:
-                    samples[sample]["FFX"] = line.strip().split()[-1]
+                    samples[sample]["FFX"] = line.strip().split()[-1].replace("%","")
                 if "PREFACE" in line:
-                    samples[sample]["FF_Formatted"] = line.strip().split()[-1]
+                    samples[sample]["FF_Formatted"] = line.strip().split()[-1].replace("%","")
 
 for sample in samples:
     for file in files_in_folder:
@@ -461,7 +407,7 @@ for sample in samples:
                 if "med" in line:
                     continue
                 content = line.strip().split()
-                samples[sample]["FFY"] = "{}%".format(float(content[-2]) * 100)
+                samples[sample]["FFY"] = "{}".format(float(content[-2]) * 100)
 
 for sample in samples:
     samples[sample]["Median_Y"] = numpy.median(ratio_Y)
@@ -486,8 +432,8 @@ for sample in samples:
                         gc_data[gc_idx_to_header[i]] = entry.strip()
                         i += 1
             try:
-                samples[sample]["GCR2"] = gc_data["AT_DROPOUT"]
-                samples[sample]["GCBias"] = gc_data["GC_DROPOUT"]
+                samples[sample]["AT_Dropout"] = gc_data["AT_DROPOUT"]
+                samples[sample]["GC_Dropout"] = gc_data["GC_DROPOUT"]
             except:
                 pass
 
