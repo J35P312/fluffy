@@ -43,7 +43,7 @@ output_header = [
     "Zscore_18",
     "Zscore_21",
     "Zscore_X",
-    "chr13_ratio",
+    "chr13_Ratio",
     "chr18_Ratio",
     "chr21_Ratio",
     "chrX_Ratio",
