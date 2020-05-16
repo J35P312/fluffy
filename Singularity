@@ -34,7 +34,7 @@ LC_ALL=C.UTF-8
     conda install -c bioconda biobambam
     
     conda install -c conda-forge r-base
-    conda install -c r r-doparallel r-foreach r-neuralnet r-glmnet r-data.table r-mass
+    conda install -c r r-doparallel r-foreach r-neuralnet r-glmnet r-data.table r-mass r-matrix
 
     pip install sklearn numpy scipy matplotlib pysam futures bottleneck cython
     cd /bin/ &&  git clone https://github.com/VUmcCGP/wisecondor.git    

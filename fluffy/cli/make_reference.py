@@ -14,7 +14,7 @@ LOG = logging.getLogger(__name__)
 @click.option("--dry-run", is_flag=True, help="Do not create any files")
 @click.pass_context
 def reference(ctx, dry_run):
-    """Create a reference for """
+    """Create a reference for WisecondorX"""
     LOG.info("Running fluffy reference")
     configs = ctx.obj["configs"]
     try:

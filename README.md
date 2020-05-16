@@ -38,12 +38,6 @@ Create a WisecondorX reference
 
 samplesheet should contain atleast a "sampleID" column. All samples in the samplesheet will be used to construct the reference, visit the WisecondorX manual for more information.
 
-Create a PREFACE reference:
-
-    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> model
-
-samplesheet should contain atleast a "sampleID" column. All samples in the samplesheet will be used to construct the reference, visit the PREFACE manual for more information. Note, you need to first run the FluFFYPipe with "--skip_preface" option, next you may run mkmodel - this is necessary as the AMYCNE FFY estimations are used for training the model.
-
 # Install FluFFyPipe
 FluFFyPipe requires python 3, slurm, slurmpy, and singularity, python-coloredlogs.
 
@@ -68,9 +62,8 @@ You will need to download/create the following files:
 
 	WisecondorX reference files (created using the --mkref mode)
 
-	PREFACE reference file (optional)(created using the --mkmodel mode)
+	PREFACE model file (optional)
 
 	blacklist bed file (used by wisecondorX)
 
 	FluFFyPipe singularity collection (singularity pull --name FluFFyPipe.sif shub://J35P312/FluFFyPipe)
-

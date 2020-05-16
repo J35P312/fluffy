@@ -8,7 +8,6 @@ import click
 import coloredlogs
 
 from fluffy.cli.make_analysis import analyse
-from fluffy.cli.make_model import model
 from fluffy.cli.make_reference import reference
 from fluffy.config import get_configs
 from fluffy.samplesheet import read_samplesheet
@@ -75,6 +74,9 @@ def base_command(ctx, log_level, config, out, sample, project):
     project_dir = pathlib.Path(project)
     ctx.obj["project"] = project_dir
 
+    sacct_dir = out / "sacct"
+    sacct_dir.mkdir(parents=True, exist_ok=True)
+
     with open(sample, "r") as samplesheet:
         ctx.obj["samples"] = list(read_samplesheet(samplesheet, project_dir))
 
@@ -86,5 +88,4 @@ def base_command(ctx, log_level, config, out, sample, project):
 
 
 base_command.add_command(reference)
-base_command.add_command(model)
 base_command.add_command(analyse)
