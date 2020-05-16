@@ -144,6 +144,7 @@ class MockSlurmAPI:
         self.time = slurm_settings["time"]
         self.log_dir = out_dir / "logs"
         self.scripts_dir = out_dir / "scripts"
+        self.slurm_settings=copy.copy(slurm_settings)
         self.job = None
         self._jobid = _jobid
 
@@ -169,7 +170,7 @@ class MockSlurmAPI:
             )
         jobid = 1
         if not dry_run:
-            jobid = self._jobid
+           jobid = self._jobid
         LOG.info("Submitted job %s with job id: %s", name, jobid)
         return jobid
 
