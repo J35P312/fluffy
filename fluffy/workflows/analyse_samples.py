@@ -29,16 +29,13 @@ def analyse_workflow(
         # This will fail if dir already exists
         sample_outdir.mkdir(parents=True)
 
-        align_slurm_settings=copy.copy(configs["slurm"])
-        align_slurm_settings["ntasks"]=configs["align"]["ntasks"]
-
-        align_slurm_api=SlurmAPI(
-        slurm_settings=align_slurm_settings, out_dir=configs["out"])
-
+        slurm_api.slurm_settings["ntasks"]=configs["align"]["ntasks"]
+        print(configs["align"]["ntasks"])
         align_jobid = align_individual(
-            configs=configs, sample=sample, slurm_api=align_slurm_api, dry_run=dry_run,
+            configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,
         )
-
+        print(configs["slurm"]["ntasks"])
+        slurm_api.slurm_settings["ntasks"]=configs["slurm"]["ntasks"]
         ffy_jobid = estimate_ffy(
             configs=configs,
             sample_id=sample_id,
@@ -81,7 +78,7 @@ def analyse_workflow(
             jobids.append(preface_predict_jobid)
             sample_jobids.append(preface_predict_jobid)
 
-        cleanup_workflow(
+        cleanup_jobid=cleanup_workflow(
             configs=configs,
             sample_outdir=sample_outdir,
             sample_id=sample_id,
@@ -89,7 +86,8 @@ def analyse_workflow(
             slurm_api=slurm_api,
             dry_run=dry_run,
         )
-
+    jobids.append(cleanup_jobid)
+ 
     summarize_jobid = summarize_workflow(
         configs=configs, dependencies=jobids, slurm_api=slurm_api, dry_run=dry_run
     )
