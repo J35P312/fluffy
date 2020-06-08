@@ -30,12 +30,16 @@ def analyse_workflow(
         sample_outdir.mkdir(parents=True)
 
         slurm_api.slurm_settings["ntasks"]=configs["align"]["ntasks"]
+        slurm_api.slurm_settings["mem"]=configs["align"]["mem"]
+
         print(configs["align"]["ntasks"])
         align_jobid = align_individual(
             configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,
         )
         print(configs["slurm"]["ntasks"])
         slurm_api.slurm_settings["ntasks"]=configs["slurm"]["ntasks"]
+        slurm_api.slurm_settings["mem"]=configs["slurm"]["mem"]
+
         ffy_jobid = estimate_ffy(
             configs=configs,
             sample_id=sample_id,
