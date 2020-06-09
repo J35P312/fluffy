@@ -11,6 +11,8 @@ from fluffy.workflows.picard import picard_qc_workflow
 from fluffy.workflows.preface import preface_predict_workflow
 from fluffy.workflows.summarize import summarize_workflow
 from fluffy.workflows.wisecondor import wisecondor_xtest_workflow
+from fluffy.workflows.status_update import pipe_complete
+from fluffy.workflows.status_update import pipe_fail
 
 
 def analyse_workflow(
@@ -95,4 +97,15 @@ def analyse_workflow(
     summarize_jobid = summarize_workflow(
         configs=configs, dependencies=jobids, slurm_api=slurm_api, dry_run=dry_run
     )
+
+    slurm_api.slurm_settings["time"]="1:00:00"
+    pipe_complete(
+        configs=configs, dependency=summarize_jobid, slurm_api=slurm_api, dry_run=dry_run
+    )
+
+    slurm_api.slurm_settings["dependency"]=f"afternotok:{summarize_jobid}"
+    pipe_fail(
+        configs=configs, slurm_api=slurm_api, dry_run=dry_run
+    )
+
     return summarize_jobid

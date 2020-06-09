@@ -39,6 +39,7 @@ class SlurmAPI:
         self.log_dir = out_dir / "logs"
         self.sacct_dir = out_dir / "sacct"
         self.scripts_dir = out_dir / "scripts"
+        self.out_dir=out_dir
         self.slurm_settings=copy.copy(slurm_settings)
         self.job = None
         self.jobids=[]
@@ -74,9 +75,14 @@ finnish(){{
 sacct --format=jobid,jobname%50,account,partition,alloccpus,TotalCPU,elapsed,start,end,state,exitcode --jobs {} | perl -nae \'my @headers=(jobid,jobname,account,partition,alloccpus,TotalCPU,elapsed,start,end,state,exitcode); if($. == 1) {{ print q{{#}} . join(qq{{\\t}}, @headers), qq{{\\n}} }} if ($. >= 3 && $F[0] !~ /( .batch | .bat+ )\\b/xms) {{ print join(qq{{\\t}}, @F), qq{{\\n}} }}\' > {}/fluffy_{}.log.status
 }}
 
-trap finnish EXIT TERM INT
+failure(){{
+sed -i \'s/ \"running\"/ \"fail\"/g\' {}/analysis_status.json
+}}
 
-""".format(",".join(self.jobids),self.sacct_dir,time_string )
+trap finnish EXIT TERM INT
+trap failure ERR TERM
+
+""".format(",".join(self.jobids),self.sacct_dir,time_string,self.out_dir )
 
         if not dry_run:
             jobid = job.run("\n".join([on_finnish, command]), depends_on=dependencies)

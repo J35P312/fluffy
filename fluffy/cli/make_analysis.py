@@ -5,6 +5,7 @@ import click
 
 from fluffy.config import check_configs
 from fluffy.deliverables import print_deliverables
+from fluffy.status import print_status
 from fluffy.workflows.analyse_samples import analyse_workflow
 
 
@@ -35,6 +36,10 @@ def analyse(ctx, skip_preface, dry_run):
         output_dir=configs["out"],
         project_dir=project_dir,
         samples=samples,
+    )
+
+    print_status(
+        output_dir=configs["out"],
     )
 
     analyse_workflow(
