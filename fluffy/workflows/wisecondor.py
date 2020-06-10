@@ -6,6 +6,8 @@ from fluffy.commands.pipelines import wisecondor_x_test
 from fluffy.commands.wisecondor import get_mkref_cmd
 from fluffy.slurm_api import SlurmAPI
 from fluffy.workflows.align import align_individual
+from fluffy.workflows.status_update import pipe_complete
+from fluffy.workflows.status_update import pipe_fail
 
 
 def make_reference(
@@ -15,10 +17,25 @@ def make_reference(
     out_dir = configs["out"]
     jobids = []
     for sample in samples:
+        
+
+        sample_id = sample["sample_id"]
+        sample_outdir = configs["out"] / sample_id
+
+        # This will fail if dir already exists
+        sample_outdir.mkdir(parents=True)
+
+        slurm_api.slurm_settings["ntasks"]=configs["align"]["ntasks"]
+        slurm_api.slurm_settings["mem"]=configs["align"]["mem"]
+
         align_jobid = align_individual(
             configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run
         )
         jobids.append(align_jobid)
+
+        slurm_api.slurm_settings["ntasks"]=configs["slurm"]["ntasks"]
+        slurm_api.slurm_settings["mem"]=configs["slurm"]["mem"]
+
 
     mkref_cmd = get_mkref_cmd(
         singularity_exe=configs["singularity"],
@@ -30,6 +47,16 @@ def make_reference(
     jobid = slurm_api.run_job(
         name="wcxmkref", command=mkref_cmd, afterok=jobids, dry_run=dry_run,
     )
+
+    slurm_api.slurm_settings["time"]="1:00:00"
+    pipe_complete(
+        configs=configs, afterok=jobid, slurm_api=slurm_api, dry_run=dry_run
+    )
+    pipe_fail(
+	configs=configs, slurm_api=slurm_api, dry_run=dry_run, afternotok=jobid
+    )
+
+
 
     return jobid
 
