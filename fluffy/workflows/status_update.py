@@ -15,7 +15,7 @@ def sed_replace_inplace(
 
 def pipe_complete(
     configs: dict,
-    dependency: int,
+    afterok: int,
     slurm_api: SlurmAPI,
     dry_run: bool = False,
 ) -> int:
@@ -29,7 +29,7 @@ def pipe_complete(
     jobid = slurm_api.run_job(
         name="fluffy-complete",
         command=sed_replace_inplace_cmd,
-        dependencies=[dependency],
+        afterok=[afterok],
         dry_run=dry_run,
     )
 
@@ -38,6 +38,7 @@ def pipe_complete(
 def pipe_fail(
     configs: dict,
     slurm_api: SlurmAPI,
+    afternotok: int,
     dry_run: bool = False,
 ) -> int:
     """Run Sed to update the analysis run flag"""
@@ -50,7 +51,7 @@ def pipe_fail(
     jobid = slurm_api.run_job(
         name="fluffy-fail",
         command=sed_replace_inplace_cmd,
-        dependencies=[],
+        afternotok=[afternotok],
         dry_run=dry_run,
     )
 

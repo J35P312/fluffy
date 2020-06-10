@@ -11,7 +11,7 @@ LOG = logging.getLogger(__name__)
 def estimate_ffy(
     configs: dict,
     sample_id: str,
-    dependency: int,
+    afterok: int,
     slurm_api: SlurmAPI,
     dry_run: bool = False,
 ) -> int:
@@ -25,7 +25,7 @@ def estimate_ffy(
     jobid = slurm_api.run_job(
         name=f"amycne-{sample_id}",
         command=fetal_fraction_pipe,
-        dependencies=[dependency],
+        afterok=[afterok],
         dry_run=dry_run,
     )
 

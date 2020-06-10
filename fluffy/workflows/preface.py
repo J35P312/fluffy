@@ -81,7 +81,7 @@ def make_call_model(samples: Iterator[dict], out_dir: Path, configs: dict):
 def preface_predict_workflow(
     configs: dict,
     sample_id: str,
-    dependency: int,
+    afterok: int,
     slurm_api: SlurmAPI,
     dry_run: bool = False,
 ):
@@ -99,7 +99,7 @@ def preface_predict_workflow(
     jobid = slurm_api.run_job(
         name=f"preface_predict-{sample_id}",
         command=preface_predict_cmd,
-        dependencies=[dependency],
+        afterok=[afterok],
         dry_run=dry_run,
     )
 

@@ -45,7 +45,7 @@ def analyse_workflow(
         ffy_jobid = estimate_ffy(
             configs=configs,
             sample_id=sample_id,
-            dependency=align_jobid,
+            afterok=align_jobid,
             slurm_api=slurm_api,
             dry_run=dry_run,
         )
@@ -55,7 +55,7 @@ def analyse_workflow(
         picard_jobid = picard_qc_workflow(
             configs=configs,
             sample_id=sample_id,
-            dependency=align_jobid,
+            afterok=align_jobid,
             slurm_api=slurm_api,
             dry_run=dry_run,
         )
@@ -65,7 +65,7 @@ def analyse_workflow(
         wcx_test_jobid = wisecondor_xtest_workflow(
             configs=configs,
             sample_id=sample_id,
-            dependency=align_jobid,
+            afterok=align_jobid,
             slurm_api=slurm_api,
             dry_run=dry_run,
         )
@@ -77,7 +77,7 @@ def analyse_workflow(
             preface_predict_jobid = preface_predict_workflow(
                 configs=configs,
                 sample_id=sample_id,
-                dependency=wcx_test_jobid,
+                afterok=wcx_test_jobid,
                 slurm_api=slurm_api,
                 dry_run=dry_run,
             )
@@ -88,24 +88,23 @@ def analyse_workflow(
             configs=configs,
             sample_outdir=sample_outdir,
             sample_id=sample_id,
-            dependencies=sample_jobids,
+            afterok=sample_jobids,
             slurm_api=slurm_api,
             dry_run=dry_run,
         )
     jobids.append(cleanup_jobid)
  
     summarize_jobid = summarize_workflow(
-        configs=configs, dependencies=jobids, slurm_api=slurm_api, dry_run=dry_run
+        configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run
     )
 
     slurm_api.slurm_settings["time"]="1:00:00"
     pipe_complete(
-        configs=configs, dependency=summarize_jobid, slurm_api=slurm_api, dry_run=dry_run
+        configs=configs, afterok=summarize_jobid, slurm_api=slurm_api, dry_run=dry_run
     )
 
-    slurm_api.slurm_settings["dependency"]=f"afternotok:{summarize_jobid}"
     pipe_fail(
-        configs=configs, slurm_api=slurm_api, dry_run=dry_run
+        configs=configs, slurm_api=slurm_api, dry_run=dry_run, afternotok=summarize_jobid
     )
 
     return summarize_jobid

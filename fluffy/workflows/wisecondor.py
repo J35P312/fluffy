@@ -28,7 +28,7 @@ def make_reference(
     )
 
     jobid = slurm_api.run_job(
-        name="wcxmkref", command=mkref_cmd, dependencies=jobids, dry_run=dry_run,
+        name="wcxmkref", command=mkref_cmd, afterok=jobids, dry_run=dry_run,
     )
 
     return jobid
@@ -37,7 +37,7 @@ def make_reference(
 def wisecondor_xtest_workflow(
     configs: dict,
     sample_id: str,
-    dependency: int,
+    afterok: int,
     slurm_api: SlurmAPI,
     dry_run: bool = False,
 ):
@@ -50,7 +50,7 @@ def wisecondor_xtest_workflow(
     jobid = slurm_api.run_job(
         name=f"wcx-{sample_id}",
         command=run_wcx_pipe,
-        dependencies=[dependency],
+        afterok=[afterok],
         dry_run=dry_run,
     )
 

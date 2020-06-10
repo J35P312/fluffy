@@ -11,7 +11,7 @@ def test_xtest_workflow(configs, slurm_api, sample_single, jobid):
     xtest_jobid = wisecondor_xtest_workflow(
         configs=configs,
         sample_id=sample_single["sample_id"],
-        dependency=jobid,
+        afterok=jobid,
         slurm_api=slurm_api,
         dry_run=False,
     )

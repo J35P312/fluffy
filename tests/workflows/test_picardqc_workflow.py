@@ -10,7 +10,7 @@ def test_picard_qc(configs, slurm_api, sample_single, jobid):
     picard_jobid = picard_qc_workflow(
         configs=configs,
         sample_id=sample_single["sample_id"],
-        dependency=jobid,
+        afterok=jobid,
         slurm_api=slurm_api,
         dry_run=False,
     )
