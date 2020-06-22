@@ -23,7 +23,7 @@ def cleanup_workflow(
     configs: dict,
     sample_outdir: Path,
     sample_id: str,
-    dependencies: list,
+    afterok: list,
     slurm_api: SlurmAPI,
     dry_run: bool = False,
 ) -> int:
@@ -37,7 +37,7 @@ def cleanup_workflow(
     jobid = slurm_api.run_job(
         name=f"cleanup-{sample_id}",
         command=cleanup_cmd,
-        dependencies=dependencies,
+        afterok=afterok,
         dry_run=dry_run,
     )
 

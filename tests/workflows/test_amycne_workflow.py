@@ -10,7 +10,7 @@ def test_estimate_ffy(configs, slurm_api, sample_single, jobid):
     estimate_jobid = estimate_ffy(
         configs=configs,
         sample_id=sample_single["sample_id"],
-        dependency=jobid,
+        afterok=jobid,
         slurm_api=slurm_api,
         dry_run=False,
     )

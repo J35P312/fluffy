@@ -160,13 +160,13 @@ class MockSlurmAPI:
         return job
 
     def run_job(
-        self, name: str, command: str, dependencies: list = None, dry_run: bool = False,
+        self, name: str, command: str, afterok: list = None,afternotok: list = None, dry_run: bool = False,
     ) -> int:
         """Create and submit a job to slurm"""
         LOG.info("Submitting commands %s", command)
-        if dependencies:
+        if afterok:
             LOG.info(
-                "Adding dependencies: %s", ",".join([str(dep) for dep in dependencies])
+                "Adding dependencies: %s", ",".join([str(dep) for dep in afterok])
             )
         jobid = 1
         if not dry_run:

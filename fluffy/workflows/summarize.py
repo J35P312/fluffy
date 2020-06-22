@@ -22,7 +22,7 @@ def get_summarize_cmd(
 
 
 def summarize_workflow(
-    configs: dict, dependencies: list, slurm_api: SlurmAPI, dry_run: bool = False,
+    configs: dict, afterok: list, slurm_api: SlurmAPI, dry_run: bool = False,
 ) -> int:
     """Run the workflow to summarize an analysis"""
     LOG.info("Run the summarize workflow")
@@ -39,7 +39,7 @@ def summarize_workflow(
     jobid = slurm_api.run_job(
         name=f"summarize_batch",
         command=summarize_cmd,
-        dependencies=dependencies,
+        afterok=afterok,
         dry_run=dry_run,
     )
 

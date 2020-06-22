@@ -39,13 +39,26 @@ class SlurmAPI:
         self.log_dir = out_dir / "logs"
         self.sacct_dir = out_dir / "sacct"
         self.scripts_dir = out_dir / "scripts"
+        self.out_dir=out_dir
         self.slurm_settings=copy.copy(slurm_settings)
         self.job = None
         self.jobids=[]
 
-    def create_job(self, name: str) -> Slurm:
+    def create_job(self, name: str, afterok: list = None, afternotok: list = None) -> Slurm:
         """Create a job for submitting to SLURM"""
         LOG.info("Create a slurm job with name %s", name)
+
+        self.slurm_settings["dependency"]=[]
+        if afterok:
+            self.slurm_settings["dependency"].append( "afterok:{}".format( ":".join( str(dependency) for dependency in afterok)  ) )
+        if afternotok:
+            self.slurm_settings["dependency"].append( "afternotok:{}".format( ":".join( str(dependency) for dependency in afternotok)  ) )
+
+        if self.slurm_settings["dependency"]:
+            self.slurm_settings["dependency"]=",".join(self.slurm_settings["dependency"])
+        else:
+            del self.slurm_settings["dependency"]
+
         job = Slurm(
             name,
             self.slurm_settings,
@@ -55,13 +68,13 @@ class SlurmAPI:
         return job
 
     def run_job(
-        self, name: str, command: str, dependencies: list = None, dry_run: bool = False
+        self, name: str, command: str, afterok: list = None, afternotok: list = None, dry_run: bool = False
     ) -> int:
         """Create and submit a job to slurm"""
-        job = self.create_job(name=name)
+        job = self.create_job(name=name,afterok=afterok,afternotok=afternotok)
         LOG.info("Submitting commands %s", command)
-        if dependencies:
-            LOG.info("Adding dependencies: %s", ",".join( str(dependency) for dependency in dependencies))
+        if afterok:
+            LOG.info("Adding dependencies: %s", ",".join( str(dependency) for dependency in afterok))
         jobid = 1
 
         current_time=datetime.now()
@@ -74,12 +87,17 @@ finnish(){{
 sacct --format=jobid,jobname%50,account,partition,alloccpus,TotalCPU,elapsed,start,end,state,exitcode --jobs {} | perl -nae \'my @headers=(jobid,jobname,account,partition,alloccpus,TotalCPU,elapsed,start,end,state,exitcode); if($. == 1) {{ print q{{#}} . join(qq{{\\t}}, @headers), qq{{\\n}} }} if ($. >= 3 && $F[0] !~ /( .batch | .bat+ )\\b/xms) {{ print join(qq{{\\t}}, @F), qq{{\\n}} }}\' > {}/fluffy_{}.log.status
 }}
 
+failure(){{
+sed -i \'s/ \"running\"/ \"fail\"/g\' {}/analysis_status.json
+}}
+
 trap finnish EXIT TERM INT
+trap failure ERR TERM
 
-""".format(",".join(self.jobids),self.sacct_dir,time_string )
+""".format(",".join(self.jobids),self.sacct_dir,time_string,self.out_dir )
 
-        if not dry_run:
-            jobid = job.run("\n".join([on_finnish, command]), depends_on=dependencies)
+        if not dry_run:               
+            jobid = job.run("\n".join([on_finnish, command]))
         LOG.info("Submitted job %s with job id: %s", name, jobid)
 
         self.jobids.append( str(jobid) )

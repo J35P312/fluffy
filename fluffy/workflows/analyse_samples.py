@@ -11,6 +11,8 @@ from fluffy.workflows.picard import picard_qc_workflow
 from fluffy.workflows.preface import preface_predict_workflow
 from fluffy.workflows.summarize import summarize_workflow
 from fluffy.workflows.wisecondor import wisecondor_xtest_workflow
+from fluffy.workflows.status_update import pipe_complete
+from fluffy.workflows.status_update import pipe_fail
 
 
 def analyse_workflow(
@@ -30,16 +32,20 @@ def analyse_workflow(
         sample_outdir.mkdir(parents=True)
 
         slurm_api.slurm_settings["ntasks"]=configs["align"]["ntasks"]
+        slurm_api.slurm_settings["mem"]=configs["align"]["mem"]
+
         print(configs["align"]["ntasks"])
         align_jobid = align_individual(
             configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,
         )
         print(configs["slurm"]["ntasks"])
         slurm_api.slurm_settings["ntasks"]=configs["slurm"]["ntasks"]
+        slurm_api.slurm_settings["mem"]=configs["slurm"]["mem"]
+
         ffy_jobid = estimate_ffy(
             configs=configs,
             sample_id=sample_id,
-            dependency=align_jobid,
+            afterok=align_jobid,
             slurm_api=slurm_api,
             dry_run=dry_run,
         )
@@ -49,7 +55,7 @@ def analyse_workflow(
         picard_jobid = picard_qc_workflow(
             configs=configs,
             sample_id=sample_id,
-            dependency=align_jobid,
+            afterok=align_jobid,
             slurm_api=slurm_api,
             dry_run=dry_run,
         )
@@ -59,7 +65,7 @@ def analyse_workflow(
         wcx_test_jobid = wisecondor_xtest_workflow(
             configs=configs,
             sample_id=sample_id,
-            dependency=align_jobid,
+            afterok=align_jobid,
             slurm_api=slurm_api,
             dry_run=dry_run,
         )
@@ -71,7 +77,7 @@ def analyse_workflow(
             preface_predict_jobid = preface_predict_workflow(
                 configs=configs,
                 sample_id=sample_id,
-                dependency=wcx_test_jobid,
+                afterok=wcx_test_jobid,
                 slurm_api=slurm_api,
                 dry_run=dry_run,
             )
@@ -82,13 +88,23 @@ def analyse_workflow(
             configs=configs,
             sample_outdir=sample_outdir,
             sample_id=sample_id,
-            dependencies=sample_jobids,
+            afterok=sample_jobids,
             slurm_api=slurm_api,
             dry_run=dry_run,
         )
     jobids.append(cleanup_jobid)
  
     summarize_jobid = summarize_workflow(
-        configs=configs, dependencies=jobids, slurm_api=slurm_api, dry_run=dry_run
+        configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run
     )
+
+    slurm_api.slurm_settings["time"]="1:00:00"
+    pipe_complete(
+        configs=configs, afterok=summarize_jobid, slurm_api=slurm_api, dry_run=dry_run
+    )
+
+    pipe_fail(
+        configs=configs, slurm_api=slurm_api, dry_run=dry_run, afternotok=summarize_jobid
+    )
+
     return summarize_jobid
