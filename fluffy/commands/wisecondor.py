@@ -47,7 +47,7 @@ def get_predict_cmd(
 
     predict_cmd = (
         f"singularity exec {singularity_exe} WisecondorX --loglevel info predict "
-        f"{str(out_prefix)}.bam.wcx.npz {reference} {str(out)} --plot --bed --blacklist "
+        f"{str(out_prefix)}.bam.wcx.npz {reference} {str(out)} --bed --blacklist "
         f"{blacklist} --zscore {zscore}"
     )
 

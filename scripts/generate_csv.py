@@ -210,7 +210,7 @@ for line in open(args.samplesheet):
         line=line.replace("\t"," ")
         line=line.replace(";"," ")
 
-    if line.startswith("[Data],,"):
+    if line.startswith("[Data]"):
         continue
 
     if first:
