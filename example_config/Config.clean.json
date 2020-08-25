@@ -1,0 +1,45 @@
+{
+	"align":{
+		"tmpdir":"$TMPDIR/",
+		"ntasks":16,
+		"mem":0
+
+	},
+	"amycne":{
+		"minq":10
+
+	},
+	"wisecondorx":{
+		"reftest":"",
+		"testbinsize":500000,
+		"refpreface":"",
+		"prefacebinsize":100000,
+		"blacklist":"",
+		"zscore": 1.5
+	},
+	"tiddit":{
+		"binsize":50000
+	},
+	"preface":{
+		"model_dir":"",
+		"modelsettings":"--olm"
+
+	},
+	"picard":{
+		"javasettings":"-Xms4G -Xmx4G"
+	},
+	"reference":"",
+	"singularity":"",
+	"slurm": {
+		"account":"",
+		"time":"5:00:00",
+		"ntasks":1,
+		"mem":"8G"
+
+
+	},
+	"summary":{
+		"mincnv":10000000,
+		"zscore":5
+	}
+}
