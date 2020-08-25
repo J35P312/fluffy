@@ -2,7 +2,12 @@
 	#Alignment settings
 	"align":{
 		#Temporary files are written here
-		"tmpdir":"$TMPDIR/"
+		"tmpdir":"$TMPDIR/",
+                #number of cpu for alignment
+                "ntasks":16,
+		#amount of memory (set to 0 in order to use all memory available to the cores)
+                "mem":0
+
 	},
 
 	#AMYCNE FFY estimation settings

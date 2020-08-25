@@ -209,7 +209,10 @@ for line in open(args.samplesheet):
         line=line.replace(","," ")
         line=line.replace("\t"," ")
         line=line.replace(";"," ")
- 
+
+    if line.startswith("[Data],,"):
+        continue
+
     if first:
         i=0
         for entry in line.strip("\n").split(" "):

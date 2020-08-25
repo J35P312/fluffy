@@ -34,12 +34,18 @@ def read_samplesheet(samplesheet: Iterator[str], project_dir: Path) -> Iterator[
     samples = set()
     sample_col = 0
 
+    first=True
     for line_nr, line in enumerate(samplesheet):
-        if line_nr == 0:
+
+        if line.startswith("[Data],,"):
+            continue
+
+        if first:
             separator = get_separator(line)
             LOG.debug("Use separator %s", separator)
             header = line.rstrip().split(separator)
             sample_col = get_sample_col(header)
+            first=False
             continue
 
         content = line.rstrip().split(separator)
