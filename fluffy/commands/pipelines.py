@@ -20,8 +20,11 @@ def align_and_convert_single_end(
     out_prefix = get_outprefix(out, sample_id)
     aln = get_align_command(
         singularity_exe=config["singularity"],
+        sample_id=sample_id,
+        tmp_dir=config["align"]["tmpdir"],
         reference=config["reference"],
         fastq=fastq,
+        out_dir=str(out),
         out_prefix=out_prefix,
     )
 
@@ -54,16 +57,22 @@ def align_and_convert_paired_end(
     out_prefix = get_outprefix(out, sample_id)
     aln_r1 = get_align_command(
         singularity_exe=config["singularity"],
+       	sample_id=sample_id,
+       	tmp_dir=config["align"]["tmpdir"],
         reference=config["reference"],
         fastq=fastq[0],
+       	out_dir=str(out),
         out_prefix=out_prefix,
         read="r1",
     )
 
     aln_r2 = get_align_command(
         singularity_exe=config["singularity"],
+       	sample_id=sample_id,
+       	tmp_dir=config["align"]["tmpdir"],
         reference=config["reference"],
         fastq=fastq[1],
+       	out_dir=str(out),
         out_prefix=out_prefix,
         read="r2",
     )
