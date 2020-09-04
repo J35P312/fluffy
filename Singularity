@@ -25,12 +25,14 @@ LC_ALL=C.UTF-8
     conda config --add channels bioconda
     conda config --add channels r
 
+    #conda install -c bioconda wisecondorx=1.1.5
     pip install -U git+https://github.com/CenterForMedicalGeneticsGhent/WisecondorX@v1.1.6
 
-    conda install -c bioconda samtools bwa picard fastqc biobambam multiqc bioconductor-dnacopy
-    conda install -c r r-doparallel r-foreach r-neuralnet r-glmnet r-data.table r-mass r-matrix r-jsonlite
+    conda install -c bioconda samtools picard bioconductor-dnacopy
+    conda install -c bioconda bwa fastqc biobambam
+    conda install -c r r-doparallel r-foreach r-neuralnet r-glmnet r-data.table r-mass r-matrix
 
-    pip install sklearn numpy scipy matplotlib pysam futures bottleneck cython
+    pip install sklearn numpy scipy matplotlib pysam futures bottleneck cython multiqc
     
     cd /bin/ && git clone https://github.com/J35P312/AMYCNE.git && cd AMYCNE && python setup.py build_ext --inplace    
     
@@ -39,4 +41,5 @@ LC_ALL=C.UTF-8
     cd /bin/ && ./INSTALL.sh
     chmod +x /bin/TIDDIT.py
 
-    cd /bin/ && git clone https://github.com/J35P312/FluFFyPipe.git
+   cd /bin/ && git clone https://github.com/J35P312/FluFFyPipe.git
+
