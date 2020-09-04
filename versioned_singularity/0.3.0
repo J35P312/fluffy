@@ -27,8 +27,8 @@ LC_ALL=C.UTF-8
 
     pip install -U git+https://github.com/CenterForMedicalGeneticsGhent/WisecondorX@v1.1.6
 
-    conda install -c bioconda samtools bwa picard fastqc biobambam multiqc
-    conda install -c r r-doparallel r-foreach r-neuralnet r-glmnet r-data.table r-mass r-matrix
+    conda install -c bioconda samtools bwa picard fastqc biobambam multiqc bioconductor-dnacopy
+    conda install -c r r-doparallel r-foreach r-neuralnet r-glmnet r-data.table r-mass r-matrix r-jsonlite
 
     pip install sklearn numpy scipy matplotlib pysam futures bottleneck cython
     
