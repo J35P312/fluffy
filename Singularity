@@ -30,9 +30,12 @@ LC_ALL=C.UTF-8
 
     conda install -c bioconda samtools picard bioconductor-dnacopy
     conda install -c bioconda bwa fastqc biobambam
-    conda install -c r r-doparallel r-foreach r-neuralnet r-glmnet r-data.table r-mass r-matrix
+    conda install -c r r-doparallel r-foreach r-neuralnet r-glmnet r-data.table r-mass r-matrix r-jsonlite
 
     pip install sklearn numpy scipy matplotlib pysam futures bottleneck cython multiqc
+    
+    cd /bin/ && wget https://github.com/CenterForMedicalGeneticsGhent/PREFACE/archive/v0.1.1.zip && unzip v0.1.1.zip
+    cd /
     
     cd /bin/ && git clone https://github.com/J35P312/AMYCNE.git && cd AMYCNE && python setup.py build_ext --inplace    
     
