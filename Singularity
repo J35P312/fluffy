@@ -11,7 +11,7 @@ LC_ALL=C.UTF-8
 
 %post
     apt-get update
-    apt-get -y install wget git bzip2 build-essential gcc zlib1g-dev language-pack-en-base apt-transport-https make cmake unzip sudo libatlas3-base
+    apt-get -y install wget git bzip2 build-essential gcc zlib1g-dev language-pack-en-base apt-transport-https make cmake unzip sudo libatlas3-base python3 python3-pip
     update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 
     cd /root/ && wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
@@ -32,7 +32,8 @@ LC_ALL=C.UTF-8
     conda install -c bioconda bwa fastqc biobambam
     conda install -c r r-doparallel r-foreach r-neuralnet r-glmnet r-data.table r-mass r-matrix r-jsonlite
 
-    pip install sklearn numpy scipy matplotlib pysam futures bottleneck cython multiqc
+    pip install sklearn numpy scipy matplotlib pysam futures bottleneck cython
+    pip3 install multiqc
     
     cd /bin/ && wget https://github.com/CenterForMedicalGeneticsGhent/PREFACE/archive/v0.1.1.zip && unzip v0.1.1.zip
     cd /
