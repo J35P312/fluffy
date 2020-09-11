@@ -4,6 +4,7 @@ import logging
 from pathlib import Path
 
 from fluffy.slurm_api import SlurmAPI
+from fluffy.commands.multiqc import get_multiqc_cmd
 
 LOG = logging.getLogger(__name__)
 
@@ -36,9 +37,11 @@ def summarize_workflow(
         mincnv=configs["summary"]["mincnv"],
     )
 
+    multiqc_cmd=get_multiqc_cmd(singularity_exe=configs["singularity"],input_dir=out_dir,out_dir=out_dir)
+
     jobid = slurm_api.run_job(
         name=f"summarize_batch",
-        command=summarize_cmd,
+        command=f"{multiqc_cmd}\n{summarize_cmd}",
         afterok=afterok,
         dry_run=dry_run,
     )
