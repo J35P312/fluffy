@@ -49,9 +49,6 @@ def read_samplesheet(samplesheet: Iterator[str], project_dir: Path) -> Iterator[
             continue
 
         content = line.rstrip().split(separator)
-        print(content)
-        print(line)
-        print(sample_col)
         sample_name = content[sample_col]
 
         if sample_name in samples:
