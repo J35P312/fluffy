@@ -30,8 +30,8 @@ jobs:
 
     - name: Test with pytest
       run: |
-      pytest --cov=./fluffy --cov-report xml
-    
+        pytest --cov=./fluffy --cov-report xml
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
