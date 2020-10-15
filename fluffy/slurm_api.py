@@ -44,6 +44,10 @@ class SlurmAPI:
         self.job = None
         self.jobids=[]
 
+
+        current_time=datetime.now()
+        self.analysis_time=f"{current_time.year}-{current_time.month}-{current_time.day}T{current_time.hour}:{current_time.minute}:{current_time.second}"
+
     def create_job(self, name: str, afterok: list = None, afternotok: list = None) -> Slurm:
         """Create a job for submitting to SLURM"""
         LOG.info("Create a slurm job with name %s", name)
@@ -77,11 +81,10 @@ class SlurmAPI:
             LOG.info("Adding dependencies: %s", ",".join( str(dependency) for dependency in afterok))
         jobid = 1
 
-        current_time=datetime.now()
-        time_string=f"{current_time.year}-{current_time.month}-{current_time.day}T{current_time.hour}:{current_time.minute}:{current_time.second}"
+        time_string=self.analysis_time
         on_finnish=""
         if len(self.jobids):
-            pytime.sleep(1)
+            #pytime.sleep(1)
             on_finnish="""
 finnish(){{
 sacct --format=jobid,jobname%50,account,partition,alloccpus,TotalCPU,elapsed,start,end,state,exitcode --jobs {} | perl -nae \'my @headers=(jobid,jobname,account,partition,alloccpus,TotalCPU,elapsed,start,end,state,exitcode); if($. == 1) {{ print q{{#}} . join(qq{{\\t}}, @headers), qq{{\\n}} }} if ($. >= 3 && $F[0] !~ /( .batch | .bat+ )\\b/xms) {{ print join(qq{{\\t}}, @F), qq{{\\n}} }}\' > {}/fluffy_{}.log.status
