@@ -2,7 +2,7 @@
 
 
 def get_align_command(
-    singularity_exe: str, reference: str, fastq: str, out_prefix: str, read: str = None
+    singularity_exe: str, sample_id: str,tmp_dir: str, reference: str, fastq: str,out_dir:str, out_prefix: str, read: str = None
 ) -> str:
     """create a command to run bwa align. Read can be r1, r2 or none"""
     read_prefix = ".sai"
@@ -10,9 +10,12 @@ def get_align_command(
         read_prefix = "_R1.sai"
     if read == "r2":
         read_prefix = "_R2.sai"
+
+    fastqc_prefix=read_prefix.replace(".sai","")
     cmd = (
         f"singularity exec {singularity_exe} bwa aln -n 0 -k 0 {reference} {fastq} > "
-        f"{out_prefix}{read_prefix}"
+        f"{out_prefix}{read_prefix}\n"
+        f"singularity exec {singularity_exe} cat {fastq} | singularity exec {singularity_exe} fastqc stdin:{sample_id}{fastqc_prefix} -d {tmp_dir} -o {out_dir}/{sample_id}"
     )
     return cmd
 

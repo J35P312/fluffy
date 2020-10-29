@@ -4,7 +4,7 @@ from pathlib import Path
 
 from fluffy.slurm_api import SlurmAPI
 from fluffy.version import __version__
-
+from fluffy.commands.multiqc import get_multiqc_cmd
 
 def get_cleanup_cmd(out_dir: Path, sample_outdir: Path, sample_id: str) -> str:
     """Return a string with the command to clean up and compress a sample run folder"""
@@ -34,9 +34,11 @@ def cleanup_workflow(
         out_dir=out_dir, sample_outdir=sample_outdir, sample_id=sample_id,
     )
 
+    multiqc_cmd=get_multiqc_cmd(singularity_exe=configs["singularity"],input_dir=sample_outdir,out_dir=sample_outdir)
+
     jobid = slurm_api.run_job(
         name=f"cleanup-{sample_id}",
-        command=cleanup_cmd,
+        command="\n".join([multiqc_cmd,cleanup_cmd]),
         afterok=afterok,
         dry_run=dry_run,
     )
