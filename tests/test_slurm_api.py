@@ -40,3 +40,10 @@ def test_submit_job(real_slurm_api):
     jobid = real_slurm_api.run_job(name=job_name, command=command, dry_run=True)
     # THEN assert a jobid is 1 since dry_run
     assert jobid == 1
+
+
+def test_write_yaml_job(real_slurm_api):
+    """Test to print per sample jobid yaml"""
+    # GIVEN a slurm api, a job name and a command
+    print_yaml=real_slurm_api.print_sample_per_jobs(dry_run=True)
+    

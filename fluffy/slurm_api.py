@@ -116,8 +116,10 @@ trap failure ERR TERM
         )
 
 
-    def print_sample_per_jobs(self):
+    def print_sample_per_jobs(self,dry_run: bool = False):
         yaml_out=yaml.dump(self.jobs_per_samples)
-        f=open("{}//jobs_per_sample.yaml".format(self.sacct_dir),"w")
-        f.write(yaml_out)
-        f.close()
+
+        if not dry_run:
+            f=open("{}//jobs_per_sample.yaml".format(self.sacct_dir),"w")
+            f.write(yaml_out)
+            f.close()
