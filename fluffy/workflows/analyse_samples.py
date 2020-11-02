@@ -26,6 +26,7 @@ def analyse_workflow(
     jobids = []
     for sample in samples:
         sample_jobids = []
+        slurm_api.jobs_per_samples[ sample["sample_id"] ]=[]
         sample_id = sample["sample_id"]
         sample_outdir = configs["out"] / sample_id
         # This will fail if dir already exists
@@ -38,7 +39,8 @@ def analyse_workflow(
         align_jobid = align_individual(
             configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,
         )
-        print(configs["slurm"]["ntasks"])
+        slurm_api.jobs_per_samples[sample["sample_id"]].append(align_jobid)
+
         slurm_api.slurm_settings["ntasks"]=configs["slurm"]["ntasks"]
         slurm_api.slurm_settings["mem"]=configs["slurm"]["mem"]
 
@@ -50,6 +52,8 @@ def analyse_workflow(
             dry_run=dry_run,
         )
         jobids.append(ffy_jobid)
+
+        slurm_api.jobs_per_samples[sample["sample_id"]].append(ffy_jobid)
         sample_jobids.append(ffy_jobid)
 
         picard_jobid = picard_qc_workflow(
@@ -60,6 +64,8 @@ def analyse_workflow(
             dry_run=dry_run,
         )
         jobids.append(picard_jobid)
+
+        slurm_api.jobs_per_samples[sample["sample_id"]].append(picard_jobid)
         sample_jobids.append(picard_jobid)
 
         wcx_test_jobid = wisecondor_xtest_workflow(
@@ -72,6 +78,8 @@ def analyse_workflow(
 
         jobids.append(wcx_test_jobid)
         sample_jobids.append(wcx_test_jobid)
+        slurm_api.jobs_per_samples[sample["sample_id"]].append(wcx_test_jobid)
+
 
         if not skip_preface:
             preface_predict_jobid = preface_predict_workflow(
@@ -83,6 +91,8 @@ def analyse_workflow(
             )
             jobids.append(preface_predict_jobid)
             sample_jobids.append(preface_predict_jobid)
+            slurm_api.jobs_per_samples[sample["sample_id"]].append(preface_predict_jobid)
+
 
         cleanup_jobid=cleanup_workflow(
             configs=configs,
@@ -93,10 +103,16 @@ def analyse_workflow(
             dry_run=dry_run,
         )
     jobids.append(cleanup_jobid)
+    slurm_api.jobs_per_samples[sample["sample_id"]].append(cleanup_jobid)
+
  
     summarize_jobid = summarize_workflow(
         configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run
     )
+
+    for sample in samples:
+        slurm_api.jobs_per_samples[sample["sample_id"]].append(summarize_jobid)
+    slurm_api.print_sample_per_jobs()
 
     slurm_api.slurm_settings["time"]="1:00:00"
     pipe_complete(

@@ -1,5 +1,6 @@
 """An API to slurm"""
 import copy
+import yaml
 import time as pytime
 from datetime import datetime
 
@@ -40,6 +41,7 @@ class SlurmAPI:
         self.sacct_dir = out_dir / "sacct"
         self.scripts_dir = out_dir / "scripts"
         self.out_dir=out_dir
+        self.jobs_per_samples={}
         self.slurm_settings=copy.copy(slurm_settings)
         self.job = None
         self.jobids=[]
@@ -112,3 +114,10 @@ trap failure ERR TERM
             f"{self.__class__.__name__}(account={self.account!r}, time={self.time!r}, "
             f"log_dir={self.log_dir!r}, scripts_dir={self.scripts_dir!r})"
         )
+
+
+    def print_sample_per_jobs(self):
+        yaml_out=yaml.dump(self.jobs_per_samples)
+        f=open("{}//jobs_per_sample.yaml".format(self.sacct_dir),"w")
+        f.write(yaml_out)
+        f.close()
