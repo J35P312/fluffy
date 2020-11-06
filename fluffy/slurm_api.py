@@ -41,11 +41,9 @@ class SlurmAPI:
         self.sacct_dir = out_dir / "sacct"
         self.scripts_dir = out_dir / "scripts"
         self.out_dir=out_dir
-        self.jobs_per_samples={}
         self.slurm_settings=copy.copy(slurm_settings)
         self.job = None
         self.jobids=[]
-
 
         current_time=datetime.now()
         self.analysis_time=f"{current_time.year}-{current_time.month}-{current_time.day}T{current_time.hour}:{current_time.minute}:{current_time.second}"
@@ -116,10 +114,11 @@ trap failure ERR TERM
         )
 
 
-    def print_sample_per_jobs(self,dry_run: bool = False):
-        yaml_out=yaml.dump(self.jobs_per_samples)
+    def print_submitted_jobs(self,dry_run: bool = False):
 
+        project_id=str(self.out_dir).strip("/").split("/")[-1]
+        yaml_out=yaml.dump({project_id:self.jobids})
         if not dry_run:
-            f=open("{}//jobs_per_sample.yaml".format(self.sacct_dir),"w")
+            f=open("{}//submitted_jobs.yaml".format(self.sacct_dir),"w")
             f.write(yaml_out)
             f.close()

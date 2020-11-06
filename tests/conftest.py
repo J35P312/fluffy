@@ -145,10 +145,10 @@ class MockSlurmAPI:
         self.time = slurm_settings["time"]
         self.log_dir = out_dir / "logs"
         self.scripts_dir = out_dir / "scripts"
-        self.jobs_per_samples={}
         self.slurm_settings=copy.copy(slurm_settings)
         self.job = None
         self._jobid = _jobid
+        self.jobids=[]
 
     def create_job(self, name: str) -> Slurm:
         """Create a job for submitting to SLURM"""
@@ -182,5 +182,5 @@ class MockSlurmAPI:
             f"log_dir={self.log_dir!r}, scripts_dir={self.scripts_dir!r}"
         )
 
-    def print_sample_per_jobs(self):
-        yaml_out=yaml.dump(self.jobs_per_samples)
+    def print_submitted_jobs(self):
+        yaml_out=yaml.dump({"project_id":self.jobids})

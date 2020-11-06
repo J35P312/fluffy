@@ -45,5 +45,5 @@ def test_submit_job(real_slurm_api):
 def test_write_yaml_job(real_slurm_api):
     """Test to print per sample jobid yaml"""
     # GIVEN a slurm api, a job name and a command
-    print_yaml=real_slurm_api.print_sample_per_jobs(dry_run=True)
+    print_yaml=real_slurm_api.print_submitted_jobs(dry_run=True)
     
