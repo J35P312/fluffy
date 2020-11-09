@@ -117,7 +117,10 @@ trap failure ERR TERM
     def print_submitted_jobs(self,dry_run: bool = False):
 
         project_id=str(self.out_dir).strip("/").split("/")[-1]
-        yaml_out=yaml.dump({project_id:self.jobids})
+        try:
+            yaml_out=yaml.dump({project_id:[int(i) for i in self.jobids]})
+        except:
+            yaml_out=yaml.dump({project_id:self.jobids})
         if not dry_run:
             f=open("{}//submitted_jobs.yaml".format(self.sacct_dir),"w")
             f.write(yaml_out)
