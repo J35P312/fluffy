@@ -1,5 +1,6 @@
 """An API to slurm"""
 import copy
+import yaml
 import time as pytime
 from datetime import datetime
 
@@ -43,7 +44,6 @@ class SlurmAPI:
         self.slurm_settings=copy.copy(slurm_settings)
         self.job = None
         self.jobids=[]
-
 
         current_time=datetime.now()
         self.analysis_time=f"{current_time.year}-{current_time.month}-{current_time.day}T{current_time.hour}:{current_time.minute}:{current_time.second}"
@@ -112,3 +112,16 @@ trap failure ERR TERM
             f"{self.__class__.__name__}(account={self.account!r}, time={self.time!r}, "
             f"log_dir={self.log_dir!r}, scripts_dir={self.scripts_dir!r})"
         )
+
+
+    def print_submitted_jobs(self,dry_run: bool = False):
+
+        project_id=str(self.out_dir).strip("/").split("/")[-1]
+        try:
+            yaml_out=yaml.dump({project_id:[int(i) for i in self.jobids]})
+        except:
+            yaml_out=yaml.dump({project_id:self.jobids})
+        if not dry_run:
+            f=open("{}//submitted_jobs.yaml".format(self.sacct_dir),"w")
+            f.write(yaml_out)
+            f.close()

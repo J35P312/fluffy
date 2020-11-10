@@ -34,11 +34,10 @@ def analyse_workflow(
         slurm_api.slurm_settings["ntasks"]=configs["align"]["ntasks"]
         slurm_api.slurm_settings["mem"]=configs["align"]["mem"]
 
-        print(configs["align"]["ntasks"])
         align_jobid = align_individual(
             configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,
         )
-        print(configs["slurm"]["ntasks"])
+
         slurm_api.slurm_settings["ntasks"]=configs["slurm"]["ntasks"]
         slurm_api.slurm_settings["mem"]=configs["slurm"]["mem"]
 
@@ -97,6 +96,7 @@ def analyse_workflow(
     summarize_jobid = summarize_workflow(
         configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run
     )
+    slurm_api.print_submitted_jobs()
 
     slurm_api.slurm_settings["time"]="1:00:00"
     pipe_complete(

@@ -1,6 +1,7 @@
 """Fixtures for tests"""
 
 import copy
+import yaml
 import logging
 import shutil
 import sys
@@ -147,6 +148,7 @@ class MockSlurmAPI:
         self.slurm_settings=copy.copy(slurm_settings)
         self.job = None
         self._jobid = _jobid
+        self.jobids=[]
 
     def create_job(self, name: str) -> Slurm:
         """Create a job for submitting to SLURM"""
@@ -179,3 +181,6 @@ class MockSlurmAPI:
             f"{self.__class__.__name__}(account={self.account!r}, time={self.time!r}, "
             f"log_dir={self.log_dir!r}, scripts_dir={self.scripts_dir!r}"
         )
+
+    def print_submitted_jobs(self):
+        yaml_out=yaml.dump({"project_id":self.jobids})
