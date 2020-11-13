@@ -43,10 +43,10 @@ output_header = [
     "Zscore_18",
     "Zscore_21",
     "Zscore_X",
-    "chr13_Ratio",
-    "chr18_Ratio",
-    "chr21_Ratio",
-    "chrX_Ratio",
+    "Chr13_Ratio",
+    "Chr18_Ratio",
+    "Chr21_Ratio",
+    "ChrX_Ratio",
     "Chr1_Ratio",
     "Chr2_Ratio",
     "Chr3_Ratio",
@@ -66,7 +66,7 @@ output_header = [
     "Chr19_Ratio",
     "Chr20_Ratio",
     "Chr22_Ratio",
-    "chrY_Ratio",
+    "ChrY_Ratio",
     "MappedReads",
     "Chr1",
     "Chr2",
@@ -138,11 +138,11 @@ sample_out = {
     "Zscore_18": "",
     "Zscore_21": "",
     "Zscore_X": "",
-    "chr13_Ratio": "",
-    "chr18_Ratio": "",
-    "chr21_Ratio": "",
-    "chrX_Ratio": "",
-    "chrY_Ratio": "",
+    "Chr13_Ratio": "",
+    "Chr18_Ratio": "",
+    "Chr21_Ratio": "",
+    "ChrX_Ratio": "",
+    "ChrY_Ratio": "",
     "MappedReads": "",
     "GC_Dropout": "",
     "AT_Dropout": "",
@@ -281,7 +281,7 @@ for sample in samples:
                     samples[sample]["Chr12_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "13":
                     samples[sample]["Zscore_13"] = content[-1]
-                    samples[sample]["chr13_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr13_Ratio"] = str(float(content[1]) + 1)
                     ratio_13.append(float(content[1]) + 1)
 
                 if content[0] == "14":
@@ -294,7 +294,7 @@ for sample in samples:
                     samples[sample]["Chr17_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "18":
                     samples[sample]["Zscore_18"] = content[-1]
-                    samples[sample]["chr18_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr18_Ratio"] = str(float(content[1]) + 1)
                     ratio_18.append(float(content[1]) + 1)
 
                 if content[0] == "19":
@@ -303,13 +303,13 @@ for sample in samples:
                     samples[sample]["Chr20_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "21":
                     samples[sample]["Zscore_21"] = content[-1]
-                    samples[sample]["chr21_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr21_Ratio"] = str(float(content[1]) + 1)
                     ratio_21.append(float(content[1]) + 1)
 
                 if content[0] == "22":
                     samples[sample]["Chr22_Ratio"] = str(float(content[1]) + 1)
                 if content[0] == "X":
-                    samples[sample]["chrX_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["ChrX_Ratio"] = str(float(content[1]) + 1)
                     ratio_X.append(float(content[1]) + 1)
                     samples[sample]["Zscore_X"] = content[-1]
 
@@ -389,10 +389,10 @@ for sample in samples:
             samples[sample]["Chr22"] = sum(a["sample"].item()["22"])
             samples[sample]["ChrX"] = sum(a["sample"].item()["23"])
             samples[sample]["ChrY"] = sum(a["sample"].item()["24"])
-            samples[sample]["chrY_Ratio"] = sum(a["sample"].item()["24"]) / float(
+            samples[sample]["ChrY_Ratio"] = sum(a["sample"].item()["24"]) / float(
                 a["quality"].item()["mapped"]
             )
-            ratio_Y.append(samples[sample]["chrY_Ratio"])
+            ratio_Y.append(samples[sample]["ChrY_Ratio"])
 
 for sample in samples:
     for file in files_in_folder:
