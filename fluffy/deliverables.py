@@ -14,7 +14,7 @@ def print_deliverables(output_dir: Path,project_dir: Path, samples: list) -> Non
     """Create a deliverables YAML file"""
 
     deliverables={"files":[]}
-    project_name=project_dir.parent.name
+    project_name=str(output_dir).strip("/").split("/")[-1]
     summary_path=output_dir.absolute() / "summary.csv"
     multiqc_path=output_dir.absolute() / "multiqc_report.html"
 
@@ -23,8 +23,8 @@ def print_deliverables(output_dir: Path,project_dir: Path, samples: list) -> Non
 
     for sample in samples:
         sample_id=sample["sample_id"]
-        zip_path=output_dir.absolute() / f"{sample_id}.WCXpredict_abberations.filt.bed"
-        deliverables["files"].append({"format":"bed", "id":sample_id,"path":str(zip_path),"step":"wcx","tag":"Wisecondor_abberations"})
+        zip_path=output_dir.absolute() / f"{sample_id}/{sample_id}.WCXpredict_aberrations.filt.bed"
+        deliverables["files"].append({"format":"bed", "id":sample_id,"path":str(zip_path),"step":"summarise_batch","tag":"Wisecondor_abberations"})
 
     f=open(f"{str(output_dir)}/deliverables.yaml","w")
     f.write(yaml.dump(deliverables))
