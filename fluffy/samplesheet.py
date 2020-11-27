@@ -37,7 +37,7 @@ def read_samplesheet(samplesheet: Iterator[str], project_dir: Path) -> Iterator[
     first=True
     for line_nr, line in enumerate(samplesheet):
 
-        if line.startswith("[Data],,"):
+        if line.startswith("[Data]") and first:
             continue
 
         if first:
