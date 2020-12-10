@@ -13,10 +13,10 @@ def get_convert_cmd(singularity_exe: str, out_prefix: str) -> str:
 
 
 def get_newref_cmd(singularity_exe: str, out: str, binsize: str) -> str:
-    """Get command for converting bam to called nipt"""
+    """Get command for creating reference bam to called nipt"""
     cmd = (
         f"singularity exec {singularity_exe} WisecondorX newref {out}/**/*.wcx.npz "
-        f"{out.rstrip('/')}.test.npz --nipt --binsize {binsize}"
+        f"{out.rstrip('/')}.wcxref.{binsize}.npz --nipt --binsize {binsize}"
     )
     return cmd
 

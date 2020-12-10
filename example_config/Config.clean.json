@@ -6,7 +6,8 @@
 
 	},
 	"amycne":{
-		"minq":10
+		"minq":10,
+                "coefficient":2
 
 	},
 	"wisecondorx":{

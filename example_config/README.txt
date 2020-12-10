@@ -14,15 +14,15 @@
 	"amycne":{
 		#Minimum per bin mapping quality
 		"minq":13,
-		#GC content file
-		"gc":"/proj/sens2019010/nobackup/wharf/jesperei/jesperei-sens2019010/AMYCNE/human_g1k_v37.50kbp.gc.bed"
+                #Coefficient that is multiplied with the median coverage of Y (FFY=(coefficient*(median Y coverage) ))
+                "coefficient":2
 	},
 
 	#WisecondorX settings
 	"wisecondorx":{
-		#reference for the aneuoplody wisecondorX analysis (produced through mkref)
+		#reference for the aneuoplody wisecondorX analysis (produced through reference)
 		"ref500kbp":"/proj/sens2019010/nobackup/wisecondor_X_bwa_ref.npz",
-		#reference for the Preface analysis (produced through mkref)
+		#reference for the Preface analysis (produced through reference)
 		"ref100kbp":"/proj/sens2019010/nobackup/wisecondor_X_bwa_ref.100kbp.npz",
 		#a blacklist (bed file)
 		"blacklist":"/proj/sens2019010/nobackup/blacklist.bed"
