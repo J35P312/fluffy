@@ -8,7 +8,7 @@ from shutil import rmtree
 from setuptools import Command, find_packages, setup
 
 # Package meta-data.
-NAME = "fluffy"
+NAME = "cg-fluffy"
 DESCRIPTION = "NIPT analysis pipeline"
 URL = "https://github.com/Clinical-Genomics/fluffy"
 EMAIL = "jesper.eisfeldt@scilifelab.com"
@@ -64,7 +64,7 @@ except FileNotFoundError:
 # Load the package's __version__.py module as a dictionary.
 ABOUT = {}
 if not VERSION:
-    with open(os.path.join(HERE, NAME, "version.py")) as f:
+    with open(os.path.join(HERE, "fluffy", "version.py")) as f:
         exec(f.read(), ABOUT)
 else:
     ABOUT["__version__"] = VERSION
