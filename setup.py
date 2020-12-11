@@ -8,7 +8,7 @@ from shutil import rmtree
 from setuptools import Command, find_packages, setup
 
 # Package meta-data.
-NAME = "fluffy"
+NAME = "cg-fluffy"
 DESCRIPTION = "NIPT analysis pipeline"
 URL = "https://github.com/Clinical-Genomics/fluffy"
 EMAIL = "jesper.eisfeldt@scilifelab.com"
