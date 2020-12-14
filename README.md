@@ -58,7 +58,7 @@ You will need to download/create the following files:
 
 	Reference fasta (indexed using bwa)
 
-	WisecondorX reference files (created using the --mkref mode)
+	WisecondorX reference files (created using the reference mode)
 
 	PREFACE model file (optional)
 
