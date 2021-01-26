@@ -227,8 +227,11 @@ for line in open(args.samplesheet):
     content=line.strip("\n").split(" ")
     sample=content[samplesheet_dict["SampleID"]]
     samples[ sample ]=copy.deepcopy(sample_out)
-
     for entry in content:
+        #print(samplesheet_info)
+        #print(content)
+        if i == len(samplesheet_info[i]):
+            continue
         if samplesheet_info[i] in sample_out:
             samples[sample][samplesheet_info[i]] = entry
         elif samplesheet_info[i] == "FCID":

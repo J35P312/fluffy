@@ -58,7 +58,7 @@ def align_and_convert_paired_end(
 ) -> str:
     """create a command for running bwa and wisecondorX convert (paired end)"""
 
-    singularity=singularity_base(configs["singularity"], configs["out"], configs["project"], configs["singularity_bind"])
+    singularity=singularity_base(config["singularity"], config["out"], config["project"], config["singularity_bind"])
 
     out_prefix = get_outprefix(out, sample_id)
     aln_r1 = get_align_command(
