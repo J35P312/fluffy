@@ -3,7 +3,11 @@ import logging
 from pathlib import Path
 
 def singularity_base(singularity_exe: str, out_dir: Path, project_dir: Path, singularity_bind: list):
-	bind=f" --bind {str(out_dir)} --bind {str(project_dir)} " + " --bind".join(singularity_bind)
+	bind=f" --bind {str(out_dir)} --bind {str(project_dir)}"
+	if singularity_bind:
+		for d in singularity_bind:
+			bind+= " --bind {d}"
+
 	singularity_base_cmd= f"singularity exec {bind} {singularity_exe}"
 	return singularity_base_cmd
 
