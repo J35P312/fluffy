@@ -73,6 +73,7 @@ def base_command(ctx, log_level, config, out, sample, project):
 
     project_dir = pathlib.Path(project)
     ctx.obj["project"] = project_dir
+    configs["project"] = project_dir
 
     sacct_dir = out / "sacct"
     sacct_dir.mkdir(parents=True, exist_ok=True)

@@ -2,7 +2,7 @@
 
 
 def get_gctab_cmd(
-    singularity_exe: str, reference: str, binsize: str, path_gc_tab: str
+    singularity: str, reference: str, binsize: str, path_gc_tab: str
 ) -> str:
     """Get a string with command to run the AMYCNE gc correction program.
 
@@ -10,7 +10,7 @@ def get_gctab_cmd(
     do GC-correction
     """
     gc_tab_cmd = (
-        f"singularity exec {singularity_exe} python /bin/AMYCNE/Generate_GC_tab.py "
+        f"{singularity} python /bin/AMYCNE/Generate_GC_tab.py "
         f"--fa {reference} --size {binsize} --n_mask > {path_gc_tab}"
     )
 
@@ -18,14 +18,14 @@ def get_gctab_cmd(
 
 
 def run_amycne_cmd(
-    singularity_exe: str, out_prefix: str, path_gc_tab: str, minq: str
+    singularity: str, out_prefix: str, path_gc_tab: str, minq: str
 ) -> str:
     """Get a string with command for running AMYCNEs fetal fraction
 
     This will predict the gender and how much dna is a sample is from the fetus.
     """
     amycne_cmd = (
-        f"singularity exec {singularity_exe} python /bin/AMYCNE/AMYCNE.py --ff "
+        f"{singularity} python /bin/AMYCNE/AMYCNE.py --ff "
         f"--coverage {out_prefix}.tiddit.tab --gc {path_gc_tab} --Q {minq} > "
         f"{out_prefix}.tiddit.AMYCNE.tab"
     )
