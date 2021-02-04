@@ -64,11 +64,11 @@ def read_samplesheet(samplesheet: Iterator[str], project_dir: Path) -> Iterator[
                 break
 
         fastq = [
-            "<( zcat {}/*{}*/*_R1*fastq.gz )".format(project_dir, sample_name),
-            "<( zcat {}/*{}*/*_R2*fastq.gz )".format(project_dir, sample_name),
+            "<( zcat {}/*{}/*_R1*fastq.gz )".format(project_dir, sample_name),
+            "<( zcat {}/*{}/*_R2*fastq.gz )".format(project_dir, sample_name),
         ]
         if single_end:
             LOG.info("Single end files!")
-            fastq = ["<( zcat {}/*{}*/*_R1*fastq.gz )".format(project_dir, sample_name)]
+            fastq = ["<( zcat {}/*{}/*_R1*fastq.gz )".format(project_dir, sample_name)]
 
         yield {"fastq": fastq, "single_end": single_end, "sample_id": sample_name}

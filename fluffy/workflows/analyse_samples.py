@@ -89,7 +89,7 @@ def analyse_workflow(
             sample_id=sample_id,
             afterok=sample_jobids,
             slurm_api=slurm_api,
-            dry_run=dry_run,
+            dry_run=dry_run
         )
     jobids.append(cleanup_jobid)
  

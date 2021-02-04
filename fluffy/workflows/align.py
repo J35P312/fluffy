@@ -18,13 +18,14 @@ def align_individual(
     LOG.info("Aligning reads for %s", sample_id)
     single_end = sample["single_end"]
     fastq = sample["fastq"]
+
     if single_end:
         run_bwa = align_and_convert_single_end(
-            config=configs, fastq=fastq[0], out=out_dir, sample_id=sample_id,
+            config=configs, fastq=fastq[0], out=out_dir,sample_id=sample_id
         )
     else:
         run_bwa = align_and_convert_paired_end(
-            config=configs, fastq=fastq, out=out_dir, sample_id=sample_id,
+            config=configs, fastq=fastq, out=out_dir, sample_id=sample_id
         )
 
     align_jobid = slurm_api.run_job(

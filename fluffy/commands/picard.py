@@ -2,11 +2,11 @@
 
 
 def get_collect_gc_bias_cmd(
-    singularity_exe: str, out_prefix: str, reference: str, javasettings: str
+    singularity: str, out_prefix: str, reference: str, javasettings: str
 ) -> str:
     """Get a string with command for running picard GC bias"""
     picard_gc_cmd = (
-        f"singularity exec {singularity_exe} picard CollectGcBiasMetrics I={out_prefix}.bam "
+        f"{singularity} picard CollectGcBiasMetrics I={out_prefix}.bam "
         f"O={out_prefix}.gc_bias_metrics.txt CHART={out_prefix}.gc_bias_metrics.pdf "
         f"S={out_prefix}.gc.summary.tab R={reference} VALIDATION_STRINGENCY=LENIENT {javasettings}"
     )
@@ -15,11 +15,11 @@ def get_collect_gc_bias_cmd(
 
 
 def get_collect_insert_size_cmd(
-    singularity_exe: str, out_prefix: str, javasettings: str
+    singularity: str, out_prefix: str, javasettings: str
 ) -> str:
     """Get a string with command to run picard collect insert size metrics"""
     picard_insert_cmd = (
-        f"singularity exec {singularity_exe} picard CollectInsertSizeMetrics I={out_prefix}.bam "
+        f"{singularity} picard CollectInsertSizeMetrics I={out_prefix}.bam "
         f"O={out_prefix}.insert_size_metrics.txt H={out_prefix}.insert_size_histogram.pdf "
         f"VALIDATION_STRINGENCY=LENIENT M=0.5 {javasettings}"
     )
@@ -28,11 +28,11 @@ def get_collect_insert_size_cmd(
 
 
 def get_estimate_complexity_cmd(
-    singularity_exe: str, out_prefix: str, javasettings: str
+    singularity: str, out_prefix: str, javasettings: str
 ) -> str:
     """Get a string with command to estimate library complexity with picard tools"""
     picard_complexity_cmd = (
-        f"singularity exec {singularity_exe} picard EstimateLibraryComplexity I={out_prefix}.bam "
+        f"{singularity} picard EstimateLibraryComplexity I={out_prefix}.bam "
         f"O={out_prefix}.complex_metrics.txt VALIDATION_STRINGENCY=LENIENT {javasettings}"
     )
 

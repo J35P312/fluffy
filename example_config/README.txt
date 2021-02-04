@@ -54,6 +54,9 @@
 	#singularity file
 	"singularity":"/proj/sens2019010/nobackup/wharf/jesperei/jesperei-sens2019010/Clevervulture2.sif",
 
+	#paths mounted (singularity bind) by singularity, you may need to add reference directory etc
+        "singularity_bind":[],
+
 	#slurm settings
 	"slurm": {
 		#account
