@@ -253,7 +253,7 @@ ratio_Y = []
 
 for sample in samples:
     for file in files_in_folder:
-        if sample in file and file.endswith("WCXpredict_chr_statistics.txt"):
+        if sample +"/"+sample in file and file.endswith("WCXpredict_chr_statistics.txt"):
             for line in open(file):
                 if "ratio" in line:
                     continue
@@ -335,7 +335,7 @@ for sample in samples:
 
 for sample in samples:
     for file in files_in_folder:
-        if sample in file and file.endswith("WCXpredict_aberrations.bed"):
+        if sample +"/"+sample in file and file.endswith("WCXpredict_aberrations.bed"):
             f = open(file.replace(".bed", ".filt.bed"), "w")
             filtered_calls = []
 
@@ -361,7 +361,7 @@ for sample in samples:
 
 for sample in samples:
     for file in files_in_folder:
-        if sample in file and file.endswith(".bam.wcx.npz"):
+        if sample +"/"+ sample in file and file.endswith(".bam.wcx.npz"):
             a = numpy.load(file, encoding="latin1", allow_pickle=True)
             samples[sample]["MappedReads"] = a["quality"].item()["mapped"]
             samples[sample]["DuplicationRate"] = a["quality"].item()[
@@ -399,7 +399,7 @@ for sample in samples:
 
 for sample in samples:
     for file in files_in_folder:
-        if sample in file and file.endswith("PREFACE.txt"):
+        if sample +"/"+sample in file and file.endswith("PREFACE.txt"):
             for line in open(file):
                 if "FFX" in line:
                     samples[sample]["FFX"] = line.strip().split()[-1].replace("%","")
@@ -408,7 +408,7 @@ for sample in samples:
 
 for sample in samples:
     for file in files_in_folder:
-        if sample in file and file.endswith("AMYCNE.tab"):
+        if sample +"/"+ sample in file and file.endswith("AMYCNE.tab"):
             for line in open(file):
                 if "med" in line:
                     continue
@@ -422,7 +422,7 @@ for sample in samples:
 # read picard gc summary
 for sample in samples:
     for file in files_in_folder:
-        if sample in file and file.endswith(".gc.summary.tab"):
+        if  sample +"/"+ sample in file and file.endswith(".gc.summary.tab"):
             gc_data = {}
             gc_idx_to_header = []
             for line in open(file):
