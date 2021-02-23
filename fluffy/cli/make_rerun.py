@@ -29,11 +29,6 @@ def rerun(ctx, skip_preface, dry_run):
     slurm_api = ctx.obj["slurm_api"]
 
     config_path=configs["out"] / configs["name"]
-    if not config_path.exists():
-        LOG.warning("project folder is malformed, please rerun using fluffy analyse")
-        raise click.Abort
-
-
     try:
         check_configs(configs, skip_preface=skip_preface)
     except FileNotFoundError as err:
@@ -43,12 +38,19 @@ def rerun(ctx, skip_preface, dry_run):
     analysis_status = check_status(
         output_dir=output_dir
     )
-    analysis_time=analysis_status["analysis_time"]
+
+    if analysis_status:
+       run_version=analysis_status["fluffy_version"]
+       analysis_time=analysis_status["analysis_time"]
+
+    else:
+       print("Error analysis status file is missing!")
+
     failed_samples=set([])
 
     first=True
     complete=True
-    if not dry_run:
+    if analysis_status:
         for line in open(f"{output_dir}/sacct/fluffy_{analysis_time}.log.status"):
             content=line.strip().split()
             if first:
@@ -64,12 +66,14 @@ def rerun(ctx, skip_preface, dry_run):
                print(f"FAIL:{content[1]}")
                failed_samples.add(sample_id)        
 
-    if not analysis_status["analysis_run_status"] =="fail":
+    if not analysis_status:
+        pass       
+    elif not analysis_status["analysis_run_status"] =="fail":
         print("Error: analysis status is not fail")
         print("make sure that the analysis is failed, and edit the analysis_run_status.json file")
         quit()
 
-    if complete:
+    if complete and analysis_status:
         print("Error: no failed jobs detected")
         print("make sure that the analysis is failed, or rerun it using the analysis module")
         quit()
@@ -78,7 +82,7 @@ def rerun(ctx, skip_preface, dry_run):
     print_status(
         output_dir=output_dir,
     )
-    run_version=analysis_status["fluffy_version"]
+
     for sample in failed_samples:
         if sample == "":
            continue
@@ -93,13 +97,13 @@ def rerun(ctx, skip_preface, dry_run):
         except:
            pass
 
-    if os.exists(f"{output_dir}/FAIL"):
+    if os.path.exists(f"{output_dir}/FAIL"):
         os.remove(f"{output_dir}/FAIL")
 
-    if os.exists(f"{output_dir}/summary.csv"):
+    if os.path.exists(f"{output_dir}/summary.csv"):
         os.remove(f"{output_dir}/summary.csv")
 
-    if os.exists(f"{output_dir}/multiqc_report.html"):
+    if os.path.exists(f"{output_dir}/multiqc_report.html"):
         os.remove(f"{output_dir}/multiqc_report.html")
 
     try:

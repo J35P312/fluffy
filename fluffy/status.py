@@ -2,6 +2,7 @@
 
 import logging
 import json
+import os
 
 from pathlib import Path
 from typing import Iterator
@@ -14,10 +15,13 @@ LOG = logging.getLogger(__name__)
 
 def check_status(output_dir: Path) -> None:
     """Check the analysis status"""
+    if os.path.exists(f'{str(output_dir)}/analysis_status.json'):
+       f = open(f'{str(output_dir)}/analysis_status.json')
+       status=json.load(f)
+       return(status)
 
-    f = open(f'{str(output_dir)}/analysis_status.json')
-    status=json.load(f)
-    return(status)
+    else:
+       return(False)
 
 def print_status(output_dir: Path) -> None:
     """Create a status json file"""

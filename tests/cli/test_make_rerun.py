@@ -10,6 +10,6 @@ def test_rerun_cmd(base_context):
     # GIVEN a cli runnner
     runner = CliRunner()
     # WHEN running the analyse command
-    result = runner.invoke(rerun,["--help"], obj=base_context)
+    result = runner.invoke(rerun,["--dry-run"], obj=base_context)
     # THEN assert that the command exits without problems
     assert result.exit_code == 0
