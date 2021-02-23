@@ -9,6 +9,7 @@ import coloredlogs
 
 from fluffy.cli.make_analysis import analyse
 from fluffy.cli.make_reference import reference
+from fluffy.cli.make_rerun import rerun
 from fluffy.config import get_configs
 from fluffy.samplesheet import read_samplesheet
 from fluffy.slurm_api import SlurmAPI
@@ -61,15 +62,11 @@ def base_command(ctx, log_level, config, out, sample, project):
     config = pathlib.Path(config)
     configs = get_configs(config)
     configs["out"] = out
+    configs["name"]=config.name
+    configs["config_path"]=config
     ctx.obj["configs"] = configs
 
     new_config = out / config.name
-    if new_config.exists():
-        LOG.warning("Config already exists, create new dir or remove config")
-        raise click.Abort
-
-    LOG.info("Copy config to %s", new_config)
-    shutil.copy(config, str(new_config))
 
     project_dir = pathlib.Path(project)
     ctx.obj["project"] = project_dir
@@ -89,4 +86,5 @@ def base_command(ctx, log_level, config, out, sample, project):
 
 
 base_command.add_command(reference)
+base_command.add_command(rerun)
 base_command.add_command(analyse)

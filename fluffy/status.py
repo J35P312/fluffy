@@ -12,6 +12,13 @@ from fluffy.version import __version__
 
 LOG = logging.getLogger(__name__)
 
+def check_status(output_dir: Path) -> None:
+    """Check the analysis status"""
+
+    f = open(f'{str(output_dir)}/analysis_status.json')
+    status=json.load(f)
+    return(status)
+
 def print_status(output_dir: Path) -> None:
     """Create a status json file"""
 
