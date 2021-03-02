@@ -226,6 +226,9 @@ for line in open(args.samplesheet):
     i=0
     content=line.strip("\n").strip("\r").split(" ") 
     sample=content[samplesheet_dict["SampleID"]]
+    if "SampleName" in samplesheet_dict:
+       sample=content[samplesheet_dict["SampleName"]]
+
     samples[ sample ]=copy.deepcopy(sample_out)
     for entry in content:
         #print( [sample,samplesheet_info[i],i] )
@@ -246,7 +249,7 @@ for line in open(args.samplesheet):
 
     if "SampleName" in samplesheet_dict:
         samples[sample]["SampleID"]=content[samplesheet_dict["SampleName"]]
-
+        
 
 ratio_21 = []
 ratio_18 = []
