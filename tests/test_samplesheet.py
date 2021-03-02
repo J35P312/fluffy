@@ -61,3 +61,12 @@ def test_get_sample_col():
     col_nr = samplesheet.get_sample_col(line.split(" "))
     # THEN assert correct col nr is returned
     assert col_nr == 2
+
+def test_get_sample_name():
+    """Test to get a separator"""
+    # GIVEN a line with commas as delimiter
+    line = "one two SampleName"
+    # WHEN finding the sample col
+    col_nr = samplesheet.get_sample_Name_col(line.split(" "))
+    # THEN assert correct col nr is returned
+    assert col_nr == 2
