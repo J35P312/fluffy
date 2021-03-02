@@ -67,6 +67,6 @@ def test_get_sample_name():
     # GIVEN a line with commas as delimiter
     line = "one two SampleName"
     # WHEN finding the sample col
-    col_nr = samplesheet.get_sample_Name_col(line.split(" "))
+    col_nr = samplesheet.get_sample_name_col(line.split(" "))
     # THEN assert correct col nr is returned
     assert col_nr == 2
