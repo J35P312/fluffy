@@ -91,7 +91,7 @@ def analyse_workflow(
             slurm_api=slurm_api,
             dry_run=dry_run
         )
-    jobids.append(cleanup_jobid)
+        jobids.append(cleanup_jobid)
  
     summarize_jobid = summarize_workflow(
         configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run

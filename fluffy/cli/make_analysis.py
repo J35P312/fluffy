@@ -2,6 +2,7 @@
 import logging
 
 import click
+import shutil
 
 from fluffy.config import check_configs
 from fluffy.deliverables import print_deliverables
@@ -26,6 +27,14 @@ def analyse(ctx, skip_preface, dry_run):
     configs["sample_sheet"] = ctx.obj["sample_sheet"]
     project_dir=ctx.obj["project"]
     slurm_api = ctx.obj["slurm_api"]
+
+    config_path=configs["out"] / configs["name"]
+    if config_path.exists():
+        LOG.warning("Config already exists, create new dir or remove config")
+        raise click.Abort
+
+    LOG.info("Copy config to %s", config_path)
+    shutil.copy(configs["config_path"], str(config_path))
 
     try:
         check_configs(configs, skip_preface=skip_preface)

@@ -3,6 +3,7 @@
 import logging
 
 import click
+import shutil 
 
 from fluffy.config import check_configs
 from fluffy.workflows.wisecondor import make_reference
@@ -25,6 +26,15 @@ def reference(ctx, dry_run):
 
     configs = ctx.obj["configs"]
     slurm_api = ctx.obj["slurm_api"]
+
+    config_path=configs["out"] / configs["name"]
+    if config_path.exists():
+        LOG.warning("Config already exists, create new dir or remove config")
+        raise click.Abort
+
+    LOG.info("Copy config to %s", config_path)
+    shutil.copy(configs["config_path"], str(config_path))
+
 
     print_status(
         output_dir=configs["out"],

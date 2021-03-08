@@ -12,7 +12,7 @@ def test_init():
     # GIVEN a acount, a time, an out dir
     account = "my_account"
     time = "5:00:00"
-    out_dir = Path("tests/fixtures")
+    out_dir = Path("tests/fixtures/output")
     # WHEN instantiating a slurm api
     api = SlurmAPI(slurm_settings={"account":account, "time":time}, out_dir=out_dir)
     # THEN assert it is setup correct

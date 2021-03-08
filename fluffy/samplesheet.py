@@ -23,6 +23,13 @@ def get_sample_col(line_content: list) -> int:
             return column
     return None
 
+def get_sample_name_col(line_content: list) -> int:
+    """Get the column number that holds the sample name"""
+    for column, info in enumerate(line_content):
+        if info.lower() == "samplename":
+            return column
+    return None
+
 
 def read_samplesheet(samplesheet: Iterator[str], project_dir: Path) -> Iterator[dict]:
     """Parse a sample sheet and return sample information
@@ -45,6 +52,7 @@ def read_samplesheet(samplesheet: Iterator[str], project_dir: Path) -> Iterator[
             LOG.debug("Use separator %s", separator)
             header = line.rstrip().split(separator)
             sample_col = get_sample_col(header)
+            sample_name_col= get_sample_name_col(header)
             first=False
             continue
 
@@ -71,4 +79,7 @@ def read_samplesheet(samplesheet: Iterator[str], project_dir: Path) -> Iterator[
             LOG.info("Single end files!")
             fastq = ["<( zcat {}/*{}/*_R1*fastq.gz )".format(project_dir, sample_name)]
 
+        if sample_name_col:
+           sample_name = content[sample_name_col]
+        print(sample_name)
         yield {"fastq": fastq, "single_end": single_end, "sample_id": sample_name}
