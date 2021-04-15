@@ -18,13 +18,14 @@ LOG = logging.getLogger(__name__)
 @click.option(
     "--skip-preface", is_flag=True, help="Skip preface fetal fraction estimation"
 )
+@click.option("--batch-ref", is_flag=True, help="Build a wisecondorX refeference from the input batch (overrides refpreface and reftest)")
 @click.option("--dry-run", is_flag=True, help="Do not create any files")
-def analyse(ctx, skip_preface, dry_run):
+def analyse(ctx, skip_preface, dry_run,batch_ref):
     """Run the pipeline to call NIPT"""
     LOG.info("Running fluffy analyse")
     samples = ctx.obj["samples"]
     configs = ctx.obj["configs"]
-    configs["sample_sheet"] = ctx.obj["sample_sheet"]
+    configs["sample_sheet"] = ctx.obj["sample_sheet"]	
     project_dir=ctx.obj["project"]
     slurm_api = ctx.obj["slurm_api"]
 
@@ -57,4 +58,5 @@ def analyse(ctx, skip_preface, dry_run):
         skip_preface=skip_preface,
         slurm_api=slurm_api,
         dry_run=dry_run,
+        batch_ref=batch_ref,
     )

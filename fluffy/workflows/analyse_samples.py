@@ -4,6 +4,7 @@ import copy
 from typing import Iterator
 
 from fluffy.slurm_api import SlurmAPI
+from fluffy.singularity_cmd import singularity_base
 from fluffy.workflows.align import align_individual
 from fluffy.workflows.amycne import estimate_ffy
 from fluffy.workflows.cleanup import cleanup_workflow
@@ -11,9 +12,9 @@ from fluffy.workflows.picard import picard_qc_workflow
 from fluffy.workflows.preface import preface_predict_workflow
 from fluffy.workflows.summarize import summarize_workflow
 from fluffy.workflows.wisecondor import wisecondor_xtest_workflow
+from fluffy.commands.wisecondor import get_mkref_cmd
 from fluffy.workflows.status_update import pipe_complete
 from fluffy.workflows.status_update import pipe_fail
-
 
 def analyse_workflow(
     samples: Iterator[dict],
@@ -21,12 +22,14 @@ def analyse_workflow(
     slurm_api: SlurmAPI,
     skip_preface: bool = False,
     dry_run: bool = False,
+    batch_ref: bool = True,
 ) -> int:
     """Run the wisecondor analysis"""
     jobids = []
+    sample_jobids={}
     for sample in samples:
-        sample_jobids = []
         sample_id = sample["sample_id"]
+        sample_jobids[sample_id]=[]
         sample_outdir = configs["out"] / sample_id
         # This will fail if dir already exists
         sample_outdir.mkdir(parents=True)
@@ -37,9 +40,42 @@ def analyse_workflow(
         align_jobid = align_individual(
             configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,
         )
+        jobids.append(align_jobid)
+        sample_jobids[sample_id].append(align_jobid)
+
+    if batch_ref:
+        binsize_test=configs["wisecondorx"]["testbinsize"]
+        binsize_preface=configs["wisecondorx"]["prefacebinsize"]
+        out_dir=configs["out"]
+
+        configs["wisecondorx"]["reftest"]=f"{str(out_dir).rstrip('/')}.wcxref.{binsize_test}.npz"
+        configs["wisecondorx"]["refpreface"]= f"{str(out_dir).rstrip('/')}.wcxref.{binsize_preface}.npz"
+
+        singularity=singularity_base(configs["singularity"], configs["out"], configs["project"], configs["singularity_bind"])
+
+        mkref_cmd = get_mkref_cmd(
+            singularity=singularity,
+            out=str(out_dir),
+            testbinsize=configs["wisecondorx"]["testbinsize"],
+            prefacebinsize=configs["wisecondorx"]["prefacebinsize"],
+        )
+
+        make_ref_jobid = slurm_api.run_job(
+            name="wcxmkref", command=mkref_cmd, afterok=jobids, dry_run=dry_run,
+        )
+
+        for sample in samples:
+            sample_id = sample["sample_id"]
+            sample_jobids[sample_id].append(make_ref_jobid)
+
+    for sample in samples:
+        sample_id = sample["sample_id"]
+        sample_outdir = configs["out"] / sample_id
 
         slurm_api.slurm_settings["ntasks"]=configs["slurm"]["ntasks"]
         slurm_api.slurm_settings["mem"]=configs["slurm"]["mem"]
+
+        align_jobid=sample_jobids[sample_id][-1]
 
         ffy_jobid = estimate_ffy(
             configs=configs,
@@ -49,7 +85,7 @@ def analyse_workflow(
             dry_run=dry_run,
         )
         jobids.append(ffy_jobid)
-        sample_jobids.append(ffy_jobid)
+        sample_jobids[sample_id].append(ffy_jobid)
 
         picard_jobid = picard_qc_workflow(
             configs=configs,
@@ -59,7 +95,7 @@ def analyse_workflow(
             dry_run=dry_run,
         )
         jobids.append(picard_jobid)
-        sample_jobids.append(picard_jobid)
+        sample_jobids[sample_id].append(picard_jobid)
 
         wcx_test_jobid = wisecondor_xtest_workflow(
             configs=configs,
@@ -70,7 +106,7 @@ def analyse_workflow(
         )
 
         jobids.append(wcx_test_jobid)
-        sample_jobids.append(wcx_test_jobid)
+        sample_jobids[sample_id].append(wcx_test_jobid)
 
         if not skip_preface:
             preface_predict_jobid = preface_predict_workflow(
@@ -81,13 +117,13 @@ def analyse_workflow(
                 dry_run=dry_run,
             )
             jobids.append(preface_predict_jobid)
-            sample_jobids.append(preface_predict_jobid)
+            sample_jobids[sample_id].append(preface_predict_jobid)
 
         cleanup_jobid=cleanup_workflow(
             configs=configs,
             sample_outdir=sample_outdir,
             sample_id=sample_id,
-            afterok=sample_jobids,
+            afterok=sample_jobids[sample_id],
             slurm_api=slurm_api,
             dry_run=dry_run
         )
