@@ -151,18 +151,21 @@ def picard_qc(configs: dict, out_dir: Path, sample_id: str) -> str:
         out_prefix=str(out_prefix),
         reference=reference,
         javasettings=javasettings,
+        tmp_dir=str(configs["align"]["tmpdir"]),
     )
 
     insert_size_cmd = get_collect_insert_size_cmd(
         singularity=singularity,
         out_prefix=str(out_prefix),
         javasettings=javasettings,
+        tmp_dir=str(configs["align"]["tmpdir"]),
     )
 
     estimate_complexity_cmd = get_estimate_complexity_cmd(
         singularity=singularity,
         out_prefix=str(out_prefix),
         javasettings=javasettings,
+        tmp_dir=str(configs["align"]["tmpdir"]),
     )
 
     return "\n".join([gc_bias_cmd, insert_size_cmd, estimate_complexity_cmd])
