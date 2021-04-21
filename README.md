@@ -33,6 +33,7 @@ as well as a summary csv and multiqc html (per batch)
 
 the input folder is a project folder containing one folder per sample, each of these subfolders contain the fastq file(s).
 The samplesheet contains at least a "sampleID" column, the sampleID should match the subfolders in the input folder. The samplesheet may contain other columns, such as flowcell and index folder: such columns will be printed to the summary csv.
+If the samplesheet contains a SampleName column, fluffy will name the output according to SampleName
 
 Create a WisecondorX reference
 
