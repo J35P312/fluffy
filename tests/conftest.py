@@ -68,6 +68,7 @@ def configs_fixture(config_path: Path, out_dir: Path, samplesheet_path: Path) ->
     _configs = get_configs(config_path)
     _configs["out"] = out_dir
     _configs["project"]="test_project"
+    _configs["project_id"]="test_project"
     _configs["name"]=config_path.name
     _configs["config_path"]=config_path
     _configs["sample_sheet"] = samplesheet_path

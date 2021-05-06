@@ -10,12 +10,12 @@ from fluffy.version import __version__
 
 LOG = logging.getLogger(__name__)
 
-def print_deliverables(output_dir: Path,project_dir: Path, samples: list) -> None:
+def print_deliverables(output_dir: Path,project_dir: Path, samples: list, project_id = "summary") -> None:
     """Create a deliverables YAML file"""
 
     deliverables={"files":[]}
     project_name=str(output_dir).strip("/").split("/")[-1]
-    summary_path=output_dir.absolute() / "summary.csv"
+    summary_path=output_dir.absolute() / f"{project_id}.csv"
     multiqc_path=output_dir.absolute() / "multiqc_report.html"
 
     deliverables["files"].append({"format":"csv", "id":project_name,"path":str(summary_path),"step":"summarise_batch","tag":"NIPT_csv"})
