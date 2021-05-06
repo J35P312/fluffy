@@ -12,10 +12,10 @@ LOG = logging.getLogger(__name__)
 
 
 def get_summarize_cmd(
-    singularity: str, out_dir: Path, sample_sheet: str, zscore: str, mincnv: str
+    singularity: str, out_dir: Path,project_id: str, sample_sheet: str, zscore: str, mincnv: str
 ) -> str:
     """Return a string with the command to summarize a run"""
-    outfile = out_dir / "summary.csv"
+    outfile = out_dir / f"{project_id}.csv"
     summary_cmd = (
         f"{singularity} python /bin/FluFFyPipe/scripts/generate_csv.py "
         f"--folder {str(out_dir)} --samplesheet {sample_sheet} --Zscore {zscore} --minCNV {mincnv} "
@@ -36,6 +36,7 @@ def summarize_workflow(
     summarize_cmd = get_summarize_cmd(
         singularity=singularity,
         out_dir=out_dir,
+        project_id=configs["project_id"],
         sample_sheet=configs["sample_sheet"],
         zscore=configs["summary"]["zscore"],
         mincnv=configs["summary"]["mincnv"],

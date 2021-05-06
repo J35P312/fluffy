@@ -42,9 +42,21 @@ def analyse(ctx, skip_preface, dry_run,batch_ref):
     except FileNotFoundError as err:
         raise click.Abort
 
+    summarise_prefix="summary"
+    project_ids=set([])
+    for sample in samples:
+         if "project" in sample:
+             project_ids.add(sample["project"])
+         else:
+             continue
+
+    if len(project_ids) == 1:
+         summarise_prefix=list(project_ids)[0]
+
     print_deliverables(
         output_dir=configs["out"],
         project_dir=project_dir,
+        project_id=summarise_prefix,
         samples=samples,
     )
 
@@ -52,6 +64,7 @@ def analyse(ctx, skip_preface, dry_run,batch_ref):
         output_dir=configs["out"],
     )
 
+    configs["project_id"]=summarise_prefix
     analyse_workflow(
         samples=list(samples),
         configs=configs,
