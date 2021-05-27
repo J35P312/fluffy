@@ -16,57 +16,16 @@ from fluffy.commands.wisecondor import get_mkref_cmd
 from fluffy.workflows.status_update import pipe_complete
 from fluffy.workflows.status_update import pipe_fail
 
-def analyse_workflow(
+def run_analysis(
     samples: Iterator[dict],
+    sample_jobids: dict,
     configs: dict,
     slurm_api: SlurmAPI,
-    skip_preface: bool = False,
-    dry_run: bool = False,
-    batch_ref: bool = True,
-) -> int:
-    """Run the wisecondor analysis"""
-    jobids = []
-    sample_jobids={}
-    for sample in samples:
-        sample_id = sample["sample_id"]
-        sample_jobids[sample_id]=[]
-        sample_outdir = configs["out"] / sample_id
-        # This will fail if dir already exists
-        sample_outdir.mkdir(parents=True)
-
-        slurm_api.slurm_settings["ntasks"]=configs["align"]["ntasks"]
-        slurm_api.slurm_settings["mem"]=configs["align"]["mem"]
-
-        align_jobid = align_individual(
-            configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,
-        )
-        jobids.append(align_jobid)
-        sample_jobids[sample_id].append(align_jobid)
-
-    if batch_ref:
-        binsize_test=configs["wisecondorx"]["testbinsize"]
-        binsize_preface=configs["wisecondorx"]["prefacebinsize"]
-        out_dir=configs["out"]
-
-        configs["wisecondorx"]["reftest"]=f"{str(out_dir).rstrip('/')}.wcxref.{binsize_test}.npz"
-        configs["wisecondorx"]["refpreface"]= f"{str(out_dir).rstrip('/')}.wcxref.{binsize_preface}.npz"
-
-        singularity=singularity_base(configs["singularity"], configs["out"], configs["project"], configs["singularity_bind"])
-
-        mkref_cmd = get_mkref_cmd(
-            singularity=singularity,
-            out=str(out_dir),
-            testbinsize=configs["wisecondorx"]["testbinsize"],
-            prefacebinsize=configs["wisecondorx"]["prefacebinsize"],
-        )
-
-        make_ref_jobid = slurm_api.run_job(
-            name="wcxmkref", command=mkref_cmd, afterok=jobids, dry_run=dry_run,
-        )
-
-        for sample in samples:
-            sample_id = sample["sample_id"]
-            sample_jobids[sample_id].append(make_ref_jobid)
+    skip_preface: bool,
+    dry_run: bool,
+    batch_ref: bool,
+    jobids: list,
+    ):
 
     for sample in samples:
         sample_id = sample["sample_id"]
@@ -132,8 +91,69 @@ def analyse_workflow(
     summarize_jobid = summarize_workflow(
         configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run
     )
-    slurm_api.print_submitted_jobs()
 
+    return(summarize_jobid)
+
+def analyse_workflow(
+    samples: Iterator[dict],
+    configs: dict,
+    slurm_api: SlurmAPI,
+    skip_preface: bool = False,
+    dry_run: bool = False,
+    batch_ref: bool = True,
+) -> int:
+
+    """Run the wisecondor analysis"""
+    jobids = []
+    sample_jobids={}
+
+    for sample in samples:
+        sample_id = sample["sample_id"]
+        sample_jobids[sample_id]=[]
+        sample_outdir = configs["out"] / sample_id
+        # This will fail if dir already exists
+        sample_outdir.mkdir(parents=True)
+
+        slurm_api.slurm_settings["ntasks"]=configs["align"]["ntasks"]
+        slurm_api.slurm_settings["mem"]=configs["align"]["mem"]
+
+        align_jobid = align_individual(
+            configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,
+        )
+        jobids.append(align_jobid)
+        sample_jobids[sample_id].append(align_jobid)
+
+    if batch_ref:
+        binsize_test=configs["wisecondorx"]["testbinsize"]
+        binsize_preface=configs["wisecondorx"]["prefacebinsize"]
+        out_dir=configs["out"]
+
+        configs["wisecondorx"]["reftest"]=f"{str(out_dir).rstrip('/')}.wcxref.{binsize_test}.npz"
+        configs["wisecondorx"]["refpreface"]= f"{str(out_dir).rstrip('/')}.wcxref.{binsize_preface}.npz"
+
+        singularity=singularity_base(configs["singularity"], configs["out"], configs["project"], configs["singularity_bind"])
+
+        mkref_cmd = get_mkref_cmd(
+            singularity=singularity,
+            out=str(out_dir),
+            testbinsize=configs["wisecondorx"]["testbinsize"],
+            prefacebinsize=configs["wisecondorx"]["prefacebinsize"],
+        )
+
+        make_ref_jobid = slurm_api.run_job(
+            name="wcxmkref", command=mkref_cmd, afterok=jobids, dry_run=dry_run,
+        )
+
+        for sample in samples:
+            sample_id = sample["sample_id"]
+            sample_jobids[sample_id].append(make_ref_jobid)
+
+
+
+
+    summarize_jobid=run_analysis(samples,sample_jobids,configs, slurm_api, skip_preface, dry_run, batch_ref,jobids)
+
+    slurm_api.print_submitted_jobs()
     slurm_api.slurm_settings["time"]="1:00:00"
     pipe_complete(
         configs=configs, afterok=summarize_jobid, slurm_api=slurm_api, dry_run=dry_run
