@@ -14,7 +14,7 @@ parser.add_argument("--csv",required=True,type=str,help="folder containing wisec
 parser.add_argument("--Zscore", default=2, type=float, help="Z score limit (13,18,21)")
 parser.add_argument("--binsize",nargs="+", default=100000, type=int, help="bin size of the output reference")
 parser.add_argument("--project",required=True, type=str, help="Fluffy project directory")
-parser.add_argument("--singularity", type=str, help="path to the singularity container")
+parser.add_argument("--singularity", type=str, help="singularity base command")
 
 args = parser.parse_args()
 
@@ -41,7 +41,7 @@ for line in open(args.csv):
 print("excluded: {}".format(excluded))
 print("reference: {}".format(len(files)) )
 for binsize in args.binsize:
-	os.system("singularity exec {} WisecondorX newref {} {}.wcxref.100000.npz --nipt --binsize {}".format(args.singularity," ".join(files),args.project,binsize))
+	os.system("{} WisecondorX newref {} {}.wcxref.{}.npz --nipt --binsize {}".format(args.singularity," ".join(files),args.project,binsize,binsize))
 
 f=open("{}/internal_ref_samples.txt".format(args.project) ,"w")
 for sample in files:
