@@ -94,7 +94,7 @@ def run_analysis(
         configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run,two_pass=two_pass
     )
 
-    return(summarize_jobid,jobids)
+    return(summarize_jobid,jobids,slurm_api)
 
 def analyse_workflow(
     samples: Iterator[dict],
@@ -150,13 +150,13 @@ def analyse_workflow(
             sample_id = sample["sample_id"]
             sample_jobids[sample_id].append(make_ref_jobid)
 
-        first_pass_jobid,jobids=run_analysis(samples,sample_jobids,configs, slurm_api, skip_preface, dry_run, batch_ref,jobids,True)
+        first_pass_jobid,jobids,slurm_api=run_analysis(samples,sample_jobids,configs, slurm_api, skip_preface, dry_run, batch_ref,jobids,True)
 
         for sample in samples:
             sample_id = sample["sample_id"]
             sample_jobids[sample_id].append(first_pass_jobid)
 
-    summarize_jobid,jobids=run_analysis(samples,sample_jobids,configs, slurm_api, skip_preface, dry_run, batch_ref,jobids,False)
+    summarize_jobid,jobids,slurm_api=run_analysis(samples,sample_jobids,configs, slurm_api, skip_preface, dry_run, batch_ref,jobids,False)
 
     slurm_api.print_submitted_jobs()
     slurm_api.slurm_settings["time"]="1:00:00"
