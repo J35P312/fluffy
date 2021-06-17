@@ -16,6 +16,86 @@ from fluffy.commands.wisecondor import get_mkref_cmd
 from fluffy.workflows.status_update import pipe_complete
 from fluffy.workflows.status_update import pipe_fail
 
+def run_analysis(
+    samples: Iterator[dict],
+    sample_jobids: dict,
+    configs: dict,
+    slurm_api: SlurmAPI,
+    skip_preface: bool,
+    dry_run: bool,
+    batch_ref: bool,
+    jobids: list,
+    two_pass: bool,
+    ):
+
+    for sample in samples:
+        sample_id = sample["sample_id"]
+        sample_outdir = configs["out"] / sample_id
+
+        slurm_api.slurm_settings["ntasks"]=configs["slurm"]["ntasks"]
+        slurm_api.slurm_settings["mem"]=configs["slurm"]["mem"]
+
+        align_jobid=sample_jobids[sample_id][-1]
+        if not two_pass:
+            ffy_jobid = estimate_ffy(
+               configs=configs,
+               sample_id=sample_id,
+               afterok=align_jobid,
+               slurm_api=slurm_api,
+               dry_run=dry_run,
+            )
+            jobids.append(ffy_jobid)
+            sample_jobids[sample_id].append(ffy_jobid)
+
+            picard_jobid = picard_qc_workflow(
+               configs=configs,
+               sample_id=sample_id,
+               afterok=align_jobid,
+               slurm_api=slurm_api,
+               dry_run=dry_run,
+            )
+            jobids.append(picard_jobid)
+            sample_jobids[sample_id].append(picard_jobid)
+
+        wcx_test_jobid = wisecondor_xtest_workflow(
+            configs=configs,
+            sample_id=sample_id,
+            afterok=align_jobid,
+            slurm_api=slurm_api,
+            dry_run=dry_run,
+        )
+
+        jobids.append(wcx_test_jobid)
+        sample_jobids[sample_id].append(wcx_test_jobid)
+
+        if not skip_preface and not two_pass:
+            preface_predict_jobid = preface_predict_workflow(
+                configs=configs,
+                sample_id=sample_id,
+                afterok=wcx_test_jobid,
+                slurm_api=slurm_api,
+                dry_run=dry_run,
+            )
+            jobids.append(preface_predict_jobid)
+            sample_jobids[sample_id].append(preface_predict_jobid)
+
+        if not two_pass:
+            cleanup_jobid=cleanup_workflow(
+                configs=configs,
+                sample_outdir=sample_outdir,
+                sample_id=sample_id,
+                afterok=sample_jobids[sample_id],
+                slurm_api=slurm_api,
+                dry_run=dry_run
+            )
+            jobids.append(cleanup_jobid)
+ 
+    summarize_jobid = summarize_workflow(
+        configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run,two_pass=two_pass
+    )
+
+    return(summarize_jobid,jobids,slurm_api)
+
 def analyse_workflow(
     samples: Iterator[dict],
     configs: dict,
@@ -24,9 +104,11 @@ def analyse_workflow(
     dry_run: bool = False,
     batch_ref: bool = True,
 ) -> int:
+
     """Run the wisecondor analysis"""
     jobids = []
     sample_jobids={}
+
     for sample in samples:
         sample_id = sample["sample_id"]
         sample_jobids[sample_id]=[]
@@ -68,72 +150,15 @@ def analyse_workflow(
             sample_id = sample["sample_id"]
             sample_jobids[sample_id].append(make_ref_jobid)
 
-    for sample in samples:
-        sample_id = sample["sample_id"]
-        sample_outdir = configs["out"] / sample_id
+        first_pass_jobid,jobids,slurm_api=run_analysis(samples,sample_jobids,configs, slurm_api, skip_preface, dry_run, batch_ref,jobids,True)
 
-        slurm_api.slurm_settings["ntasks"]=configs["slurm"]["ntasks"]
-        slurm_api.slurm_settings["mem"]=configs["slurm"]["mem"]
+        for sample in samples:
+            sample_id = sample["sample_id"]
+            sample_jobids[sample_id].append(first_pass_jobid)
 
-        align_jobid=sample_jobids[sample_id][-1]
+    summarize_jobid,jobids,slurm_api=run_analysis(samples,sample_jobids,configs, slurm_api, skip_preface, dry_run, batch_ref,jobids,False)
 
-        ffy_jobid = estimate_ffy(
-            configs=configs,
-            sample_id=sample_id,
-            afterok=align_jobid,
-            slurm_api=slurm_api,
-            dry_run=dry_run,
-        )
-        jobids.append(ffy_jobid)
-        sample_jobids[sample_id].append(ffy_jobid)
-
-        picard_jobid = picard_qc_workflow(
-            configs=configs,
-            sample_id=sample_id,
-            afterok=align_jobid,
-            slurm_api=slurm_api,
-            dry_run=dry_run,
-        )
-        jobids.append(picard_jobid)
-        sample_jobids[sample_id].append(picard_jobid)
-
-        wcx_test_jobid = wisecondor_xtest_workflow(
-            configs=configs,
-            sample_id=sample_id,
-            afterok=align_jobid,
-            slurm_api=slurm_api,
-            dry_run=dry_run,
-        )
-
-        jobids.append(wcx_test_jobid)
-        sample_jobids[sample_id].append(wcx_test_jobid)
-
-        if not skip_preface:
-            preface_predict_jobid = preface_predict_workflow(
-                configs=configs,
-                sample_id=sample_id,
-                afterok=wcx_test_jobid,
-                slurm_api=slurm_api,
-                dry_run=dry_run,
-            )
-            jobids.append(preface_predict_jobid)
-            sample_jobids[sample_id].append(preface_predict_jobid)
-
-        cleanup_jobid=cleanup_workflow(
-            configs=configs,
-            sample_outdir=sample_outdir,
-            sample_id=sample_id,
-            afterok=sample_jobids[sample_id],
-            slurm_api=slurm_api,
-            dry_run=dry_run
-        )
-        jobids.append(cleanup_jobid)
- 
-    summarize_jobid = summarize_workflow(
-        configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run
-    )
     slurm_api.print_submitted_jobs()
-
     slurm_api.slurm_settings["time"]="1:00:00"
     pipe_complete(
         configs=configs, afterok=summarize_jobid, slurm_api=slurm_api, dry_run=dry_run

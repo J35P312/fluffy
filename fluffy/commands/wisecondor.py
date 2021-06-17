@@ -13,10 +13,16 @@ def get_convert_cmd(singularity: str, out_prefix: str) -> str:
 
 
 def get_newref_cmd(singularity: str, out: str, binsize: str) -> str:
-    """Get command for creating reference bam to called nipt"""
+    """Get command for creating reference npz"""
     cmd = (
+        f"n=0\n"
+        f"until [ \"$n\" -ge 5 ]\n"
+        f"do\n"
         f"{singularity} WisecondorX newref {out}/**/*.wcx.npz "
-        f"{out.rstrip('/')}.wcxref.{binsize}.npz --nipt --binsize {binsize}"
+        f"{out.rstrip('/')}.wcxref.{binsize}.npz --nipt --binsize {binsize} && break\n"
+        f"n=$((n+1))\n"
+        f"sleep 10\n"
+        f"done"
     )
     return cmd
 
