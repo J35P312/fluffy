@@ -18,6 +18,19 @@ parser.add_argument(
 parser.add_argument(
     "--minCNV", default=10000000, type=int, help="Minimum size of CNV segment"
 )
+parser.add_argument(
+    "--maxbin2bin", default=0.0008, type=float, help="Maximum bin2binvariance" )
+parser.add_argument(
+    "--maxATD", default=5, type=float, help="Maximum AT dropout" )
+parser.add_argument(
+    "--maxGCD", default=0.05, type=float, help="Maximum GC dropout" )
+parser.add_argument(
+    "--maxdup", default=0.15, type=float, help="Maximum duplication rate" )
+parser.add_argument(
+    "--minreads", default=20000000, type=float, help="Minimum number of mapped reads" )
+parser.add_argument(
+    "--minyield", default=30, type=float, help="Minimum yield" )
+
 parser.add_argument("--Zscore", default=5, type=float, help="Zscore of CNV segment")
 parser.add_argument(
     "--samplesheet", type=str, required=True, help="path to samplesheet"
@@ -204,6 +217,7 @@ sample_out = {
     "FFX": "",
 }
 
+
 for line in open(args.samplesheet):
     if not " " in line:
         line=line.replace(","," ")
@@ -256,6 +270,30 @@ ratio_18 = []
 ratio_13 = []
 ratio_X = []
 ratio_Y = []
+
+try:
+    included_samples=set([])
+    for line in open("{}/internal_ref_samples.txt".format(args.folder)):
+        sample=line.strip()
+        included_samples.add(sample)
+
+    for sample in samples:
+        if not sample in included_samples:
+            samples[sample]["QCFlag"]="Excluded_from_ref"
+except:
+    pass
+
+for sample in samples:
+    if "Library_nM" in samples[sample]:
+        try:
+            if float(samples[sample]["Library_nM"]) < args.minyield:
+                if samples[sample]["QCFlag"] == "":
+                    samples[sample]["QCFlag"] = "LibYield"
+                else:
+                    samples[sample]["QCFlag"]+=";LibYield"
+
+        except:
+            pass 
 
 for sample in samples:
     for file in files_in_folder:
@@ -328,6 +366,13 @@ for sample in samples:
                         .split("Median segment variance (per bin): ")[-1]
                         .strip()
                     )
+                    if float(samples[sample]["Bin2BinVariance"]) > args.maxbin2bin:
+                        if samples[sample]["QCFlag"] == "":
+                              samples[sample]["QCFlag"] = "Bin2BinVariance"
+                        else:
+                              samples[sample]["QCFlag"]+=";Bin2BinVariance"
+
+
 for sample in samples:
     samples[sample]["Median_X"] = numpy.median(ratio_X)
     samples[sample]["Median_18"] = numpy.median(ratio_18)
@@ -370,9 +415,22 @@ for sample in samples:
         if sample +"/"+ sample in file and file.endswith(".bam.wcx.npz"):
             a = numpy.load(file, encoding="latin1", allow_pickle=True)
             samples[sample]["MappedReads"] = a["quality"].item()["mapped"]
+            if samples[sample]["MappedReads"] < args.minreads:
+                if samples[sample]["QCFlag"] == "":
+                    samples[sample]["QCFlag"] = "MappedReads"
+                else:
+                    samples[sample]["QCFlag"]+=";MappedReads"
+
+
             samples[sample]["DuplicationRate"] = a["quality"].item()[
                 "filter_rmdup"
             ] / float(a["quality"].item()["mapped"])
+            if samples[sample]["DuplicationRate"] > args.maxdup:
+                if samples[sample]["QCFlag"] == "":
+                    samples[sample]["QCFlag"] = "DuplicationRate"
+                else:
+                    samples[sample]["QCFlag"]+=";DuplicationRate"
+
             all_chr = []
             samples[sample]["Chr1"] = sum(a["sample"].item()["1"])
             samples[sample]["Chr2"] = sum(a["sample"].item()["2"])
@@ -445,7 +503,20 @@ for sample in samples:
                         i += 1
             try:
                 samples[sample]["AT_Dropout"] = gc_data["AT_DROPOUT"]
+                if float(gc_data["AT_DROPOUT"]) > args.maxATD:
+                        if samples[sample]["QCFlag"] == "":
+                              samples[sample]["QCFlag"] = "AT_Dropout"
+                        else:
+                              samples[sample]["QCFlag"]+=";AT_Dropout"
+
                 samples[sample]["GC_Dropout"] = gc_data["GC_DROPOUT"]
+                if float(gc_data["GC_DROPOUT"]) > args.maxGCD:
+                        if samples[sample]["QCFlag"] == "":
+                              samples[sample]["QCFlag"] = "GC_Dropout"
+                        else:
+                              samples[sample]["QCFlag"]+=";GC_Dropout"
+
+
             except:
                 pass
 
