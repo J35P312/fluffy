@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument("--csv",required=True,type=str,help="folder containing wisecondorX output files")
 parser.add_argument("--Zscore", default=2, type=float, help="Z score limit (13,18,21)")
+parser.add_argument("--ratio", default=1.02, type=float, help="Z score limit (13,18,21)")
 parser.add_argument("--binsize",nargs="+", default=100000, type=int, help="bin size of the output reference")
 parser.add_argument("--project",required=True, type=str, help="Fluffy project directory")
 parser.add_argument("--singularity", type=str, help="singularity base command")
@@ -33,7 +34,11 @@ for line in open(args.csv):
 	zscore18=abs(float(content[10]))	
 	zscore21=abs(float(content[11]))
 
-	if max([zscore13,zscore18,zscore21]) > args.Zscore:
+	ratio13=abs(float(content[13]))	
+	ratio18=abs(float(content[14]))	
+	ratio21=abs(float(content[15]))	
+
+	if max([zscore13,zscore18,zscore21]) > args.Zscore or max([ratio13,ratio18,ratio21]) > args.ratio:
 		excluded+=1
 	else:
 		files.append("{}/{}/{}.bam.wcx.npz".format(args.project,sample,sample))	

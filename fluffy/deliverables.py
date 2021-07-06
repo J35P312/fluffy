@@ -10,14 +10,21 @@ from fluffy.version import __version__
 
 LOG = logging.getLogger(__name__)
 
-def print_deliverables(output_dir: Path,project_dir: Path, samples: list, project_id = "summary") -> None:
+def print_deliverables(output_dir: Path,project_dir: Path, samples: list,batch_ref=bool, project_id = "summary") -> None:
     """Create a deliverables YAML file"""
 
     deliverables={"files":[]}
     project_name=str(output_dir).strip("/").split("/")[-1]
     summary_path=output_dir.absolute() / f"{project_id}.csv"
-    multiqc_path=output_dir.absolute() / "multiqc_report.html"
+    summary_first_pass_path=output_dir.absolute() / f"{project_id}.1pass.csv"
+    summary_second_pass_path=output_dir.absolute() / f"{project_id}.2pass.csv"
 
+    multiqc_path=output_dir.absolute() / "multiqc_report.html"
+    
+    if batch_ref:
+        deliverables["files"].append({"format":"csv", "id":project_name,"path":str(summary_first_pass_path),"step":"summarise_batch","tag":"NIPT_first_pass_csv"})
+        deliverables["files"].append({"format":"csv", "id":project_name,"path":str(summary_second_pass_path),"step":"summarise_batch","tag":"NIPT_second_pass_csv"})
+ 
     deliverables["files"].append({"format":"csv", "id":project_name,"path":str(summary_path),"step":"summarise_batch","tag":"NIPT_csv"})
     deliverables["files"].append({"format":"html", "id":project_name,"path":str(multiqc_path),"step":"summarise_batch","tag":"MultiQC"})
 
