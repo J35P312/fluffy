@@ -55,6 +55,7 @@ def analyse(ctx, skip_preface, dry_run,batch_ref):
 
     print_deliverables(
         output_dir=configs["out"],
+        batch_ref=batch_ref,
         project_dir=project_dir,
         project_id=summarise_prefix,
         samples=samples,

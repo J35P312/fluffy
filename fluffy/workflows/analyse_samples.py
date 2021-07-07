@@ -36,26 +36,25 @@ def run_analysis(
         slurm_api.slurm_settings["mem"]=configs["slurm"]["mem"]
 
         align_jobid=sample_jobids[sample_id][-1]
-        if not two_pass:
-            ffy_jobid = estimate_ffy(
-               configs=configs,
-               sample_id=sample_id,
-               afterok=align_jobid,
-               slurm_api=slurm_api,
-               dry_run=dry_run,
-            )
-            jobids.append(ffy_jobid)
-            sample_jobids[sample_id].append(ffy_jobid)
+        ffy_jobid = estimate_ffy(
+            configs=configs,
+            sample_id=sample_id,
+            afterok=align_jobid,
+            slurm_api=slurm_api,
+            dry_run=dry_run,
+        )
+        jobids.append(ffy_jobid)
+        sample_jobids[sample_id].append(ffy_jobid)
 
-            picard_jobid = picard_qc_workflow(
-               configs=configs,
-               sample_id=sample_id,
-               afterok=align_jobid,
-               slurm_api=slurm_api,
-               dry_run=dry_run,
-            )
-            jobids.append(picard_jobid)
-            sample_jobids[sample_id].append(picard_jobid)
+        picard_jobid = picard_qc_workflow(
+            configs=configs,
+            sample_id=sample_id,
+            afterok=align_jobid,
+            slurm_api=slurm_api,
+            dry_run=dry_run,
+        )
+        jobids.append(picard_jobid)
+        sample_jobids[sample_id].append(picard_jobid)
 
         wcx_test_jobid = wisecondor_xtest_workflow(
             configs=configs,
@@ -68,7 +67,7 @@ def run_analysis(
         jobids.append(wcx_test_jobid)
         sample_jobids[sample_id].append(wcx_test_jobid)
 
-        if not skip_preface and not two_pass:
+        if not skip_preface:
             preface_predict_jobid = preface_predict_workflow(
                 configs=configs,
                 sample_id=sample_id,
@@ -91,7 +90,7 @@ def run_analysis(
             jobids.append(cleanup_jobid)
  
     summarize_jobid = summarize_workflow(
-        configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run,two_pass=two_pass
+        configs=configs, afterok=jobids, slurm_api=slurm_api, dry_run=dry_run,batch_ref=batch_ref,two_pass=two_pass
     )
 
     return(summarize_jobid,jobids,slurm_api)
