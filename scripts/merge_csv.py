@@ -41,5 +41,12 @@ for line in open(sys.argv[2]):
 	data[content[0]][13]=content[13]
 	data[content[0]][14]=content[14]
 	data[content[0]][15]=content[15]
+
 	#print(data[content[0]])
+
+	#update stdev
+	data[content[0]][67]=content[67]
+	data[content[0]][68]=content[68]
+	data[content[0]][69]=content[69]
+
 	print('","'.join(data[content[0]]))
