@@ -329,7 +329,8 @@ for sample in samples:
                 if content[0] == "13":
                     samples[sample]["Zscore_13"] = content[-1]
                     samples[sample]["Chr13_Ratio"] = str(float(content[1]) + 1)
-                    ratio_13.append(float(content[1]) + 1)
+                    if sample in included_samples or len(included_samples) == 0:
+                        ratio_13.append(float(content[1]) + 1)
 
                 if content[0] == "14":
                     samples[sample]["Chr14_Ratio"] = str(float(content[1]) + 1)
@@ -342,7 +343,8 @@ for sample in samples:
                 if content[0] == "18":
                     samples[sample]["Zscore_18"] = content[-1]
                     samples[sample]["Chr18_Ratio"] = str(float(content[1]) + 1)
-                    ratio_18.append(float(content[1]) + 1)
+                    if sample in included_samples or len(included_samples) == 0:
+                        ratio_18.append(float(content[1]) + 1)
 
                 if content[0] == "19":
                     samples[sample]["Chr19_Ratio"] = str(float(content[1]) + 1)
@@ -351,7 +353,8 @@ for sample in samples:
                 if content[0] == "21":
                     samples[sample]["Zscore_21"] = content[-1]
                     samples[sample]["Chr21_Ratio"] = str(float(content[1]) + 1)
-                    ratio_21.append(float(content[1]) + 1)
+                    if sample in included_samples or len(included_samples) == 0:
+                        ratio_21.append(float(content[1]) + 1)
 
                 if content[0] == "22":
                     samples[sample]["Chr22_Ratio"] = str(float(content[1]) + 1)
