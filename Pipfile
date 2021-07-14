@@ -8,6 +8,7 @@ click = "*"
 coloredlogs = "*"
 slurmpy = "*"
 pyyaml = "*"
+numpy = "*"
 
 [dev-packages]
 pytest = "*"
