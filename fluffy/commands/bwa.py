@@ -24,7 +24,7 @@ def get_samse_command(
     singularity: str, reference: str, fastq: str, out_prefix: str
 ) -> str:
     """create a command for running bwa samsw"""
-    cmd = f"{singularity} bwa samse -n -1 {reference} {out_prefix}.sai {fastq}"
+    cmd = f"{singularity} bwa samse -n -1 {reference} {out_prefix}.sai {fastq} | {singularity} samtools sort - -T {out_prefix}.tmp > {out_prefix}.tmp.bam"
     return cmd
 
 
@@ -34,7 +34,7 @@ def get_sampe_command(
     """create a command for running bwa sampe"""
     cmd = (
         f"{singularity} bwa sampe -n -1 {reference} "
-        f"{out_prefix}_R1.sai {out_prefix}_R2.sai {fastq1} {fastq2}"
+        f"{out_prefix}_R1.sai {out_prefix}_R2.sai {fastq1} {fastq2} | {singularity} samtools sort - -T {out_prefix}.tmp > {out_prefix}.tmp.bam"
     )
     return cmd
 
@@ -44,8 +44,7 @@ def get_bamsormadup_command(
 ) -> str:
     """Create a command for running bamorsamdup"""
     cmd = (
-        f"{singularity} bamsormadup inputformat=sam threads=16 SO=coordinate "
-        f"outputformat=bam tmpfile={tmp_dir}/{sample_id} "
-        f"indexfilename={out_prefix}.bam.bai > {out_prefix}.bam"
+        f"{singularity} picard MarkDuplicates I={out_prefix}.tmp.bam O={out_prefix}.bam M={out_prefix}.md.txt CREATE_INDEX=true VALIDATION_STRINGENCY=LENIENT\n"
+        f"rm {out_prefix}.tmp.bam"
     )
     return cmd
