@@ -5,7 +5,9 @@
 		"mem":0
 	},
 	"amycne":{
-		"minq":10
+		"minq":10,
+		"coefficient":2,
+		"intercept":0.015
 	},
 	"wisecondorx":{
 		"reftest":"tests/fixtures/wisecondor/wisecondor_X_bwa_ref.npz",
