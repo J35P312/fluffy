@@ -44,7 +44,7 @@ def align_and_convert_single_end(
         out_prefix=out_prefix,
     )
 
-    samse = " | ".join([samse_cmd, bamsormadup_cmd])
+    samse = " \n ".join([samse_cmd, bamsormadup_cmd])
 
     convert = get_convert_cmd(
         singularity=singularity, out_prefix=out_prefix
@@ -98,7 +98,7 @@ def align_and_convert_paired_end(
         out_prefix=out_prefix,
     )
 
-    sampe = " | ".join([sampe_cmd, bamsormadup_cmd])
+    sampe = " \n ".join([sampe_cmd, bamsormadup_cmd])
 
     convert = get_convert_cmd(
         singularity=singularity, out_prefix=out_prefix
@@ -134,6 +134,8 @@ def amycne_ffy(configs: dict, out_dir: Path, sample_id: str) -> str:
         out_prefix=str(out_prefix),
         path_gc_tab=str(path_gc_tab),
         minq=configs["amycne"]["minq"],
+	slope=configs["amycne"]["coefficient"],
+	intercept=configs["amycne"]["intercept"],
     )
     return "\n".join([tiddit_cmd, gc_tab_cmd, amycne_cmd])
 

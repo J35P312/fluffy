@@ -18,7 +18,7 @@ def get_gctab_cmd(
 
 
 def run_amycne_cmd(
-    singularity: str, out_prefix: str, path_gc_tab: str, minq: str
+    singularity: str, out_prefix: str, path_gc_tab: str, minq: str, slope: int, intercept: int
 ) -> str:
     """Get a string with command for running AMYCNEs fetal fraction
 
@@ -26,7 +26,7 @@ def run_amycne_cmd(
     """
     amycne_cmd = (
         f"{singularity} python /bin/AMYCNE/AMYCNE.py --ff "
-        f"--coverage {out_prefix}.tiddit.tab --gc {path_gc_tab} --Q {minq} > "
+        f"--coverage {out_prefix}.tiddit.tab --gc {path_gc_tab} --Q {minq} --scaling {slope} --intercept {intercept} > "
         f"{out_prefix}.tiddit.AMYCNE.tab"
     )
     return amycne_cmd

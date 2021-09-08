@@ -87,7 +87,7 @@ alternatively, fluffy is cloned and installed from github:
 	
 Next download the FluFFyPipe singularity container
 
-     singularity pull --name FluFFyPipe.sif shub://J35P312/FluFFyPipe
+     singularity pull library://jeisfeldt/default/fluffy:sha256.dbef92cd5eab8558c2729f73a191d73a7576a24e9bb44dde7372c0cd405c4ef6 
 
 copy the example config (found in example_config), and edit the variables.
 You will need to download/create the following files:
