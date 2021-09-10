@@ -19,14 +19,14 @@ def get_separator(line: str) -> str:
 def get_sample_col(line_content: list) -> int:
     """Get the column number that holds the sample name"""
     for column, info in enumerate(line_content):
-        if info.lower() == "sampleid":
+        if info.lower() == "sampleid" or info.lower() == "sample_id":
             return column
     return None
 
 def get_project_col(line_content: list) -> int:
     """Get the column number that holds the sample name"""
     for column, info in enumerate(line_content):
-        if info.lower() == "project":
+        if info.lower() == "project" or info.lower() == "sample_project":
             return column
     return None
 
