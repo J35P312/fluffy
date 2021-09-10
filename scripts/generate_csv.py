@@ -239,7 +239,14 @@ for line in open(args.samplesheet):
 
     i=0
     content=line.strip("\n").strip("\r").split(" ") 
-    sample=content[samplesheet_dict["SampleID"]]
+
+    if "SampleID" in samplesheet_dict:
+       sample=content[samplesheet_dict["SampleID"]]
+
+    elif "Sample_ID" in samplesheet_dict:
+       sample=content[samplesheet_dict["Sample_ID"]]
+
+
     if "SampleName" in samplesheet_dict:
        sample=content[samplesheet_dict["SampleName"]]
 
@@ -252,7 +259,7 @@ for line in open(args.samplesheet):
             samples[sample][samplesheet_info[i]] = entry
         elif samplesheet_info[i] == "FCID":
             samples[sample]["Flowcell"] = entry
-        elif samplesheet_info[i] == "Project":
+        elif samplesheet_info[i] == "Project" or samplesheet_info[i] == "Sample_Project":
             samples[sample]["SampleProject"] = entry
         elif samplesheet_info[i] == "index" or samplesheet_info[i] == "index1":
             samples[sample]["Index1"] = entry
@@ -264,7 +271,6 @@ for line in open(args.samplesheet):
     if "SampleName" in samplesheet_dict:
         samples[sample]["SampleID"]=content[samplesheet_dict["SampleName"]]
         
-
 ratio_21 = []
 ratio_18 = []
 ratio_13 = []
