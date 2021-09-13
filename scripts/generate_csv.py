@@ -217,7 +217,7 @@ sample_out = {
     "FFX": "",
 }
 
-
+exclude_column=False
 for line in open(args.samplesheet):
     if not " " in line:
         line=line.replace(","," ")
@@ -250,14 +250,15 @@ for line in open(args.samplesheet):
     if "SampleName" in samplesheet_dict:
        sample=content[samplesheet_dict["SampleName"]]
 
-    samples[ sample ]=copy.deepcopy(sample_out)
+    if not sample in samples:
+        samples[ sample ]=copy.deepcopy(sample_out)
+
     for entry in content:
         #print( [sample,samplesheet_info[i],i] )
         if i == len(samplesheet_info):
             continue
-        if samplesheet_info[i] in sample_out:
-            samples[sample][samplesheet_info[i]] = entry
-        elif samplesheet_info[i] == "FCID":
+
+        if samplesheet_info[i] == "FCID":
             samples[sample]["Flowcell"] = entry
         elif samplesheet_info[i] == "Project" or samplesheet_info[i] == "Sample_Project":
             samples[sample]["SampleProject"] = entry
@@ -265,6 +266,13 @@ for line in open(args.samplesheet):
             samples[sample]["Index1"] = entry
         elif samplesheet_info[i] == "index2":
             samples[sample]["Index2"] = entry
+
+        elif samplesheet_info[i].lower() == "exclude":
+            if entry.lower() == "t" or entry.lower() == "true": 
+                samples[sample]["QCFlag"]="Excluded_from_ref(In_Samplesheet)"
+
+        elif samplesheet_info[i] in sample_out:
+            samples[sample][samplesheet_info[i]] = entry
 
         i=i+1
 
@@ -285,7 +293,11 @@ try:
 
     for sample in samples:
         if not sample in included_samples:
-            samples[sample]["QCFlag"]="Excluded_from_ref"
+            if samples[sample]["QCFlag"] == "":
+                samples[sample]["QCFlag"] = "Excluded_from_ref(DeviatingZscore)"
+            else:
+                samples[sample]["QCFlag"]+=";Excluded_from_ref(DeviatingZscore)"
+
 except:
     pass
 

@@ -33,6 +33,8 @@ files=[]
 excluded=0
 Zscores={"13":[],"18":[],"21":[]}
 
+exclude=set([])
+
 for line in open(args.csv):
 	if first:
 		first=False
@@ -48,7 +50,7 @@ for line in open(args.csv):
 	ratio18=abs(float(content[14]))	
 	ratio21=abs(float(content[15]))	
 
-	if max([ratio13,ratio18,ratio21]) > args.ratio or max([zscore13,zscore18,zscore21]) > args.Zscore:
+	if max([ratio13,ratio18,ratio21]) > args.ratio or max([zscore13,zscore18,zscore21]) > args.Zscore or "Excluded_from_ref(In_Samplesheet)" in line:
 		excluded+=1
 	else:
 		Zscores["13"].append(ratio13)
