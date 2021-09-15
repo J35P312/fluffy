@@ -27,10 +27,18 @@ for line in open(sys.argv[2]):
 
 	#Update QCflag
 	if "Excluded_from_ref" in content[8]:
+		
+		exclude=[]
+		#if "Excluded_from_ref(In_Samplesheet)" in content[8]:
+		#	exclude.append("Excluded_from_ref(In_Samplesheet)")
+
+		if "Excluded_from_ref(DeviatingZscore)" in content[8]:
+			exclude.append("Excluded_from_ref(DeviatingZscore)")
+
 		if data[content[0]][8] == "":
-			data[content[0]][8]="Excluded_from_ref"
+			data[content[0]][8]=";".join(exclude)
 		else:
-			data[content[0]][8]=";".join([ "Excluded_from_ref",data[content[0]][8] ])
+			data[content[0]][8]=";".join(exclude+[ data[content[0]][8] ] )
 
 	#Update Zscore
 	data[content[0]][9]=content[9]
