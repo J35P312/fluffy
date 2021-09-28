@@ -33,10 +33,9 @@ def reference(args,ctx, dry_run):
     if not dry_run:
         shutil.copy(configs["config_path"], str(config_path))
 
-
-    print_status(
-        output_dir=configs["out"],
-    )
+        print_status(
+            output_dir=configs["out"],
+        )
 
     jobid = make_reference(
         samples=ctx["samples"],

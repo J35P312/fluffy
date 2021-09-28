@@ -10,7 +10,7 @@ from fluffy.version import __version__
 
 LOG = logging.getLogger(__name__)
 
-def print_deliverables(output_dir: Path,project_dir: Path, samples: list,batch_ref=bool, project_id = "summary") -> None:
+def print_deliverables(output_dir: Path,project_dir: Path, samples: list,batch_ref=bool, project_id = "summary",dry_run=False) -> None:
     """Create a deliverables YAML file"""
 
     deliverables={"files":[]}
@@ -33,6 +33,7 @@ def print_deliverables(output_dir: Path,project_dir: Path, samples: list,batch_r
         zip_path=output_dir.absolute() / f"{sample_id}/{sample_id}.WCXpredict_aberrations.filt.bed"
         deliverables["files"].append({"format":"bed", "id":sample_id,"path":str(zip_path),"step":"summarise_batch","tag":"Wisecondor_aberrations"})
 
-    f=open(f"{str(output_dir)}/deliverables.yaml","w")
-    f.write(yaml.dump(deliverables))
-    f.close()
+    if not dry_run:
+        f=open(f"{str(output_dir)}/deliverables.yaml","w")
+        f.write(yaml.dump(deliverables))
+        f.close()
