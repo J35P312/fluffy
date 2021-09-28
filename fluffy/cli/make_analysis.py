@@ -28,14 +28,12 @@ def analyse(ctx, skip_preface, dry_run ,batch_ref):
 
 
     LOG.info("Copy config to %s", config_path)
-    if not dry_run:
-        shutil.copy(configs["config_path"], str(config_path))
-
-        try:
-            check_configs(configs, skip_preface=skip_preface)
-        except FileNotFoundError as err:
-            print("config not found")
-            quit()
+    shutil.copy(configs["config_path"], str(config_path))
+    try:
+        check_configs(configs, skip_preface=skip_preface)
+    except FileNotFoundError as err:
+        print("config not found")
+        quit()
 
     summarise_prefix="summary"
     project_ids=set([])
@@ -54,7 +52,6 @@ def analyse(ctx, skip_preface, dry_run ,batch_ref):
         project_dir=project_dir,
         project_id=summarise_prefix,
         samples=samples,
-        dry_run=dry_run
     )
 
     print_status(

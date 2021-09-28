@@ -56,12 +56,11 @@ def base_command():
     out=pathlib.Path(args.out)
     LOG.info("Create outdir %s (if not exist)", out)
 
-    if not args.dry_run:
-        out.mkdir(parents=True, exist_ok=True)
+    out.mkdir(parents=True, exist_ok=True)
     config = pathlib.Path(args.config)
     configs = get_configs(config)
     configs["out"] = out
-    configs["name"]=args.config
+    configs["name"]=config.name
     configs["config_path"]=config
     ctx["configs"] = configs
 
@@ -72,8 +71,7 @@ def base_command():
     configs["project"] = project_dir
 
     sacct_dir = out / "sacct"
-    if not args.dry_run:
-        sacct_dir.mkdir(parents=True, exist_ok=True)
+    sacct_dir.mkdir(parents=True, exist_ok=True)
 
     with open(sample, "r") as samplesheet:
         ctx["samples"] = list(read_samplesheet(samplesheet, project_dir))
