@@ -37,6 +37,7 @@ def base_arguments(args_list):
     parser.add_argument("-o",'--out'	  , type=str, help="output folder", required=True)
     parser.add_argument("-p",'--project'	  , type=str, help="input fastq", required=True)
     parser.add_argument("-s",'--sample'	  , type=str, help="path to samplesheet", required=True)
+    parser.add_argument("-l",'--slurm_params'	  ,nargs='+', type=str, help="Additional parameters passed to slurm on the following format QoS:High  ")
     parser.add_argument("--dry_run"     , help="dry run, do not generate output files", required=False, action="store_true")
     args, unknown = parser.parse_known_args(args_list)
 
@@ -77,6 +78,9 @@ def base_command():
         ctx["samples"] = list(read_samplesheet(samplesheet, project_dir))
 
     ctx["sample_sheet"] = sample
+    if args.slurm_params:
+        for param in args.slurm_params:
+            configs["slurm"][ param.split(":")[0] ]=param.split(":")[-1]
 
     ctx["slurm_api"] = SlurmAPI(
         slurm_settings=configs["slurm"], out_dir=out,
