@@ -24,7 +24,8 @@ def make_reference(
         sample_outdir = configs["out"] / sample_id
 
         # This will fail if dir already exists
-        sample_outdir.mkdir(parents=True)
+        if not dry_run:
+            sample_outdir.mkdir(parents=True)
 
         slurm_api.slurm_settings["ntasks"]=configs["align"]["ntasks"]
         slurm_api.slurm_settings["mem"]=configs["align"]["mem"]

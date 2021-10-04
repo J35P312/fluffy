@@ -1,8 +1,6 @@
 """CLI to rerun failed samples"""
 import logging
 
-import click
-
 from fluffy.config import check_configs
 from fluffy.deliverables import print_deliverables
 from fluffy.status import print_status, check_status
@@ -12,27 +10,21 @@ import os
 
 LOG = logging.getLogger(__name__)
 
-
-@click.command()
-@click.pass_context
-@click.option(
-    "--skip-preface", is_flag=True, help="Skip preface fetal fraction estimation"
-)
-@click.option("--dry-run", is_flag=True, help="Do not create any files")
-def rerun(ctx, skip_preface, dry_run):
+def rerun(args,ctx, skip_preface, dry_run):
     """Run the pipeline to call NIPT"""
     LOG.info("Running fluffy rerun")
-    samples = ctx.obj["samples"]
-    configs = ctx.obj["configs"]
-    configs["sample_sheet"] = ctx.obj["sample_sheet"]
-    project_dir=ctx.obj["project"]
-    slurm_api = ctx.obj["slurm_api"]
+    samples = obj["samples"]
+    configs = obj["configs"]
+    configs["sample_sheet"] = obj["sample_sheet"]
+    project_dir=obj["project"]
+    slurm_api = obj["slurm_api"]
 
     config_path=configs["out"] / configs["name"]
     try:
         check_configs(configs, skip_preface=skip_preface)
     except FileNotFoundError as err:
-        raise click.Abort
+        quit()
+
     output_dir=configs["out"]
 
     analysis_status = check_status(

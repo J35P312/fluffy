@@ -18,7 +18,7 @@ def get_summarize_cmd(
 ) -> str:
     """Return a string with the command to summarize a run"""
 
-    wd=os.path.dirname(os.path.realpath(__file__)).replace("fluffy/workflows","scripts")
+    wd=os.path.dirname(os.path.realpath(__file__)).replace("fluffy/workflows","fluffy/scripts")
 
     summary_cmd = (
         f"python {wd}/generate_csv.py "
@@ -71,7 +71,7 @@ def summarize_workflow(
 
     singularity=singularity_base(configs["singularity"], configs["out"], configs["project"], configs["singularity_bind"])
 
-    wd=os.path.dirname(os.path.realpath(__file__)).replace("fluffy/workflows","scripts")
+    wd=os.path.dirname(os.path.realpath(__file__)).replace("fluffy/workflows","fluffy/scripts")
 
     if not two_pass:
         multiqc_cmd=get_multiqc_cmd(singularity=singularity,input_dir=out_dir,out_dir=out_dir)
