@@ -20,9 +20,9 @@ LOG_LEVELS = ["DEBUG", "INFO", "WARNING"]
 
 def base_arguments(args_list):
     parser = argparse.ArgumentParser("""Fluffy-{}""".format(__version__),add_help=False)
-    parser.add_argument("--reference" , help="call structural variation", required=False, action="store_true")
-    parser.add_argument("--analyse"   , help="Run the fluffy analysis", required=False, action="store_true")
-    parser.add_argument("--rerun"     , help="rerun failed analyses", required=False, action="store_true")
+    parser.add_argument("--reference", help="call structural variation", action="store_true")
+    parser.add_argument("--analyse"   , help="Run the fluffy analysis", action="store_true")
+    parser.add_argument("--rerun"     , help="rerun failed analyses", action="store_true")
     parser.add_argument("--version"     , help="Print version", required=False, action="store_true")
     args, unknown = parser.parse_known_args(args_list)
 

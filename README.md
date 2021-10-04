@@ -10,15 +10,15 @@ NIPT analysis pipeline, using WisecondorX for detecting aneuplodies and large CN
 # Run FluFFyPipe
 Run NIPT analysis, using a previously comnputed reference:
 
-    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> analyse
+    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> --analyse
     
 Run NIPT analysis, using an internally computed reference (i.e the reference is built using all samples listed in samplesheet):
 
-    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> analyse --batch-ref
+    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> --analyse --batch-ref
 
 optionally, skip preface:
 
-    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> --skip_preface analyse
+    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> --skip_preface --analyse
 
 All output will be written to the output folder, this output includes:
 
@@ -37,7 +37,7 @@ If the samplesheet contains a SampleName column, fluffy will name the output acc
 
 Create a WisecondorX reference
 
-    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> reference
+    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> --reference
     
 samplesheet should contain atleast a "sampleID" column. All samples in the samplesheet will be used to construct the reference, visit the WisecondorX manual for more information.
 
