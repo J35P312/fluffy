@@ -10,11 +10,10 @@ from fluffy.slurm_api import SlurmAPI
 from fluffy.commands.multiqc import get_multiqc_cmd
 from fluffy.singularity_cmd import singularity_base
 
-LOG = logging.getLogger(__name__)
-
+LOG = logging.getLogger(__name__)	
 
 def get_summarize_cmd(
-    singularity: str, out_dir: Path, outfile: str,project_id: str, sample_sheet: str, zscore: str, mincnv: str
+    singularity: str, out_dir: Path, outfile: str,project_id: str, sample_sheet: str, zscore: str, mincnv: str, maxgcd: float,maxatd: float,maxbin2bin: float, maxdup: float, minreads:int
 ) -> str:
     """Return a string with the command to summarize a run"""
 
@@ -22,7 +21,7 @@ def get_summarize_cmd(
 
     summary_cmd = (
         f"python {wd}/generate_csv.py "
-        f"--folder {str(out_dir)} --samplesheet {sample_sheet} --Zscore {zscore} --minCNV {mincnv} "
+        f"--folder {str(out_dir)} --samplesheet {sample_sheet} --Zscore {zscore} --minCNV {mincnv} --maxGCD {maxgcd} --maxATD {maxatd} --maxbin2bin {maxbin2bin} --maxdup {maxdup} --minreads {minreads} "
         f"> {outfile}"
     )
     return summary_cmd
@@ -86,6 +85,11 @@ def summarize_workflow(
                 sample_sheet=configs["sample_sheet"],
                 zscore=configs["summary"]["zscore"],
                 mincnv=configs["summary"]["mincnv"],
+                maxgcd=configs["summary"]["maxGCD"],
+                maxatd=configs["summary"]["maxATD"],
+                maxbin2bin=configs["summary"]["maxbin2bin"],
+                maxdup=configs["summary"]["maxdup"],
+                minreads=configs["summary"]["minreads"]
             )
 
             merge_cmd=get_merge_cmd(out_dir,configs["project_id"],wd)
@@ -101,6 +105,11 @@ def summarize_workflow(
                 sample_sheet=configs["sample_sheet"],
                 zscore=configs["summary"]["zscore"],
                 mincnv=configs["summary"]["mincnv"],
+                maxgcd=configs["summary"]["maxGCD"],
+                maxatd=configs["summary"]["maxATD"],
+                maxbin2bin=configs["summary"]["maxbin2bin"],
+                maxdup=configs["summary"]["maxdup"],
+                minreads=configs["summary"]["minreads"]
             )
             command_str=f"{multiqc_cmd}\n{summarize_cmd}"
 
@@ -114,6 +123,12 @@ def summarize_workflow(
             sample_sheet=configs["sample_sheet"],
             zscore=configs["summary"]["zscore"],
             mincnv=configs["summary"]["mincnv"],
+            maxgcd=configs["summary"]["maxGCD"],
+            maxatd=configs["summary"]["maxATD"],
+            maxbin2bin=configs["summary"]["maxbin2bin"],
+            maxdup=configs["summary"]["maxdup"],
+            minreads=configs["summary"]["minreads"]
+
         )
 
         build_two_pass_ref=get_two_pass_ref_cmd(singularity,out_dir,configs["project_id"],wd,configs["wisecondorx"]["testbinsize"],configs["wisecondorx"]["prefacebinsize"])
