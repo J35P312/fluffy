@@ -39,6 +39,12 @@
 	},
 	"summary":{
 		"mincnv":10000000,
-		"zscore":5
+		"zscore":5,
+		"maxGCD":0.5,
+		"maxATD":5,
+		"maxbin2bin":0.0008,
+		"maxdup":0.15,
+		"minreads":20000000
+
 	}
 }
