@@ -50,6 +50,9 @@ dev/
 # SublimeText: workspace files are user-specific
 *.sublime-workspace
 
+# IdeaJ
+*.idea
+
 # Textmate:
 .tm_properties
 
