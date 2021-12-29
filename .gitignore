@@ -22,6 +22,7 @@ develop-eggs
 .installed.cfg
 lib
 lib64
+venv
 
 # Installer logs
 pip-log.txt
@@ -49,6 +50,9 @@ dev/
 
 # SublimeText: workspace files are user-specific
 *.sublime-workspace
+
+# PycharmObject
+*.idea
 
 # Textmate:
 .tm_properties
