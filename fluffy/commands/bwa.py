@@ -44,7 +44,7 @@ def get_bamsormadup_command(
 ) -> str:
     """Create a command for running bamorsamdup"""
     cmd = (
-        f"{singularity} picard MarkDuplicates I={out_prefix}.tmp.bam O={out_prefix}.bam M={out_prefix}.md.txt CREATE_INDEX=true VALIDATION_STRINGENCY=LENIENT\n"
+        f"{singularity} picard MarkDuplicates TMP_DIR={tmp_dir} I={out_prefix}.tmp.bam O={out_prefix}.bam M={out_prefix}.md.txt CREATE_INDEX=true VALIDATION_STRINGENCY=LENIENT\n"
         f"rm {out_prefix}.tmp.bam"
     )
     return cmd
