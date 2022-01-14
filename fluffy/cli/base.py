@@ -31,7 +31,7 @@ def base_arguments(args_list):
         quit()
 
     if args.version:
-        return(args)
+        return(args,parser)
 
     parser.add_argument("-c",'--config'	  , type=str, help="json config file", required=True)
     parser.add_argument("-o",'--out'	  , type=str, help="output folder", required=True)
