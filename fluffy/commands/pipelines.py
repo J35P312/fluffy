@@ -54,7 +54,6 @@ def align_and_convert_single_end(
     bamsormadup_cmd = get_bamsormadup_command(
         singularity=singularity,
         tmp_dir=config["align"]["tmpdir"],
-        sample_id=sample_id,
         out_prefix=out_prefix,
     )
 
