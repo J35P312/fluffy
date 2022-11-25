@@ -20,7 +20,7 @@ def get_summarize_cmd(
     wd=os.path.dirname(os.path.realpath(__file__)).replace("fluffy/workflows","fluffy/scripts")
 
     summary_cmd = (
-        f"python {wd}/generate_csv.py "
+        f"{singularity} python {wd}/generate_csv.py "
         f"--folder {str(out_dir)} --samplesheet {sample_sheet} --Zscore {zscore} --minCNV {mincnv} --maxGCD {maxgcd} --maxATD {maxatd} --maxbin2bin {maxbin2bin} --maxdup {maxdup} --minreads {minreads} "
         f"> {outfile}"
     )
@@ -54,7 +54,7 @@ def get_merge_cmd(
     second_pass = out_dir / f"{project_id}.2pass.csv"
 
     merge_cmd = (
-        f"python {working_directory}/merge_csv.py {first_pass} {second_pass} > {outfile}"
+        f"{singularity} python {working_directory}/merge_csv.py {first_pass} {second_pass} > {outfile}"
     )
     
     return(merge_cmd)
@@ -92,7 +92,7 @@ def summarize_workflow(
                 minreads=configs["summary"]["minreads"]
             )
 
-            merge_cmd=get_merge_cmd(out_dir,configs["project_id"],wd)
+            merge_cmd=get_merge_cmd(singularity,out_dir,configs["project_id"],wd)
             command_str=f"{multiqc_cmd}\n{summarize_cmd}\n{merge_cmd}"
 
         else:
