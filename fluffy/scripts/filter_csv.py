@@ -3,16 +3,8 @@ import copy
 import sys
 import subprocess
 import os
-import numpy
 from os import listdir
 from os.path import isfile, join
-
-def mad(arr):
-    #copied from:https://stackoverflow.com/questions/8930370/where-can-i-find-mad-mean-absolute-deviation-in-scipy
-    arr = numpy.ma.array(arr).compressed() # should be faster to not use masked arrays.
-    med = numpy.median(arr)
-    return numpy.median(numpy.abs(arr - med))
-
 
 parser = argparse.ArgumentParser(
     """filter_csv.py --csv input_csv --Zscore zscore_limit --max_exclude maximum_excluded"""
