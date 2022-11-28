@@ -18,9 +18,10 @@ def get_summarize_cmd(
     """Return a string with the command to summarize a run"""
 
     wd=os.path.dirname(os.path.realpath(__file__)).replace("fluffy/workflows","fluffy/scripts")
+    python_path=os.path.realpath(sys.executable)
 
     summary_cmd = (
-        f"{singularity} python {wd}/generate_csv.py "
+        f"{python_path} {wd}/generate_csv.py "
         f"--folder {str(out_dir)} --samplesheet {sample_sheet} --Zscore {zscore} --minCNV {mincnv} --maxGCD {maxgcd} --maxATD {maxatd} --maxbin2bin {maxbin2bin} --maxdup {maxdup} --minreads {minreads} "
         f"> {outfile}"
     )
@@ -36,14 +37,16 @@ def get_two_pass_ref_cmd(
     ) -> str:
 
     outfile = out_dir / f"{project_id}.1pass.csv"
+    python_path=os.path.realpath(sys.executable)
 
     two_bass_ref_cmd = (
-        f"python {working_directory}/filter_csv.py --csv {outfile} --project {out_dir} --singularity \"{singularity}\" --binsize {preface_bin_size} {wisecondor_bin_size}"
+        f"{python_path} {working_directory}/filter_csv.py --csv {outfile} --project {out_dir} --singularity \"{singularity}\" --binsize {preface_bin_size} {wisecondor_bin_size}"
     )
     
     return(two_bass_ref_cmd)
 
 def get_merge_cmd(
+    singularity: str,
     out_dir: Path,
     project_id: str,
     working_directory: str, 
@@ -52,9 +55,10 @@ def get_merge_cmd(
     outfile = out_dir / f"{project_id}.csv"
     first_pass = out_dir / f"{project_id}.1pass.csv"
     second_pass = out_dir / f"{project_id}.2pass.csv"
+    python_path=os.path.realpath(sys.executable)
 
     merge_cmd = (
-        f"{singularity} python {working_directory}/merge_csv.py {first_pass} {second_pass} > {outfile}"
+        f"{python_path} {working_directory}/merge_csv.py {first_pass} {second_pass} > {outfile}"
     )
     
     return(merge_cmd)
