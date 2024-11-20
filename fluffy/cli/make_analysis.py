@@ -11,7 +11,7 @@ from fluffy.workflows.analyse_samples import analyse_workflow
 
 LOG = logging.getLogger(__name__)
 
-def analyse(ctx, skip_preface, dry_run ,batch_ref):
+def analyse(ctx, skip_preface, dry_run ,batch_ref,bwa_mem):
     """Run the pipeline to call NIPT"""
     LOG.info("Running fluffy analyse")
 
@@ -66,4 +66,5 @@ def analyse(ctx, skip_preface, dry_run ,batch_ref):
         slurm_api=slurm_api,
         dry_run=dry_run,
         batch_ref=batch_ref,
+        bwa_mem=bwa_mem,
     )
