@@ -56,6 +56,38 @@ def get_sampe_command(
     )
     return cmd
 
+def get_bwa_mem_command(
+    singularity: str,
+    reference: str,
+    threads: str,
+    fastq: list,
+    out_prefix: str,
+    single_end: bool,
+    sample_id: str,
+    tmp_dir: str,
+    out_dir: str,
+) -> str:
+     """Create a command for running bwa mem"""
+
+     if single_end:
+        cmd= (
+        f"{singularity} cat {fastq[0]} | "
+        f"{singularity} fastqc stdin:{sample_id} -d {tmp_dir} -o {out_dir}/{sample_id}\n"
+        f"{singularity} bwa mem -t {threads} {reference} {fastq[0]} | {singularity} samtools sort - -@ {threads} "
+        f"-T {out_prefix}.tmp > {out_prefix}.tmp.bam"
+        )
+
+     else:
+        cmd= (
+        f"{singularity} cat {fastq[0]} | "
+        f"{singularity} fastqc stdin:{sample_id}.R1 -d {tmp_dir} -o {out_dir}/{sample_id}\n"
+        f"{singularity} cat {fastq[1]} | "
+        f"{singularity} fastqc stdin:{sample_id}.R2 -d {tmp_dir} -o {out_dir}/{sample_id}\n"
+        f"{singularity} bwa mem -t {threads} {reference} {fastq[0]} {fastq[1]} | {singularity} samtools sort - -@ {threads} "
+        f"-T {out_prefix}.tmp > {out_prefix}.tmp.bam"
+        )
+     return cmd
+
 
 def get_bamsormadup_command(
     out_prefix: str, singularity: str, tmp_dir: str
@@ -64,6 +96,7 @@ def get_bamsormadup_command(
     cmd = (
         f"{singularity} picard MarkDuplicates TMP_DIR={tmp_dir} I={out_prefix}.tmp.bam O={out_prefix}.bam "
         f"M={out_prefix}.md.txt CREATE_INDEX=true VALIDATION_STRINGENCY=LENIENT\n"
+	f"{singularity} samtools stats {out_prefix}.bam > {out_prefix}.stats.txt\n"
         f"rm {out_prefix}.tmp.bam"
     )
     return cmd

@@ -5,6 +5,7 @@ from pathlib import Path
 from .amycne import get_gctab_cmd, run_amycne_cmd
 from .bwa import (
     get_align_command,
+    get_bwa_mem_command,
     get_bamsormadup_command,
     get_sampe_command,
     get_samse_command,
@@ -68,7 +69,6 @@ def align_and_convert_paired_end(
     config: dict, fastq: list, out: Path, sample_id: str
 ) -> str:
     """create a command for running bwa and wisecondorX convert (paired end)"""
-
     singularity = singularity_base(
         config["singularity"],
         config["out"],
@@ -122,6 +122,37 @@ def align_and_convert_paired_end(
 
     return "\n".join([aln_r1, aln_r2, sampe, convert])
 
+def align_bwa_mem(config: dict, fastq: list, out: Path, sample_id: str, single_end: bool):
+    singularity = singularity_base(
+        config["singularity"],
+        config["out"],
+        config["project"],
+        config["singularity_bind"],
+    )
+
+    out_prefix = get_outprefix(out, sample_id)
+
+    bwa_mem_cmd = get_bwa_mem_command(
+        singularity=singularity,
+        reference=config["reference"],
+        threads=config["align"]["ntasks"],
+        fastq=fastq,
+        out_prefix=out_prefix,
+        single_end=single_end,
+        sample_id=sample_id,
+        tmp_dir=config["align"]["tmpdir"],
+        out_dir=str(out)
+    )
+
+    bamsormadup_cmd = get_bamsormadup_command(
+        singularity=singularity,
+        tmp_dir=config["align"]["tmpdir"],
+        out_prefix=out_prefix,
+    )
+
+    convert = get_convert_cmd(singularity=singularity, out_prefix=out_prefix)     
+
+    return "\n".join([bwa_mem_cmd,bamsormadup_cmd,convert])
 
 def amycne_ffy(configs: dict, out_dir: Path, sample_id: str) -> str:
     """fetal fraction estimation using tiddit and AMYCNE"""

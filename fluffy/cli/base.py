@@ -99,9 +99,10 @@ def base_command():
     elif args.analyse:
         parser.add_argument("--batch-ref"     , help="Build a wisecondorX refeference from the input batch (overrides refpreface and reftest)", required=False, action="store_true")
         parser.add_argument("--skip-preface"     , help="Skip preface fetal fraction estimation", required=False, action="store_true")
+        parser.add_argument("--bwa-mem"     , help="align using bwa mem", required=False, action="store_true")
         args, unknown = parser.parse_known_args()
 
-        analyse(ctx,args.skip_preface,args.dry_run,args.batch_ref)
+        analyse(ctx,args.skip_preface,args.dry_run,args.batch_ref,args.bwa_mem)
 
     else:
         parser.print_help()
