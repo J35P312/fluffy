@@ -68,3 +68,4 @@ def get_gender_cmd(singularity: str, out_prefix: str, reference: str):
     )
 
     return gender_cmd
+

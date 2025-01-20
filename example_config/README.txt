@@ -51,8 +51,9 @@
 	#reference fasta
 	"reference":"/proj/sens2019010/reference/human_g1k_v37.fasta",
 
-	#singularity file
+	#singularity files
 	"singularity":"/proj/sens2019010/nobackup/wharf/jesperei/jesperei-sens2019010/Clevervulture2.sif",
+        "wcx_singularity":"/proj/sens2017106/nobackup/denise/thesis/wcx2cytosure_latest.sif",
 
 	#paths mounted (singularity bind) by singularity, you may need to add reference directory etc
         "singularity_bind":[],

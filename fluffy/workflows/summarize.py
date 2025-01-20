@@ -9,6 +9,7 @@ from pathlib import Path
 from fluffy.slurm_api import SlurmAPI
 from fluffy.commands.multiqc import get_multiqc_cmd
 from fluffy.singularity_cmd import singularity_base
+from .wcx2cytosure import get_wcx2cytosure_cmd
 
 LOG = logging.getLogger(__name__)	
 
@@ -134,6 +135,7 @@ def summarize_workflow(
             minreads=configs["summary"]["minreads"]
 
         )
+
 
         build_two_pass_ref=get_two_pass_ref_cmd(singularity,out_dir,configs["project_id"],wd,configs["wisecondorx"]["testbinsize"],configs["wisecondorx"]["prefacebinsize"])
         command_str=f"{summarize_cmd}\n{build_two_pass_ref}"
