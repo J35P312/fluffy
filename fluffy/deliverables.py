@@ -33,7 +33,7 @@ def print_deliverables(output_dir: Path,project_dir: Path, samples: list,batch_r
         zip_path=output_dir.absolute() / f"{sample_id}/{sample_id}.WCXpredict_aberrations.filt.bed"
 	zip_path_cgh=output_dir.absolute() / f"{sample_id}/{sample_id}.cgh"
         deliverables["files"].append({"format":"bed", "id":sample_id,"path":str(zip_path),"step":"summarise_batch","tag":"Wisecondor_aberrations"})
-	deliverables["files"].append({"format":"xml", "id":sample_id,"path":str(zip_path_cgh),"step":"wcx","tag":"wcx2cytosure"})
+	deliverables["files"].append({"format":"cgh", "id":sample_id,"path":str(zip_path_cgh),"step":"wcx","tag":"wcx2cytosure"})
 
     f=open(f"{str(output_dir)}/deliverables.yaml","w")
     f.write(yaml.dump(deliverables))
