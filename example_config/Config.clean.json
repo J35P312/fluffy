@@ -32,7 +32,8 @@
 	},
 	"reference":"",
 	"singularity":"",
-        "singularity_bind":[],
+        "wcx_singularity":"",
+	"singularity_bind":[],
 	"slurm": {
 		"account":"",
 		"time":"5:00:00",
