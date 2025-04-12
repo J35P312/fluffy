@@ -273,12 +273,13 @@ def wisecondor_x_test(configs: dict, out_dir: Path, sample_id: str) -> str:
     bins_file = f"{out_prefix}.WCXpredict_bins.bed"
     aberrations_file = f"{out_prefix}.WCXpredict_aberrations.bed"
     cgh_file = f"{out_prefix}.cgh"
-
+    tiddit_file = f"{out_prefix}.tiddit.tab"
 
     wcx2cytosure_cmd = get_wcx2cytosure_cmd(singularity=wcx_singularity,
                                         out_prefix=cgh_file,
                                         wisecondorx_cov=bins_file,
-                                        wisecondorx_aberrations=aberrations_file
+                                        wisecondorx_aberrations=aberrations_file,
+					tiddit_cov=tiddit_file
     )
 
     return "\n".join(
