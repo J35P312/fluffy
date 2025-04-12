@@ -100,7 +100,7 @@ alternatively, fluffy is cloned and installed from github:
 Next download the FluFFyPipe singularity container and the wcx2cytosure singularity container:
 
      singularity pull library://jeisfeldt/default/fluffy:sha256.dbef92cd5eab8558c2729f73a191d73a7576a24e9bb44dde7372c0cd405c4ef6 
-     singularity pull --arch amd64 library://ravinale/wcx2cytosure/wcx2cytosure2:latest
+     singularity pull --arch amd64 library://ravinale/wcx2cytosure/wcx2cytosure:latest
 
 
 copy the example config (found in example_config), and edit the variables.
