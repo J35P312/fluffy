@@ -11,4 +11,7 @@ About changelog [here](https://keepachangelog.com/en/1.0.0/)
 - Create and upload coverage report to codecov.io
 
 ### Fixed
-### Changed
+[4.0.0]
+### Added
+- wcx2cytosure for WisecondorX pipeline `.cgh` file output for coverage analysis
+- Create and upload coverage report to codecov.io
