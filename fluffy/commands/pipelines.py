@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from .wcx2cytosure import get_wcx2cytosure_cmd
+
 from .amycne import get_gctab_cmd, run_amycne_cmd
 from .bwa import (
     get_align_command,
@@ -234,37 +236,52 @@ def wisecondor_x_test(configs: dict, out_dir: Path, sample_id: str) -> str:
     """Get the commands for running the wisecondor chromosome X test"""
     out_prefix = out_dir / sample_id / sample_id
     singularity = singularity_base(
-        configs["singularity"],
-        configs["out"],
-        configs["project"],
-        configs["singularity_bind"],
+    configs["singularity"],
+    configs["out"],
+    configs["project"],
+    configs["singularity_bind"],
     )
+	
     blacklist = configs["wisecondorx"]["blacklist"]
     zscore = str(configs["wisecondorx"]["zscore"])
 
     wisecondor_test_cmd = get_predict_cmd(
-        singularity=singularity,
-        out_prefix=out_prefix,
-        reference=configs["wisecondorx"]["reftest"],
-        blacklist=blacklist,
-        zscore=zscore,
+	singularity=singularity,
+	out_prefix=out_prefix,
+	reference=configs["wisecondorx"]["reftest"],
+	blacklist=blacklist,
+	zscore=zscore,
     )
 
     wisecondor_preface_cmd = get_predict_cmd(
-        singularity=singularity,
-        out_prefix=out_prefix,
-        reference=configs["wisecondorx"]["refpreface"],
-        blacklist=blacklist,
-        zscore=zscore,
-        preface=True,
+	singularity=singularity,
+	out_prefix=out_prefix,
+	reference=configs["wisecondorx"]["refpreface"],
+	blacklist=blacklist,
+	zscore=zscore,
+	preface=True,
     )
 
     wisecondor_gender_cmd = get_gender_cmd(
-        singularity=singularity,
-        out_prefix=out_prefix,
-        reference=configs["wisecondorx"]["reftest"],
+	singularity=singularity,
+	out_prefix=out_prefix,
+	reference=configs["wisecondorx"]["reftest"],
+    )
+
+
+    wcx_singularity = singularity_base(configs["wcx_singularity"], configs["out"], configs["project"], configs["singularity_bind"])
+    bins_file = f"{out_prefix}.WCXpredict_bins.bed"
+    aberrations_file = f"{out_prefix}.WCXpredict_aberrations.bed"
+    cgh_file = f"{out_prefix}.cgh"
+    tiddit_file = f"{out_prefix}.tiddit.tab"
+
+    wcx2cytosure_cmd = get_wcx2cytosure_cmd(singularity=wcx_singularity,
+                                        out_prefix=cgh_file,
+                                        wisecondorx_cov=bins_file,
+                                        wisecondorx_aberrations=aberrations_file,
+					tiddit_cov=tiddit_file
     )
 
     return "\n".join(
-        [wisecondor_test_cmd, wisecondor_preface_cmd, wisecondor_gender_cmd]
+        [wisecondor_test_cmd, wisecondor_preface_cmd, wisecondor_gender_cmd, wcx2cytosure_cmd]
     )

@@ -60,7 +60,7 @@ def run_analysis(
         wcx_test_jobid = wisecondor_xtest_workflow(
             configs=configs,
             sample_id=sample_id,
-            afterok=align_jobid,
+            afterok=ffy_jobid,
             slurm_api=slurm_api,
             dry_run=dry_run,
         )

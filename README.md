@@ -1,7 +1,7 @@
 ![Build](https://github.com/Clinical-Genomics/fluffy/workflows/Build/badge.svg)
 [![codecov](https://codecov.io/gh/Clinical-Genomics/fluffy/branch/master/graph/badge.svg)](https://codecov.io/gh/Clinical-Genomics/fluffy)
 # FluFFyPipe
-NIPT analysis pipeline, using WisecondorX for detecting aneuplodies and large CNVs, AMYCNE for FFY and PREFACE for FF prediction (optional). FluFFYPipe produces a variety of output files, as well as a per batch csv summary.
+NIPT analysis pipeline, using WisecondorX for detecting aneuplodies and large CNVs, AMYCNE for FFY and PREFACE for FF prediction (optional). wcx2cytosure is used to convert WisecondorX output into CytoSure Interpret Software (by OGT) format (.cgh file). FluFFYPipe produces a variety of output files, as well as a per batch csv summary.
 
 <p align="center">
 <img src="https://github.com/J35P312/FluFFyPipe/blob/master/logo/IMG_20200320_132001.jpg" width="400" height="400" >
@@ -27,6 +27,7 @@ bam files
 wisecondorX output
 tiddit coverage summary
 Fetal fraction estimation
+cgh file with probes for coverage per bin and aberrations for visualization in CytoSure Interpret Software (by OGT).
 ```
 
 as well as a summary csv and multiqc html (per batch)
@@ -96,9 +97,11 @@ alternatively, fluffy is cloned and installed from github:
 	cd fluffy
 	pip install -e .
 	
-Next download the FluFFyPipe singularity container
+Next download the FluFFyPipe singularity container and the wcx2cytosure singularity container:
 
      singularity pull library://jeisfeldt/default/fluffy:sha256.dbef92cd5eab8558c2729f73a191d73a7576a24e9bb44dde7372c0cd405c4ef6 
+     singularity pull --arch amd64 library://ravinale/wcx2cytosure/wcx2cytosure:latest
+
 
 copy the example config (found in example_config), and edit the variables.
 You will need to download/create the following files:
@@ -113,5 +116,6 @@ You will need to download/create the following files:
 
 	FluFFyPipe singularity collection (singularity pull --name FluFFyPipe.sif shub://J35P312/FluFFyPipe)
 	
+	wcx2cytosure singularity container
 
 

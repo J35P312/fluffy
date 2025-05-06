@@ -73,6 +73,7 @@ def wisecondor_xtest_workflow(
 ):
     """Run the wisecondor x test workflow"""
     out_dir = configs["out"]
+
     run_wcx_pipe = wisecondor_x_test(
         configs=configs, out_dir=out_dir, sample_id=sample_id
     )
@@ -83,5 +84,6 @@ def wisecondor_xtest_workflow(
         afterok=[afterok],
         dry_run=dry_run,
     )
+
 
     return jobid

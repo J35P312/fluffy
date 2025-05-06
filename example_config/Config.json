@@ -32,7 +32,8 @@
 	},
 	"reference":"/proj/sens2019010/reference/human_g1k_v37.fasta",
 	"singularity":"/proj/sens2019010/nobackup/wharf/jesperei/jesperei-sens2019010/FluFFyPipe/FluFFyPipe_0.0.sif",
-        "singularity_bind":[],
+        "wcx_singularity":"/proj/sens2017106/nobackup/denise/thesis/wcx2cytosure_latest.sif",
+	"singularity_bind":[],
 	"slurm": {
 		"account":"sens2019010",
 		"time":"5:00:00",
