@@ -29,7 +29,7 @@
 	},
 	"reference":"tests/fixtures/reference.fasta",
         "singularity_bind":["/home/home/","/"],
-	"wcx_singularity":"tests/fixtures/singularity/wcx2cytosure.sif"
+	"wcx_singularity":"tests/fixtures/singularity/wcx2cytosure.sif",
 	"singularity":"tests/fixtures/singularity/FluFFyPipe_0.0.sif",
 	"slurm": {
 		"account":"A_project",
