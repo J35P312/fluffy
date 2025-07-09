@@ -3,9 +3,8 @@
 # FluFFyPipe
 NIPT analysis pipeline, using WisecondorX for detecting aneuplodies and large CNVs, AMYCNE for FFY and PREFACE for FF prediction (optional). wcx2cytosure is used to convert WisecondorX output into CytoSure Interpret Software (by OGT) format (.cgh file). FluFFYPipe produces a variety of output files, as well as a per batch csv summary.
 
-<p align="center">
-<img src="https://github.com/J35P312/FluFFyPipe/blob/master/logo/IMG_20200320_132001.jpg" width="400" height="400" >
-</p>
+![fluffythesnail](https://github.com/user-attachments/assets/57680a01-68b4-4c63-97b3-93e871cf6082)
+
 
 # Run FluFFyPipe
 Run NIPT analysis, using a previously comnputed reference:
