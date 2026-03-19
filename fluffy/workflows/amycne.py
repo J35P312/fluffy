@@ -1,8 +1,8 @@
-"""Workflows to run AMYCNE"""
+"""Workflows to run Spiky"""
 
 import logging
 
-from fluffy.commands.pipelines import amycne_ffy
+from fluffy.commands.pipelines import spiky_ffy
 from fluffy.slurm_api import SlurmAPI
 
 LOG = logging.getLogger(__name__)
@@ -18,12 +18,12 @@ def estimate_ffy(
     """Run the estimate fetal fraction with AMYCNE"""
     LOG.info("Running the estimate fetal fraction with AMYCNE workflow")
     out_dir = configs["out"]
-    fetal_fraction_pipe = amycne_ffy(
+    fetal_fraction_pipe = spiky_ffy(
         configs=configs, out_dir=out_dir, sample_id=sample_id
     )
 
     jobid = slurm_api.run_job(
-        name=f"amycne-{sample_id}",
+        name=f"spiky-{sample_id}",
         command=fetal_fraction_pipe,
         afterok=[afterok],
         dry_run=dry_run,

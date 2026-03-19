@@ -103,7 +103,8 @@ def analyse_workflow(
     skip_preface: bool = False,
     dry_run: bool = False,
     batch_ref: bool = True,
-    bwa_mem: bool = False
+    bwa_mem: bool = False,
+    bowtie2: bool = False
 ) -> int:
 
     """Run the wisecondor analysis"""
@@ -122,7 +123,7 @@ def analyse_workflow(
         slurm_api.slurm_settings["mem"] = configs["align"]["mem"]
 
         align_jobid = align_individual(
-            configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,bwa_mem=bwa_mem
+            configs=configs, sample=sample, slurm_api=slurm_api, dry_run=dry_run,bowtie2=bowtie2,bwa_mem=bwa_mem
         )
         jobids.append(align_jobid)
         sample_jobids[sample_id].append(align_jobid)

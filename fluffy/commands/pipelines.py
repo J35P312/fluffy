@@ -4,7 +4,7 @@ from pathlib import Path
 
 from .wcx2cytosure import get_wcx2cytosure_cmd
 
-from .amycne import get_gctab_cmd, run_amycne_cmd
+from .spiky import get_spiky_cmd
 from .bwa import (
     get_align_command,
     get_bwa_mem_command,
@@ -12,6 +12,11 @@ from .bwa import (
     get_sampe_command,
     get_samse_command,
 )
+
+from .bowtie2 import(
+   get_bowtie2_command,
+)
+
 from fluffy.singularity_cmd import singularity_base
 from .picard import (
     get_collect_gc_bias_cmd,
@@ -156,13 +161,65 @@ def align_bwa_mem(config: dict, fastq: list, out: Path, sample_id: str, single_e
 
     return "\n".join([bwa_mem_cmd,bamsormadup_cmd,convert])
 
-def amycne_ffy(configs: dict, out_dir: Path, sample_id: str) -> str:
+def align_bowtie2(config: dict, fastq: list, out: Path, sample_id: str, single_end: bool):
+    singularity = singularity_base(
+        config["singularity"],
+        config["out"],
+        config["project"],
+        config["singularity_bind"],
+    )
+
+    bowtie2_singularity = singularity_base(
+        config["bowtie2_singularity"],
+        config["out"],
+        config["project"],
+        config["singularity_bind"],
+    )
+    fastp_singularity = singularity_base(
+        config["fastp_singularity"],
+        config["out"],
+        config["project"],
+        config["singularity_bind"],
+    )
+
+    out_prefix = get_outprefix(out, sample_id)
+
+    bowtie2_cmd = get_bowtie2_command(
+        singularity_fluffy=singularity,
+        singularity_bowtie2=bowtie2_singularity,
+        singularity_fastp=fastp_singularity,        
+        reference=config["reference"],
+        threads=config["align"]["ntasks"],
+        fastq=fastq,
+        out_prefix=out_prefix,
+        single_end=single_end,
+        sample_id=sample_id,
+        tmp_dir=config["align"]["tmpdir"],
+        out_dir=str(out)
+    )
+
+    bamsormadup_cmd = get_bamsormadup_command(
+        singularity=singularity,
+        tmp_dir=config["align"]["tmpdir"],
+        out_prefix=out_prefix,
+    )
+
+    convert = get_convert_cmd(singularity=singularity, out_prefix=out_prefix)     
+
+    return "\n".join([bowtie2_cmd,bamsormadup_cmd,convert])
+
+def spiky_ffy(configs: dict, out_dir: Path, sample_id: str) -> str:
     """fetal fraction estimation using tiddit and AMYCNE"""
     out_prefix = out_dir / sample_id / sample_id
-    path_gc_tab = out_dir / sample_id / ".".join([sample_id, "gc.tab"])
 
     singularity = singularity_base(
         configs["singularity"],
+        configs["out"],
+        configs["project"],
+        configs["singularity_bind"],
+    )
+    spiky_singularity = singularity_base(
+        configs["spiky_singularity"],
         configs["out"],
         configs["project"],
         configs["singularity_bind"],
@@ -175,24 +232,15 @@ def amycne_ffy(configs: dict, out_dir: Path, sample_id: str) -> str:
         binsize=configs["tiddit"]["binsize"],
     )
 
-    # Calculate bins with GC and quality filtering
-    gc_tab_cmd = get_gctab_cmd(
-        singularity=singularity,
-        reference=configs["reference"],
-        binsize=configs["tiddit"]["binsize"],
-        path_gc_tab=str(path_gc_tab),
-    )
-
-    amycne_cmd = run_amycne_cmd(
-        singularity=singularity,
+    spiky_cmd = get_spiky_cmd(
+        singularity=spiky_singularity,
         out_prefix=str(out_prefix),
-        path_gc_tab=str(path_gc_tab),
-        minq=configs["amycne"]["minq"],
-        slope=configs["amycne"]["coefficient"],
-        intercept=configs["amycne"]["intercept"],
+        spiky_model=configs["spiky"]["model"],
+        spiky_regions=configs["spiky"]["regions"],
+        bin_size=configs["tiddit"]["binsize"],
+        reference=configs["reference"],
     )
-    return "\n".join([tiddit_cmd, gc_tab_cmd, amycne_cmd])
-
+    return "\n".join([tiddit_cmd, spiky_cmd])
 
 def picard_qc(configs: dict, out_dir: Path, sample_id: str) -> str:
     """Get a string with pipeline steps to run picard qc"""

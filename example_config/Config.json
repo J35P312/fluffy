@@ -33,6 +33,7 @@
 	"reference":"/proj/sens2019010/reference/human_g1k_v37.fasta",
 	"singularity":"/proj/sens2019010/nobackup/wharf/jesperei/jesperei-sens2019010/FluFFyPipe/FluFFyPipe_0.0.sif",
         "wcx_singularity":"/proj/sens2017106/nobackup/denise/thesis/wcx2cytosure_latest.sif",
+        "bowtie2_singularity:"hej.sif",
 	"singularity_bind":[],
 	"slurm": {
 		"account":"sens2019010",

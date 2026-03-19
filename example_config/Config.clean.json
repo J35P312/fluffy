@@ -33,6 +33,7 @@
 	"reference":"",
 	"singularity":"",
         "wcx_singularity":"",
+        "bowtie2_singularity:"",
 	"singularity_bind":[],
 	"slurm": {
 		"account":"",

@@ -1,7 +1,7 @@
 ![Build](https://github.com/Clinical-Genomics/fluffy/workflows/Build/badge.svg)
 [![codecov](https://codecov.io/gh/Clinical-Genomics/fluffy/branch/master/graph/badge.svg)](https://codecov.io/gh/Clinical-Genomics/fluffy)
 # FluFFyPipe
-NIPT analysis pipeline, using WisecondorX for detecting aneuplodies and large CNVs, AMYCNE for FFY and PREFACE for FF prediction (optional). wcx2cytosure is used to convert WisecondorX output into CytoSure Interpret Software (by OGT) format (.cgh file). FluFFYPipe produces a variety of output files, as well as a per batch csv summary.
+NIPT analysis pipeline, using WisecondorX for detecting aneuplodies and large CNVs, Spiky for FFY and PREFACE for FF prediction (optional). wcx2cytosure is used to convert WisecondorX output into CytoSure Interpret Software (by OGT) format (.cgh file). FluFFYPipe produces a variety of output files, as well as a per batch csv summary.
 
 ![fluffythesnail](https://github.com/user-attachments/assets/57680a01-68b4-4c63-97b3-93e871cf6082)
 
@@ -96,16 +96,18 @@ alternatively, fluffy is cloned and installed from github:
 	cd fluffy
 	pip install -e .
 	
-Next download the FluFFyPipe singularity container and the wcx2cytosure singularity container:
+Next download the FluFFyPipe, wcx2cytosure, blastp, bowtie2, and Spiky singularity container:
 
      singularity pull library://jeisfeldt/default/fluffy:sha256.dbef92cd5eab8558c2729f73a191d73a7576a24e9bb44dde7372c0cd405c4ef6 
      singularity pull --arch amd64 library://ravinale/wcx2cytosure/wcx2cytosure:latest
-
+     singularity pull --arch amd64 library://jeisfeldt/spiky/spiky:latest
+     singularity pull docker://quay.io/biocontainers/fastp:1.1.0--heae3180_0
+     singularity pull docker://quay.io/biocontainers/bowtie2:2.5.5--ha27dd3b_0
 
 copy the example config (found in example_config), and edit the variables.
 You will need to download/create the following files:
 
-	Reference fasta (indexed using bwa)
+	Reference fasta (indexed using bwa and bowtie2)
 
 	WisecondorX reference files (created using the reference mode)
 
@@ -117,4 +119,5 @@ You will need to download/create the following files:
 	
 	wcx2cytosure singularity container
 
+        Spiky regions and model
 
