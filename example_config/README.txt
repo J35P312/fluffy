@@ -10,12 +10,12 @@
 
 	},
 
-	#AMYCNE FFY estimation settings
+	#Spiky estimation settings
 	"amycne":{
-		#Minimum per bin mapping quality
-		"minq":13,
-                #Coefficient that is multiplied with the median coverage of Y (FFY=(coefficient*(median Y coverage) ))
-                "coefficient":2
+		#path to model json
+		"model":13,
+                #bedfile listning high quality regions on chrX and chrY
+                "regions":2
 	},
 
 	#WisecondorX settings

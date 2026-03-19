@@ -80,6 +80,29 @@ output_header = [
     "Chr20_Ratio",
     "Chr22_Ratio",
     "ChrY_Ratio",
+    "Chr13_Ratio_uncorrected",
+    "Chr18_Ratio_uncorrected",
+    "Chr21_Ratio_uncorrected",
+    "ChrX_Ratio_uncorrected",
+    "Chr1_Ratio_uncorrected",
+    "Chr2_Ratio_uncorrected",
+    "Chr3_Ratio_uncorrected",
+    "Chr4_Ratio_uncorrected",
+    "Chr5_Ratio_uncorrected",
+    "Chr6_Ratio_uncorrected",
+    "Chr7_Ratio_uncorrected",
+    "Chr8_Ratio_uncorrected",
+    "Chr9_Ratio_uncorrected",
+    "Chr10_Ratio_uncorrected",
+    "Chr11_Ratio_uncorrected",
+    "Chr12_Ratio_uncorrected",
+    "Chr14_Ratio_uncorrected",
+    "Chr15_Ratio_uncorrected",
+    "Chr16_Ratio_uncorrected",
+    "Chr17_Ratio_uncorrected",
+    "Chr19_Ratio_uncorrected",
+    "Chr20_Ratio_uncorrected",
+    "Chr22_Ratio_uncorrected",
     "MappedReads",
     "Chr1",
     "Chr2",
@@ -156,6 +179,11 @@ sample_out = {
     "Chr21_Ratio": "",
     "ChrX_Ratio": "",
     "ChrY_Ratio": "",
+    "Chr13_Ratio_uncorrected": "",
+    "Chr18_Ratio_uncorrected": "",
+    "Chr21_Ratio_uncorrected": "",
+    "ChrX_Ratio_uncorrected": "",
+    "ChrY_Ratio_uncorrected": "",
     "MappedReads": "",
     "GC_Dropout": "",
     "AT_Dropout": "",
@@ -178,6 +206,25 @@ sample_out = {
     "Chr19_Ratio": "",
     "Chr20_Ratio": "",
     "Chr22_Ratio": "",
+    "Chr1_Ratio_uncorrected": "",
+    "Chr2_Ratio_uncorrected": "",
+    "Chr3_Ratio_uncorrected": "",
+    "Chr4_Ratio_uncorrected": "",
+    "Chr5_Ratio_uncorrected": "",
+    "Chr6_Ratio_uncorrected": "",
+    "Chr7_Ratio_uncorrected": "",
+    "Chr8_Ratio_uncorrected": "",
+    "Chr9_Ratio_uncorrected": "",
+    "Chr10_Ratio_uncorrected": "",
+    "Chr11_Ratio_uncorrected": "",
+    "Chr12_Ratio_uncorrected": "",
+    "Chr14_Ratio_uncorrected": "",
+    "Chr15_Ratio_uncorrected": "",
+    "Chr16_Ratio_uncorrected": "",
+    "Chr17_Ratio_uncorrected": "",
+    "Chr19_Ratio_uncorrected": "",
+    "Chr20_Ratio_uncorrected": "",
+    "Chr22_Ratio_uncorrected": "",
     "Chr1": "",
     "Chr2": "",
     "Chr3": "",
@@ -279,11 +326,34 @@ for line in open(args.samplesheet):
     if "SampleName" in samplesheet_dict:
         samples[sample]["SampleID"]=content[samplesheet_dict["SampleName"]]
         
-ratio_21 = []
-ratio_18 = []
+
+
+ratio_1 = []
+ratio_2 = []
+ratio_3 = []
+ratio_4 = []
+ratio_5 = []
+ratio_6 = []
+ratio_7 = []
+ratio_8 = []
+ratio_9 = []
+ratio_10 = []
+ratio_11 = []
+ratio_12 = []
+ratio_14 = []
+ratio_15 = []
+ratio_16 = []
+ratio_17 = []
+ratio_19 = []
+ratio_20 = []
+ratio_22 = []
+
 ratio_13 = []
-ratio_X = []
-ratio_Y = []
+ratio_18 = []
+ratio_21 = []
+ratio_X  = []
+ratio_XX = []
+ratio_Y  = []
 
 try:
     included_samples=set([])
@@ -313,6 +383,17 @@ for sample in samples:
         except:
             pass 
 
+
+for sample in samples:
+    for file in files_in_folder:
+        if sample +"/"+ sample in file and file.endswith("AMYCNE.tab"):
+            for line in open(file):
+                if "med" in line:
+                    continue
+                content = line.strip().split()
+                samples[sample]["FFY"] = "{}".format(float(content[-2]) * 100)
+
+
 for sample in samples:
     for file in files_in_folder:
         if sample +"/"+sample in file and file.endswith("WCXpredict_chr_statistics.txt"):
@@ -321,65 +402,96 @@ for sample in samples:
                     continue
                 content = line.strip().split("\t")
                 if content[0] == "1":
-                    samples[sample]["Chr1_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr1_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_1.append(float(content[1]) + 1)
+
                 if content[0] == "2":
-                    samples[sample]["Chr2_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr2_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_2.append(float(content[1]) + 1)
+
                 if content[0] == "3":
-                    samples[sample]["Chr3_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr3_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_3.append(float(content[1]) + 1)
+
                 if content[0] == "4":
-                    samples[sample]["Chr4_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr4_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_4.append(float(content[1]) + 1)
+
                 if content[0] == "5":
-                    samples[sample]["Chr5_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr5_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_5.append(float(content[1]) + 1)
+
                 if content[0] == "6":
-                    samples[sample]["Chr6_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr6_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_6.append(float(content[1]) + 1)
+
                 if content[0] == "7":
-                    samples[sample]["Chr7_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr7_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_7.append(float(content[1]) + 1)
+
                 if content[0] == "8":
-                    samples[sample]["Chr8_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr8_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_8.append(float(content[1]) + 1)
+
                 if content[0] == "9":
-                    samples[sample]["Chr9_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr9_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_9.append(float(content[1]) + 1)
+
                 if content[0] == "10":
-                    samples[sample]["Chr10_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr10_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_10.append(float(content[1]) + 1)
+
                 if content[0] == "11":
-                    samples[sample]["Chr11_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr11_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_11.append(float(content[1]) + 1)
+
                 if content[0] == "12":
-                    samples[sample]["Chr12_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr12_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_12.append(float(content[1]) + 1)
+
                 if content[0] == "13":
                     samples[sample]["Zscore_13"] = content[-1]
-                    samples[sample]["Chr13_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr13_Ratio_uncorrected"] = str(float(content[1]) + 1)
                     if sample in included_samples or len(included_samples) == 0:
                         ratio_13.append(float(content[1]) + 1)
 
                 if content[0] == "14":
-                    samples[sample]["Chr14_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr14_Ratio_uncorrected"] = str(float(content[1]) + 1)
                 if content[0] == "15":
-                    samples[sample]["Chr15_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr15_Ratio_uncorrected"] = str(float(content[1]) + 1)
                 if content[0] == "16":
-                    samples[sample]["Chr16_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr16_Ratio_uncorrected"] = str(float(content[1]) + 1)
                 if content[0] == "17":
-                    samples[sample]["Chr17_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr17_Ratio_uncorrected"] = str(float(content[1]) + 1)
                 if content[0] == "18":
                     samples[sample]["Zscore_18"] = content[-1]
-                    samples[sample]["Chr18_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr18_Ratio_uncorrected"] = str(float(content[1]) + 1)
                     if sample in included_samples or len(included_samples) == 0:
                         ratio_18.append(float(content[1]) + 1)
 
                 if content[0] == "19":
-                    samples[sample]["Chr19_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr19_Ratio_uncorrected"] = str(float(content[1]) + 1)
                 if content[0] == "20":
-                    samples[sample]["Chr20_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr20_Ratio_uncorrected"] = str(float(content[1]) + 1)
                 if content[0] == "21":
                     samples[sample]["Zscore_21"] = content[-1]
-                    samples[sample]["Chr21_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr21_Ratio_uncorrected"] = str(float(content[1]) + 1)
                     if sample in included_samples or len(included_samples) == 0:
                         ratio_21.append(float(content[1]) + 1)
 
                 if content[0] == "22":
-                    samples[sample]["Chr22_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["Chr22_Ratio_uncorrected"] = str(float(content[1]) + 1)
                 if content[0] == "X":
-                    samples[sample]["ChrX_Ratio"] = str(float(content[1]) + 1)
+                    samples[sample]["ChrX_Ratio_uncorrected"] = str(float(content[1]) + 1)
                     ratio_X.append(float(content[1]) + 1)
                     samples[sample]["Zscore_X"] = content[-1]
+                    try:
+                        ffy=float(samples[sample]["FFY"])
+                    except:
+                        ffy=0
+
+                    if float(ratio_X[-1]) < 1.025 and float(ratio_X[-1]) > 0.975 and ffy<1:	
+                        ratio_XX.append(float(content[1]) + 1) 
 
                 if "Median segment variance (per bin): " in line:
                     samples[sample]["Bin2BinVariance"] = (
@@ -394,11 +506,46 @@ for sample in samples:
                               samples[sample]["QCFlag"]+=";Bin2BinVariance"
 
 
+
+if len(ratio_XX) < 5:
+	ratio_XX=[1,1,1,1]
+	
+
 for sample in samples:
     samples[sample]["Median_X"] = numpy.median(ratio_X)
     samples[sample]["Median_18"] = numpy.median(ratio_18)
     samples[sample]["Median_21"] = numpy.median(ratio_21)
     samples[sample]["Median_13"] = numpy.median(ratio_13)
+
+
+    samples[sample]["Chr1_Ratio"]=float(samples[sample]["Chr1_Ratio_uncorrected"])+(1-numpy.median(ratio_1))
+    samples[sample]["Chr2_Ratio"]=float(samples[sample]["Chr2_Ratio_uncorrected"])+(1-numpy.median(ratio_2))
+    samples[sample]["Chr3_Ratio"]=float(samples[sample]["Chr3_Ratio_uncorrected"])+(1-numpy.median(ratio_3))
+    samples[sample]["Chr4_Ratio"]=float(samples[sample]["Chr4_Ratio_uncorrected"])+(1-numpy.median(ratio_4))
+    samples[sample]["Chr5_Ratio"]=float(samples[sample]["Chr5_Ratio_uncorrected"])+(1-numpy.median(ratio_5))
+    samples[sample]["Chr6_Ratio"]=float(samples[sample]["Chr6_Ratio_uncorrected"])+(1-numpy.median(ratio_6))
+    samples[sample]["Chr7_Ratio"]=float(samples[sample]["Chr7_Ratio_uncorrected"])+(1-numpy.median(ratio_7))
+    samples[sample]["Chr8_Ratio"]=float(samples[sample]["Chr8_Ratio_uncorrected"])+(1-numpy.median(ratio_8))
+    samples[sample]["Chr9_Ratio"]=float(samples[sample]["Chr9_Ratio_uncorrected"])+(1-numpy.median(ratio_9))
+    samples[sample]["Chr10_Ratio"]=float(samples[sample]["Chr10_Ratio_uncorrected"])+(1-numpy.median(ratio_10))
+    samples[sample]["Chr11_Ratio"]=float(samples[sample]["Chr11_Ratio_uncorrected"])+(1-numpy.median(ratio_11))
+    samples[sample]["Chr12_Ratio"]=float(samples[sample]["Chr12_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
+
+    samples[sample]["Chr14_Ratio"]=float(samples[sample]["Chr14_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
+    samples[sample]["Chr15_Ratio"]=float(samples[sample]["Chr15_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
+    samples[sample]["Chr16_Ratio"]=float(samples[sample]["Chr16_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
+    samples[sample]["Chr17_Ratio"]=float(samples[sample]["Chr17_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
+
+    samples[sample]["Chr19_Ratio"]=float(samples[sample]["Chr19_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
+    samples[sample]["Chr20_Ratio"]=float(samples[sample]["Chr20_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
+
+    samples[sample]["Chr22_Ratio"]=float(samples[sample]["Chr22_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
+
+
+    samples[sample]["Chr13_Ratio"]=float(samples[sample]["Chr13_Ratio_uncorrected"])+(1-samples[sample]["Median_13"])
+    samples[sample]["Chr18_Ratio"]=float(samples[sample]["Chr18_Ratio_uncorrected"])+(1-samples[sample]["Median_18"])
+    samples[sample]["Chr21_Ratio"]=float(samples[sample]["Chr21_Ratio_uncorrected"])+(1-samples[sample]["Median_21"])
+    samples[sample]["ChrX_Ratio"]=float(samples[sample]["ChrX_Ratio_uncorrected"])+(1-numpy.median(ratio_XX))
 
     samples[sample]["Stdev_X"] = numpy.std(ratio_X)
     samples[sample]["Stdev_18"] = numpy.std(ratio_18)
@@ -430,6 +577,7 @@ for sample in samples:
 
             f.write("\n".join(filtered_calls))
             f.close()
+
 
 for sample in samples:
     for file in files_in_folder:
@@ -490,15 +638,6 @@ for sample in samples:
                     samples[sample]["FFX"] = line.strip().split()[-1].replace("%","")
                 if "PREFACE" in line:
                     samples[sample]["FF_Formatted"] = line.strip().split()[-1].replace("%","")
-
-for sample in samples:
-    for file in files_in_folder:
-        if sample +"/"+ sample in file and file.endswith("AMYCNE.tab"):
-            for line in open(file):
-                if "med" in line:
-                    continue
-                content = line.strip().split()
-                samples[sample]["FFY"] = "{}".format(float(content[-2]) * 100)
 
 for sample in samples:
     samples[sample]["Median_Y"] = numpy.median(ratio_Y)

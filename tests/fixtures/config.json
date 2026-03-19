@@ -4,10 +4,9 @@
 		"ntasks":16,
 		"mem":0
 	},
-	"amycne":{
-		"minq":10,
-		"coefficient":2,
-		"intercept":0.015
+	"spiky":{
+		"model":"",
+		"regions":""
 	},
 	"wisecondorx":{
 		"reftest":"tests/fixtures/wisecondor/wisecondor_X_bwa_ref.npz",
@@ -30,6 +29,9 @@
 	"reference":"tests/fixtures/reference.fasta",
         "singularity_bind":["/home/home/","/"],
 	"wcx_singularity":"tests/fixtures/singularity/wcx2cytosure.sif",
+	"bowtie2_singularity":"tests/fixtures/singularity/wcx2cytosure.sif",
+	"blastp_singularity":"tests/fixtures/singularity/wcx2cytosure.sif",
+	"spiky_singularity":"tests/fixtures/singularity/wcx2cytosure.sif",
 	"singularity":"tests/fixtures/singularity/FluFFyPipe_0.0.sif",
 	"slurm": {
 		"account":"A_project",
