@@ -19,6 +19,15 @@ optionally, skip preface:
 
     fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> --skip_preface --analyse
 
+Run NIPT analysis, using bwa aln aligned (default bowtie2):
+
+    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> --analyse --aln
+
+or bwa mem
+
+    fluffy --sample <samplesheet>  --project <input_folder> --out <output_folder> --analyse --mem
+
+
 All output will be written to the output folder, this output includes:
 
 ```

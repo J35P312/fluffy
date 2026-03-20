@@ -11,7 +11,7 @@ LOG = logging.getLogger(__name__)
 
 
 def align_individual(
-    configs: dict, sample: dict, slurm_api: SlurmAPI, dry_run: bool = False,bowtie2: bool = False,bwa_mem: bool = False
+    configs: dict, sample: dict, slurm_api: SlurmAPI, dry_run: bool = False,bowtie2: bool = False,aln: bool= False,bwa_mem: bool = False
 ):
     """Align a individual with bwa on slurm"""
     out_dir = configs["out"]
@@ -28,14 +28,14 @@ def align_individual(
         run_align=align_bwa_mem(
             config=configs, fastq=fastq, out=out_dir, sample_id=sample_id,single_end=single_end
         )
-
-    elif bowtie2:
-        run_align=align_bowtie2(
-            config=configs, fastq=fastq, out=out_dir, sample_id=sample_id,single_end=single_end
-        )
-    else:
+    elif aln:
         run_align = align_and_convert_paired_end(
             config=configs, fastq=fastq, out=out_dir, sample_id=sample_id
+        )
+
+    else:
+        run_align=align_bowtie2(
+            config=configs, fastq=fastq, out=out_dir, sample_id=sample_id,single_end=single_end
         )
 
     align_jobid = slurm_api.run_job(
