@@ -6,6 +6,12 @@ from os.path import isfile, join
 
 import numpy
 
+
+
+
+def compute_zscore(ratio,mean,stdev):
+	return( (ratio-mean)/stdev )
+
 parser = argparse.ArgumentParser(
     """generate_csv.py --folder input_folder --sample samplesheet"""
 )
@@ -30,6 +36,8 @@ parser.add_argument(
     "--minreads", default=20000000, type=float, help="Minimum number of mapped reads" )
 parser.add_argument(
     "--minyield", default=30, type=float, help="Minimum yield" )
+parser.add_argument(
+    "--sd", default=0.003, type=float, help="coverage ratio standard deviation, used to estimate batch corrected Z score" )
 
 parser.add_argument("--Zscore", default=5, type=float, help="Zscore of CNV segment")
 parser.add_argument(
@@ -80,6 +88,10 @@ output_header = [
     "Chr20_Ratio",
     "Chr22_Ratio",
     "ChrY_Ratio",
+    "Zscore_13_uncorrected",
+    "Zscore_18_uncorrected",
+    "Zscore_21_uncorrected",
+    "Zscore_X_uncorrected",
     "Chr13_Ratio_uncorrected",
     "Chr18_Ratio_uncorrected",
     "Chr21_Ratio_uncorrected",
@@ -174,6 +186,10 @@ sample_out = {
     "Zscore_18": "",
     "Zscore_21": "",
     "Zscore_X": "",
+    "Zscore_13_uncorrected": "",
+    "Zscore_18_uncorrected": "",
+    "Zscore_21_uncorrected": "",
+    "Zscore_X_uncorrected": "",
     "Chr13_Ratio": "",
     "Chr18_Ratio": "",
     "Chr21_Ratio": "",
@@ -450,41 +466,55 @@ for sample in samples:
                     ratio_12.append(float(content[1]) + 1)
 
                 if content[0] == "13":
-                    samples[sample]["Zscore_13"] = content[-1]
+                    samples[sample]["Zscore_13_uncorrected"] = content[-1]
                     samples[sample]["Chr13_Ratio_uncorrected"] = str(float(content[1]) + 1)
                     if sample in included_samples or len(included_samples) == 0:
                         ratio_13.append(float(content[1]) + 1)
 
                 if content[0] == "14":
                     samples[sample]["Chr14_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_14.append(float(content[1]) + 1)
+
                 if content[0] == "15":
                     samples[sample]["Chr15_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_15.append(float(content[1]) + 1)
+
                 if content[0] == "16":
                     samples[sample]["Chr16_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_16.append(float(content[1]) + 1)
+
                 if content[0] == "17":
                     samples[sample]["Chr17_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_17.append(float(content[1]) + 1)
+
                 if content[0] == "18":
-                    samples[sample]["Zscore_18"] = content[-1]
+                    samples[sample]["Zscore_18_uncorrected"] = content[-1]
                     samples[sample]["Chr18_Ratio_uncorrected"] = str(float(content[1]) + 1)
                     if sample in included_samples or len(included_samples) == 0:
                         ratio_18.append(float(content[1]) + 1)
 
                 if content[0] == "19":
                     samples[sample]["Chr19_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_19.append(float(content[1]) + 1)
+
                 if content[0] == "20":
                     samples[sample]["Chr20_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_20.append(float(content[1]) + 1)
+
                 if content[0] == "21":
-                    samples[sample]["Zscore_21"] = content[-1]
+                    samples[sample]["Zscore_21_uncorrected"] = content[-1]
                     samples[sample]["Chr21_Ratio_uncorrected"] = str(float(content[1]) + 1)
                     if sample in included_samples or len(included_samples) == 0:
                         ratio_21.append(float(content[1]) + 1)
 
                 if content[0] == "22":
                     samples[sample]["Chr22_Ratio_uncorrected"] = str(float(content[1]) + 1)
+                    ratio_22.append(float(content[1]) + 1)
+
                 if content[0] == "X":
                     samples[sample]["ChrX_Ratio_uncorrected"] = str(float(content[1]) + 1)
                     ratio_X.append(float(content[1]) + 1)
-                    samples[sample]["Zscore_X"] = content[-1]
+                    samples[sample]["Zscore_X_uncorrected"] = content[-1]
                     try:
                         ffy=float(samples[sample]["FFY"])
                     except:
@@ -531,21 +561,27 @@ for sample in samples:
     samples[sample]["Chr11_Ratio"]=float(samples[sample]["Chr11_Ratio_uncorrected"])+(1-numpy.median(ratio_11))
     samples[sample]["Chr12_Ratio"]=float(samples[sample]["Chr12_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
 
-    samples[sample]["Chr14_Ratio"]=float(samples[sample]["Chr14_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
-    samples[sample]["Chr15_Ratio"]=float(samples[sample]["Chr15_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
-    samples[sample]["Chr16_Ratio"]=float(samples[sample]["Chr16_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
-    samples[sample]["Chr17_Ratio"]=float(samples[sample]["Chr17_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
+    samples[sample]["Chr14_Ratio"]=float(samples[sample]["Chr14_Ratio_uncorrected"])+(1-numpy.median(ratio_14))
+    samples[sample]["Chr15_Ratio"]=float(samples[sample]["Chr15_Ratio_uncorrected"])+(1-numpy.median(ratio_15))
+    samples[sample]["Chr16_Ratio"]=float(samples[sample]["Chr16_Ratio_uncorrected"])+(1-numpy.median(ratio_16))
+    samples[sample]["Chr17_Ratio"]=float(samples[sample]["Chr17_Ratio_uncorrected"])+(1-numpy.median(ratio_17))
 
-    samples[sample]["Chr19_Ratio"]=float(samples[sample]["Chr19_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
-    samples[sample]["Chr20_Ratio"]=float(samples[sample]["Chr20_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
+    samples[sample]["Chr19_Ratio"]=float(samples[sample]["Chr19_Ratio_uncorrected"])+(1-numpy.median(ratio_19))
+    samples[sample]["Chr20_Ratio"]=float(samples[sample]["Chr20_Ratio_uncorrected"])+(1-numpy.median(ratio_20))
 
-    samples[sample]["Chr22_Ratio"]=float(samples[sample]["Chr22_Ratio_uncorrected"])+(1-numpy.median(ratio_12))
-
+    samples[sample]["Chr22_Ratio"]=float(samples[sample]["Chr22_Ratio_uncorrected"])+(1-numpy.median(ratio_22))
 
     samples[sample]["Chr13_Ratio"]=float(samples[sample]["Chr13_Ratio_uncorrected"])+(1-samples[sample]["Median_13"])
+    samples[sample]["Zscore_13"]=compute_zscore(samples[sample]["Chr13_Ratio"],1,args.sd)
+
     samples[sample]["Chr18_Ratio"]=float(samples[sample]["Chr18_Ratio_uncorrected"])+(1-samples[sample]["Median_18"])
+    samples[sample]["Zscore_18"]=compute_zscore(samples[sample]["Chr18_Ratio"],1,args.sd)
+
     samples[sample]["Chr21_Ratio"]=float(samples[sample]["Chr21_Ratio_uncorrected"])+(1-samples[sample]["Median_21"])
+    samples[sample]["Zscore_21"]=compute_zscore(samples[sample]["Chr21_Ratio"],1,args.sd)
+
     samples[sample]["ChrX_Ratio"]=float(samples[sample]["ChrX_Ratio_uncorrected"])+(1-numpy.median(ratio_XX))
+    samples[sample]["Zscore_X"]=compute_zscore(samples[sample]["ChrX_Ratio"],1,args.sd)
 
     samples[sample]["Stdev_X"] = numpy.std(ratio_X)
     samples[sample]["Stdev_18"] = numpy.std(ratio_18)
