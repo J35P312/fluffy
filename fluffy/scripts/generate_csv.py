@@ -7,8 +7,6 @@ from os.path import isfile, join
 import numpy
 
 
-
-
 def compute_zscore(ratio,mean,stdev):
 	return( (ratio-mean)/stdev )
 
@@ -583,10 +581,10 @@ for sample in samples:
     samples[sample]["ChrX_Ratio"]=float(samples[sample]["ChrX_Ratio_uncorrected"])+(1-numpy.median(ratio_XX))
     samples[sample]["Zscore_X"]=compute_zscore(samples[sample]["ChrX_Ratio"],1,args.sd)
 
-    samples[sample]["Stdev_X"] = numpy.std(ratio_X)
-    samples[sample]["Stdev_18"] = numpy.std(ratio_18)
-    samples[sample]["Stdev_21"] = numpy.std(ratio_21)
-    samples[sample]["Stdev_13"] = numpy.std(ratio_13)
+    samples[sample]["Stdev_X"] = numpy.median(numpy.abs(ratio_X - numpy.median(ratio_X)))*1.4826
+    samples[sample]["Stdev_18"] = numpy.median(numpy.abs(ratio_18 - numpy.median(ratio_18)))*1.4826
+    samples[sample]["Stdev_21"] = numpy.median(numpy.abs(ratio_21 - numpy.median(ratio_21)))*1.4826
+    samples[sample]["Stdev_13"] = numpy.median(numpy.abs(ratio_13 - numpy.median(ratio_13)))*1.4826
 
 for sample in samples:
     for file in files_in_folder:
@@ -721,3 +719,6 @@ for sample in samples:
     for entry in output_header:
         out.append(str(samples[sample][entry]))
     print('"' + '","'.join(out) + '"')
+
+
+
